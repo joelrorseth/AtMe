@@ -8,20 +8,24 @@
 
 /* Begin PBXBuildFile section */
 		5D1C703C1E58C64A00FEDEC3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1C703B1E58C64A00FEDEC3 /* AppDelegate.swift */; };
-		5D1C703E1E58C64A00FEDEC3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1C703D1E58C64A00FEDEC3 /* ViewController.swift */; };
 		5D1C70411E58C64A00FEDEC3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5D1C703F1E58C64A00FEDEC3 /* Main.storyboard */; };
 		5D1C70431E58C64A00FEDEC3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D1C70421E58C64A00FEDEC3 /* Assets.xcassets */; };
 		5D1C70461E58C64A00FEDEC3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5D1C70441E58C64A00FEDEC3 /* LaunchScreen.storyboard */; };
+		5D44C4E21E58C80D0050CB3F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5D44C4E11E58C80D0050CB3F /* GoogleService-Info.plist */; };
+		CBD13E33FC5A083122B9E03C /* Pods_at_me.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 997179A80F10509A4302F162 /* Pods_at_me.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		35C46A6FC6AE91CBE6FB594D /* Pods-at.me.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-at.me.release.xcconfig"; path = "Pods/Target Support Files/Pods-at.me/Pods-at.me.release.xcconfig"; sourceTree = "<group>"; };
 		5D1C70381E58C64A00FEDEC3 /* at.me.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = at.me.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D1C703B1E58C64A00FEDEC3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		5D1C703D1E58C64A00FEDEC3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		5D1C70401E58C64A00FEDEC3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		5D1C70421E58C64A00FEDEC3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5D1C70451E58C64A00FEDEC3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5D1C70471E58C64A00FEDEC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5D44C4E11E58C80D0050CB3F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		997179A80F10509A4302F162 /* Pods_at_me.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_at_me.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9EE8D20090D5CD1754DCC1E5 /* Pods-at.me.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-at.me.debug.xcconfig"; path = "Pods/Target Support Files/Pods-at.me/Pods-at.me.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,17 +33,29 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CBD13E33FC5A083122B9E03C /* Pods_at_me.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		153BADC3C8A4C9B836A9D777 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				9EE8D20090D5CD1754DCC1E5 /* Pods-at.me.debug.xcconfig */,
+				35C46A6FC6AE91CBE6FB594D /* Pods-at.me.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		5D1C702F1E58C64A00FEDEC3 = {
 			isa = PBXGroup;
 			children = (
 				5D1C703A1E58C64A00FEDEC3 /* at.me */,
 				5D1C70391E58C64A00FEDEC3 /* Products */,
+				153BADC3C8A4C9B836A9D777 /* Pods */,
+				E35CBBB78C557EB0EFA090CF /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -54,14 +70,46 @@
 		5D1C703A1E58C64A00FEDEC3 /* at.me */ = {
 			isa = PBXGroup;
 			children = (
-				5D1C703B1E58C64A00FEDEC3 /* AppDelegate.swift */,
-				5D1C703D1E58C64A00FEDEC3 /* ViewController.swift */,
-				5D1C703F1E58C64A00FEDEC3 /* Main.storyboard */,
+				5D1C704F1E58C69C00FEDEC3 /* Views */,
+				5D1C704E1E58C68A00FEDEC3 /* Controllers */,
+				5D1C704D1E58C67800FEDEC3 /* Model */,
 				5D1C70421E58C64A00FEDEC3 /* Assets.xcassets */,
 				5D1C70441E58C64A00FEDEC3 /* LaunchScreen.storyboard */,
 				5D1C70471E58C64A00FEDEC3 /* Info.plist */,
+				5D44C4E11E58C80D0050CB3F /* GoogleService-Info.plist */,
 			);
 			path = at.me;
+			sourceTree = "<group>";
+		};
+		5D1C704D1E58C67800FEDEC3 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				5D1C703B1E58C64A00FEDEC3 /* AppDelegate.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		5D1C704E1E58C68A00FEDEC3 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		5D1C704F1E58C69C00FEDEC3 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				5D1C703F1E58C64A00FEDEC3 /* Main.storyboard */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		E35CBBB78C557EB0EFA090CF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				997179A80F10509A4302F162 /* Pods_at_me.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -71,9 +119,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5D1C704A1E58C64A00FEDEC3 /* Build configuration list for PBXNativeTarget "at.me" */;
 			buildPhases = (
+				C0DC64C8614A4BEA299F4EA2 /* [CP] Check Pods Manifest.lock */,
 				5D1C70341E58C64A00FEDEC3 /* Sources */,
 				5D1C70351E58C64A00FEDEC3 /* Frameworks */,
 				5D1C70361E58C64A00FEDEC3 /* Resources */,
+				7822E643C61AF5CEB581FF2E /* [CP] Embed Pods Frameworks */,
+				96315511593CD5686B8E8EDF /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -96,7 +147,7 @@
 				TargetAttributes = {
 					5D1C70371E58C64A00FEDEC3 = {
 						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = 6QJBCPUR9M;
+						DevelopmentTeam = TGHSJ2W3HB;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -125,6 +176,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5D1C70461E58C64A00FEDEC3 /* LaunchScreen.storyboard in Resources */,
+				5D44C4E21E58C80D0050CB3F /* GoogleService-Info.plist in Resources */,
 				5D1C70431E58C64A00FEDEC3 /* Assets.xcassets in Resources */,
 				5D1C70411E58C64A00FEDEC3 /* Main.storyboard in Resources */,
 			);
@@ -132,12 +184,59 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		7822E643C61AF5CEB581FF2E /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-at.me/Pods-at.me-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		96315511593CD5686B8E8EDF /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-at.me/Pods-at.me-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C0DC64C8614A4BEA299F4EA2 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		5D1C70341E58C64A00FEDEC3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5D1C703E1E58C64A00FEDEC3 /* ViewController.swift in Sources */,
 				5D1C703C1E58C64A00FEDEC3 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -257,9 +356,10 @@
 		};
 		5D1C704B1E58C64A00FEDEC3 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9EE8D20090D5CD1754DCC1E5 /* Pods-at.me.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 6QJBCPUR9M;
+				DEVELOPMENT_TEAM = TGHSJ2W3HB;
 				INFOPLIST_FILE = at.me/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.JoelRorseth.at-me";
@@ -270,9 +370,10 @@
 		};
 		5D1C704C1E58C64A00FEDEC3 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 35C46A6FC6AE91CBE6FB594D /* Pods-at.me.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 6QJBCPUR9M;
+				DEVELOPMENT_TEAM = TGHSJ2W3HB;
 				INFOPLIST_FILE = at.me/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.JoelRorseth.at-me";
@@ -300,6 +401,7 @@
 				5D1C704C1E58C64A00FEDEC3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
