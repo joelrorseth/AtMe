@@ -15,6 +15,8 @@ class SignInViewController: UIViewController {
     @IBOutlet weak var passwordField: UITextField!
     
     // MARK: Buttons
+    // ==========================================
+    // ==========================================
     @IBAction func didTapSignIn(_ sender: Any) {
         
         guard let email = emailField.text, let password = passwordField.text else { return }
@@ -66,6 +68,8 @@ class SignInViewController: UIViewController {
         }
     }
     
+    
+    // MARK: View
     // ==========================================
     // ==========================================
     override func viewDidAppear(_ animated: Bool) {
@@ -76,6 +80,8 @@ class SignInViewController: UIViewController {
         }
     }
     
+    
+    // MARK: Firebase Config
     // ==========================================
     // ==========================================
     func setAccountDetails(_ user: FIRUser?) {
