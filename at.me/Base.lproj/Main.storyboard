@@ -168,6 +168,9 @@
                                         <constraint firstItem="t6Y-lr-onH" firstAttribute="leading" secondItem="Bqg-Sv-x3B" secondAttribute="trailing" constant="8" symbolic="YES" id="ybj-S3-RiT"/>
                                     </constraints>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="UWH-2D-z4o" kind="show" id="YHQ-rr-B2W"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -180,6 +183,117 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XxR-aQ-NVs" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1757.5999999999999" y="37.331334332833585"/>
+        </scene>
+        <!--Convo View Controller-->
+        <scene sceneID="0b3-eW-LCc">
+            <objects>
+                <viewController id="UWH-2D-z4o" customClass="ConvoViewController" customModule="at_me" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="hum-hq-jbk"/>
+                        <viewControllerLayoutGuide type="bottom" id="Rov-aT-7vd"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="lxh-II-Vh1">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="cyg-qj-3JB">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="outgoingMessage" id="j3h-QR-hpa" customClass="OutgoingMessageCell" customModule="at_me" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="j3h-QR-hpa" id="iMB-4f-xkT">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Hey Jim how are you?" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mE2-YR-QGh">
+                                                    <rect key="frame" x="151" y="8" width="216" height="28"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" red="0.93333333330000001" green="0.78823529410000004" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <connections>
+                                            <outlet property="message" destination="mE2-YR-QGh" id="fAD-qO-xG5"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="incomingMessage" id="qA5-8I-gke" customClass="IncomingMessageCell" customModule="at_me" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="72" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="qA5-8I-gke" id="GMa-Ag-1vv">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="I am doing good" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PZv-KB-dzD">
+                                                    <rect key="frame" x="8" y="8" width="216" height="28"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" red="0.87910077444793" green="0.87910077444793" blue="0.87910077444793" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <connections>
+                                            <outlet property="message" destination="PZv-KB-dzD" id="iNP-YX-uEr"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="UWH-2D-z4o" id="NZP-UW-0n7"/>
+                                    <outlet property="delegate" destination="UWH-2D-z4o" id="0mu-Sz-yyx"/>
+                                </connections>
+                            </tableView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="O6k-eG-a3g">
+                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                                <items>
+                                    <barButtonItem style="plain" id="4pk-ej-AT9">
+                                        <textField key="customView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter a message" textAlignment="natural" minimumFontSize="17" id="YnG-YJ-ucF">
+                                            <rect key="frame" x="16" y="7" width="284" height="30"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <nil key="textColor"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <textInputTraits key="textInputTraits"/>
+                                        </textField>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" id="Hcz-gq-yL1">
+                                        <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="ac5-yO-a8N">
+                                            <rect key="frame" x="310" y="7" width="54" height="30"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="17"/>
+                                            <state key="normal" title="Send">
+                                                <color key="titleColor" red="0.93333333330000001" green="0.78823529410000004" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="didPressSend:" destination="UWH-2D-z4o" eventType="touchUpInside" id="6JL-5l-ZNX"/>
+                                            </connections>
+                                        </button>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Rov-aT-7vd" firstAttribute="top" secondItem="O6k-eG-a3g" secondAttribute="bottom" id="0h4-lf-Scl"/>
+                            <constraint firstItem="O6k-eG-a3g" firstAttribute="leading" secondItem="lxh-II-Vh1" secondAttribute="leading" id="Dgc-aY-51M"/>
+                            <constraint firstAttribute="trailing" secondItem="O6k-eG-a3g" secondAttribute="trailing" id="XZe-Ef-yby"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="messageTableView" destination="cyg-qj-3JB" id="b3s-cb-Qsf"/>
+                        <outlet property="messageTextField" destination="YnG-YJ-ucF" id="1Zc-nh-bKy"/>
+                        <outlet property="messageToolbar" destination="O6k-eG-a3g" id="23m-cX-yWS"/>
+                        <outlet property="messageToolbarBottomConstraint" destination="0h4-lf-Scl" id="d2V-yk-Z0e"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="F5n-hA-rg3" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2541.5999999999999" y="36.431784107946029"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="wAg-Xh-ya9">
