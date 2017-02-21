@@ -19,7 +19,7 @@ class ChatListViewController: UITableViewController {
         super.viewDidLoad()
         
         
-        tableView.tintColor = UIColor(colorLiteralRed: 238, green: 201, blue: 0, alpha: 1)
+        tableView.tintColor = Constants.Colors.primaryColor
         
         // Establish bar button items in conversations view
         self.navigationItem.title = "at.me"
@@ -53,4 +53,3 @@ class ChatListViewController: UITableViewController {
         return tableView.dequeueReusableCell(withIdentifier: "ChatListCell", for: indexPath)
     }
 }
-
