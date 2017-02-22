@@ -18,6 +18,6 @@ struct Constants {
     }
     
     struct Colors {
-        static let primaryColor = UIColor(colorLiteralRed: 238, green: 201, blue: 0, alpha: 1)
+        static let primaryColor = UIColor.init(red: 185, green: 24, blue: 19, alpha: 1)
     }
 }

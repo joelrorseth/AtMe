@@ -18,11 +18,10 @@ class ChatListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
         tableView.tintColor = Constants.Colors.primaryColor
         
         // Establish bar button items in conversations view
-        self.navigationItem.title = "at.me"
+        self.navigationItem.title = "@ Me"
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: nil)
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: nil)
     }

@@ -39,6 +39,13 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
     // MARK: View
     // ==========================================
     // ==========================================
+    override func viewDidLoad() {
+        
+        messageTextField.borderStyle = .none
+    }
+    
+    // ==========================================
+    // ==========================================
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
