@@ -18,11 +18,15 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     
     // A sample array with messages to test the table view
-    var messagesArrayTest = ["Hello", "Hi nice to meet you", "My name is John"]
+    var messagesArrayTest = ["Hello, my name is Joel. I will be conducting your interview today.", "Hi Joel, nice to meet you", "For the first portion, we will be discussing your work history."]
     
     // ==========================================
     // ==========================================
     @IBAction func didPressSend(_ sender: Any) {
+        
+        if (messageTextField.text == "") {
+            return
+        }
         
         // Add text from textfield to temp array, insert row into collection view
         messagesArrayTest.append(messageTextField.text!)
@@ -41,18 +45,19 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
     // ==========================================
     override func viewDidLoad() {
         
+        // Set some properties of UI elements
         messageTextField.borderStyle = .none
-    }
-    
-    // ==========================================
-    // ==========================================
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        // Add observers to know when to move message toolbar
-        addKeyboardObservers()
         messageCollectionView?.register(MessageCell.self, forCellWithReuseIdentifier: Constants.Storyboard.messageId)
+        
+        addKeyboardObservers()
+        
+        // Establish a flow layout with spacing for collection view of messages
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.minimumLineSpacing = 14
+        messageCollectionView.setCollectionViewLayout(layout, animated: true)
     }
+
     
     // MARK: Keyboard Handling
     // ==========================================
@@ -115,11 +120,12 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
         let message = messagesArrayTest[indexPath.row]
         
         // Important: Set message text in the cell
+        cell.messageTextView.font = UIFont.systemFont(ofSize: 14)
         cell.messageTextView.text = message
         
         // Calculate how large the bubble will need to be to house the message
         let messageFrame = NSString(string: message).boundingRect(
-            with: CGSize(width: 250, height: 1000),
+            with: CGSize(width: (view.bounds.size.width * 0.72), height: 1000),
             options: NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin),
             attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)],
             context: nil
@@ -131,22 +137,21 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
             
             // Set bubble and text frames
             cell.messageTextView.frame = CGRect(
-                                        x: 28,
-                                        y: 0,
-                                        width: messageFrame.width + 16,
+                                        x: 15 + 5,
+                                        y: 1,
+                                        width: messageFrame.width + 11,
                                         height: messageFrame.height + 20
             )
             cell.bubbleView.frame = CGRect(
-                                        x: 10,
+                                        x: 15,
                                         y: -4,
-                                        width: messageFrame.width + 40,
+                                        width: messageFrame.width + 20 + 11 - 10,
                                         height: messageFrame.height + 26
             )
             
             // Set bubble attributes
-            cell.bubbleImageView.image = MessageCell.incomingBubble
-            cell.bubbleImageView.tintColor = UIColor.lightGray
-            cell.messageTextView.textColor = UIColor.black
+            cell.bubbleView.backgroundColor = UIColor.darkGray
+            cell.messageTextView.textColor = UIColor.white
         }
         
             
@@ -155,21 +160,20 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
             
             // Set bubble and text frames
             cell.messageTextView.frame = CGRect(
-                                        x: view.frame.width - messageFrame.width - 34,
-                                        y: 0,
-                                        width: messageFrame.width + 16,
+                                        x: ((view.frame.width - (messageFrame.width + 11 + 20))),
+                                        y: 1,
+                                        width: messageFrame.width + 16 - 5,
                                         height: messageFrame.height + 20
             )
             cell.bubbleView.frame = CGRect(
-                                        x: view.frame.width - messageFrame.width - 44,
+                                        x: (view.frame.width - 15) - (messageFrame.width + 11 + 20) + 5 + 5,
                                         y: -4,
-                                        width: messageFrame.width + 34,
+                                        width: messageFrame.width + 11 + 20 - 5 - 5,
                                         height: messageFrame.height + 26
             )
             
             // Set bubble attributes
-            cell.bubbleImageView.image = MessageCell.outgoingBubble
-            cell.bubbleImageView.tintColor = Constants.Colors.primaryColor
+            cell.bubbleView.backgroundColor = UIColor.white
             cell.messageTextView.textColor = UIColor.black
         }
         
@@ -188,7 +192,7 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
         let messageFrame = NSString(string: messagesArrayTest[indexPath.row]).boundingRect(
             with: CGSize(width: 250, height: 1000),
             options: NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin),
-            attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 15)],
+            attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)],
             context: nil
         )
         
