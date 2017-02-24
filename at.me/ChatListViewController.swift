@@ -11,6 +11,8 @@ import Firebase
 
 class ChatListViewController: UITableViewController {
     
+    // Firebase references are used for read/write at referenced location
+    private lazy var conversationsRef: FIRDatabaseReference = FIRDatabase.database().reference().child("conversations")
     
     // MARK: View
     // ==========================================

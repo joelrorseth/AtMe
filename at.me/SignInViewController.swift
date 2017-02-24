@@ -11,8 +11,13 @@ import Firebase
 
 class SignInViewController: UIViewController {
     
+    // Firebase references
+    private lazy var usersRef: FIRDatabaseReference = FIRDatabase.database().reference().child("users")
+    
+    
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
+    @IBOutlet weak var usernameField: UITextField!
     @IBOutlet weak var signInButton: UIButton!
     @IBOutlet weak var signUpButton: UIButton!
     
@@ -35,10 +40,11 @@ class SignInViewController: UIViewController {
                 ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
                 self.present(ac, animated: true, completion: nil)
                 
+                print("<<<< AT.ME::DEBUG >>>>: Login unsuccessful")
                 return
             }
             
-            print("at.me:: Login successful")
+            print("<<<< AT.ME::DEBUG >>>>: Login successful")
             self.performSegue(withIdentifier: "showChatList", sender: nil)
         }
     }
@@ -47,27 +53,64 @@ class SignInViewController: UIViewController {
     // ==========================================
     @IBAction func didTapSignUp(_ sender: Any) {
         
+        // Make sure all important info is provided, then store
         guard let email = emailField.text, let password = passwordField.text else { return }
+        let username = (self.usernameField.text == nil) ? email.components(separatedBy: "@")[0] : self.usernameField.text!
+
         
-        // Check for weak password
+        
+        // ERROR CASE 1: Weak password
         if (password.characters.count < 6) {
             
             // Alert user that their password needs to be stronger
             let ac = UIAlertController(title: "Password Is Too Weak", message: "Your password must be 6 or more characters.", preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            self.present(ac, animated: true, completion: nil)
+            
+            // Present alert, then shift focus to password field
+            self.present(ac, animated: true) { self.passwordField.becomeFirstResponder() }
             
             return
         }
         
-        // Let the auth object create a user with given fields
-        FIRAuth.auth()?.createUser(withEmail: email, password: password) { (user, error) in
-            if let error = error { print(error.localizedDescription); return }
+        
+        // Take snapshot of databse to check for existing username
+        usersRef.observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
             
-            // First time use, set up user name
-            print("at.me:: Created user successfully")
-            self.setAccountDetails(user!)
-        }
+            // If username is not found, we are OK to create account
+            if (!snapshot.hasChild(username)) {
+                
+                
+                // Let the auth object create a user with given fields
+                FIRAuth.auth()?.createUser(withEmail: email, password: password) { (user, error) in
+                    
+                    
+                    // ERROR CASE 2: Any other error (Email taken)
+                    if let error = error {
+                        print("<<<< AT.ME::DEBUG >>>>: \(error.localizedDescription)")
+                        return
+                    }
+                    
+                    // Add entry to database with public user information (username, email)
+                    let userEntry = ["email" : email, "uid": user?.uid]
+                    self.usersRef.child(username).setValue(userEntry)
+                    
+                    
+                    // First time use, set up user name then log into app
+                    print("<<<< AT.ME::DEBUG >>>>:: New user creation successful")
+                    self.setAccountDetails(user!)
+                    self.didTapSignIn(self)
+                }
+ 
+                
+            } else {
+                
+                // ERROR CASE 3: Username was already taken
+                // Alert user that username already exists, shift focus to username field
+                let ac = UIAlertController(title: "Username Already Taken", message: "Please choose another username.", preferredStyle: .alert)
+                ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                self.present(ac, animated: true) { self.usernameField.becomeFirstResponder() }
+            }
+        })
     }
     
     
@@ -77,7 +120,7 @@ class SignInViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         
         if let _ = FIRAuth.auth()?.currentUser {
-            print("at.me:: Login successful")
+            print("<<<< AT.ME::DEBUG >>>>: Login Successful")
             self.performSegue(withIdentifier: "showChatList", sender: nil)
         }
     }
@@ -95,7 +138,7 @@ class SignInViewController: UIViewController {
         changeRequest?.displayName = user?.email!.components(separatedBy: "@")[0]
         changeRequest?.commitChanges() { (error) in
             
-            if let error = error { print(error.localizedDescription); return }
+            if let error = error { print("<<<< AT.ME::DEBUG >>>>: \(error.localizedDescription)"); return }
         }
     }
 }
