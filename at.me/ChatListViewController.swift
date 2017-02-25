@@ -25,7 +25,7 @@ class ChatListViewController: UITableViewController {
         // Establish bar button items in conversations view
         self.navigationItem.title = "@ Me"
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: nil)
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: nil)
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(logout))
     }
     
     
@@ -52,5 +52,22 @@ class ChatListViewController: UITableViewController {
     // ==========================================
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         return tableView.dequeueReusableCell(withIdentifier: "ChatListCell", for: indexPath)
+    }
+    
+    
+    // MARK: Functionality
+    // ==========================================
+    // ==========================================
+    @objc private func logout() {
+        
+        do {
+            try FIRAuth.auth()?.signOut()
+            dismiss(animated: true, completion: {
+                print("<<<< AT.ME::DEBUG >>>>:: Successfully logged out")
+            })
+            
+        } catch let error as NSError {
+            print("<<<< AT.ME::DEBUG >>>>:: \(error.localizedDescription)")
+        }
     }
 }
