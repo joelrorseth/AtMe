@@ -23,9 +23,11 @@ class ChatListViewController: UITableViewController {
         tableView.tintColor = Constants.Colors.primaryColor
         
         // Establish bar button items in conversations view
+        let logoutButton = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(logout))
+        logoutButton.tintColor = UIColor.black
+        self.navigationItem.leftBarButtonItem = logoutButton
+        
         self.navigationItem.title = "@ Me"
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: nil)
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(logout))
     }
     
     
