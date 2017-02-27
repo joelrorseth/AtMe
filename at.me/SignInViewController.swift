@@ -91,7 +91,14 @@ class SignInViewController: UIViewController {
                     }
                     
                     // Add entry to database with public user information (username, email)
-                    let userEntry = ["email" : email, "uid": user?.uid]
+                    // TODO: Link up text fields for name, display name etc in a separate controller
+                    let userEntry = [
+                        "displayName" : username,
+                        "email" : email,
+                        "firstName" : "FNAME",
+                        "lastName" : "LNAME",
+                        "uid" : user?.uid
+                    ]
                     self.usersRef.child(username).setValue(userEntry)
                     
                     
