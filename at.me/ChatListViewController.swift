@@ -23,10 +23,11 @@ class ChatListViewController: UITableViewController {
         tableView.tintColor = Constants.Colors.primaryColor
         
         // Establish bar button items in conversations view
-        let logoutButton = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(logout))
-        logoutButton.tintColor = UIColor.black
-        self.navigationItem.leftBarButtonItem = logoutButton
+        let settingsIcon = UIImage(named: "settings")
+        let settingsButton = UIBarButtonItem(image: settingsIcon, style: .plain, target: self, action: #selector(didTapSettings))
         
+
+        self.navigationItem.leftBarButtonItem = settingsButton
         self.navigationItem.title = "@ Me"
     }
     
@@ -58,6 +59,13 @@ class ChatListViewController: UITableViewController {
     
     
     // MARK: Functionality
+    // ==========================================
+    // ==========================================
+    @objc private func didTapSettings() {
+        
+        self.performSegue(withIdentifier: "ShowSettings", sender: self)
+    }
+    
     // ==========================================
     // ==========================================
     @objc private func logout() {

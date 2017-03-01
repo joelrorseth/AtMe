@@ -10,6 +10,7 @@
 		5D04E9881E58D28B006D8CD5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5D04E9871E58D28B006D8CD5 /* GoogleService-Info.plist */; };
 		5D04E98A1E58DD0C006D8CD5 /* ChatListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D04E9891E58DD0C006D8CD5 /* ChatListViewController.swift */; };
 		5D04E98C1E58E24E006D8CD5 /* ConvoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D04E98B1E58E24E006D8CD5 /* ConvoViewController.swift */; };
+		5D0B5AB81E668EFB0077BE46 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0B5AB71E668EFB0077BE46 /* SettingsViewController.swift */; };
 		5D197AA11E58CE1900C9CB52 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D197AA01E58CE1900C9CB52 /* SignInViewController.swift */; };
 		5D1C703C1E58C64A00FEDEC3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1C703B1E58C64A00FEDEC3 /* AppDelegate.swift */; };
 		5D1C70411E58C64A00FEDEC3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5D1C703F1E58C64A00FEDEC3 /* Main.storyboard */; };
@@ -27,6 +28,7 @@
 		5D04E9871E58D28B006D8CD5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5D04E9891E58DD0C006D8CD5 /* ChatListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatListViewController.swift; sourceTree = "<group>"; };
 		5D04E98B1E58E24E006D8CD5 /* ConvoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvoViewController.swift; sourceTree = "<group>"; };
+		5D0B5AB71E668EFB0077BE46 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		5D197AA01E58CE1900C9CB52 /* SignInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		5D1C70381E58C64A00FEDEC3 /* at.me.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = at.me.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D1C703B1E58C64A00FEDEC3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -114,6 +116,7 @@
 				5D04E9891E58DD0C006D8CD5 /* ChatListViewController.swift */,
 				5D04E98B1E58E24E006D8CD5 /* ConvoViewController.swift */,
 				5D3DDA391E6248DA00B6FBB7 /* NewConvoViewController.swift */,
+				5D0B5AB71E668EFB0077BE46 /* SettingsViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -266,6 +269,7 @@
 				5D3DDA3A1E6248DA00B6FBB7 /* NewConvoViewController.swift in Sources */,
 				5D1C703C1E58C64A00FEDEC3 /* AppDelegate.swift in Sources */,
 				5DAF28B71E5BBCBC00288F31 /* Constants.swift in Sources */,
+				5D0B5AB81E668EFB0077BE46 /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
