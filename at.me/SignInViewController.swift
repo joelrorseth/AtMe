@@ -68,7 +68,19 @@ class SignInViewController: UIViewController {
             
             // Present alert, then shift focus to password field
             self.present(ac, animated: true) { self.passwordField.becomeFirstResponder() }
+            return
+        }
+        
+        // ERROR CASE 2: Improper username specified at signup
+        // TODO: Look into restrictions on <FIRDataSnapshot>.hasChild() which will affect valid usernames
+        if (username.characters.count < 4 || username.contains(" ")) {
             
+            // Alert user that their username needs to be better
+            let ac = UIAlertController(title: "Username is Invalid", message: "Your username must be 4 or more valid characters", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            
+            // Present alert, then shift focus to username field
+            self.present(ac, animated: true) { self.usernameField.becomeFirstResponder() }
             return
         }
         
