@@ -98,12 +98,16 @@ class SignInViewController: UIViewController {
                         "firstName" : "FNAME",
                         "lastName" : "LNAME",
                         "username" : username,
-                        //"uid" : user?.uid
                     ]
+                    
                     
                     // Add entry to usernames registry and user info registry
                     self.registeredUsernamesRef.child(username).setValue((user?.uid)!)
                     self.userInformationRef.child((user?.uid)!).setValue(userEntry)
+                    
+                    // Update any <FIRUser> properties maintained internally by Firebase
+                    let changeRequest = user?.profileChangeRequest()
+                    changeRequest?.displayName = username
                     
                     
                     // First time use, set up user name then log into app

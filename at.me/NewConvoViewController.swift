@@ -14,7 +14,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     @IBOutlet weak var usersSearchBar: UISearchBar!
     @IBOutlet weak var usersTableView: UITableView!
     
-    private lazy var usersRef: FIRDatabaseReference = FIRDatabase.database().reference().child("users")
+    private lazy var registeredUsernamesRef: FIRDatabaseReference = FIRDatabase.database().reference().child("registeredUsernames")
     
     var usernameResults: [String] = []
     
@@ -72,7 +72,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
         // Search registered Firebase users that match search criteria
-        usersRef.observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
+        registeredUsernamesRef.observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
 
             
             // If we find username registered, list it in table view

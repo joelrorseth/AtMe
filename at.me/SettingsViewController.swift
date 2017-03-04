@@ -11,13 +11,14 @@ import Firebase
 
 class SettingsViewController: UITableViewController {
     
-    private lazy var usersRef: FIRDatabaseReference = FIRDatabase.database().reference().child("users")
+    private lazy var userInformationRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userInformation")
     
     private enum UserAttribute {
         case none, displayName, email, firstName, lastName, password
     }
     
     private var currentAttributeChanging: UserAttribute = UserAttribute.none
+    private var attributePrompt: String = ""
 
     // ==========================================
     // ==========================================
@@ -59,10 +60,61 @@ class SettingsViewController: UITableViewController {
         
         // Find text field with changed attribute, unwrap
         if let textfield = self.view.viewWithTag(4000) as? UITextField {
-            print(textfield.text!)
             
-            // TODO: Lookup and change user attribute if suitable
-            
+            // Check if attribute is suitable
+            if let newAttribute = textfield.text {
+                
+                
+                // SPECIAL CASE 1: Password change
+                // ---------------------------------------------
+                if currentAttributeChanging == .password {
+                    
+                    FIRAuth.auth()?.sendPasswordReset(withEmail: (FIRAuth.auth()?.currentUser?.email!)!, completion: { (error) in
+                        
+                        // Alert user of password reset, dismiss popup
+                        let ac = UIAlertController(title: "Your Password Has Been Reset",
+                                                   message: "Please check your emails for instructions on how to change your password",
+                                                   preferredStyle: .alert)
+                        ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                        self.present(ac, animated: true, completion: {
+                            self.dismissPopup()
+                        })
+                        
+                        return
+                    })
+                }
+                
+                
+                // TODO: SPECIAL CASE 2: Email change (May not be possible due to Firebase restrictions)
+                // ---------------------------------------------
+                if currentAttributeChanging == .email {
+                    
+                    //let changeRequest = FIRAuth.auth()?.currentUser?.profileChangeRequest()
+                }
+                
+                
+                
+                // SPECIAL CASE 3: Display Name
+                // ---------------------------------------------
+                if currentAttributeChanging == .displayName {
+                    
+                    // Change Firebase's internal record of <FIRUser>.displayName
+                    let changeRequest = FIRAuth.auth()?.currentUser?.profileChangeRequest()
+                    changeRequest?.displayName = newAttribute
+                    
+                    // Allow fallthrough to allow our maintained user records to be updated
+                }
+                
+             
+                // All Other Changes
+                // Lookup and change user attribute
+                // ---------------------------------------------
+                if let user = FIRAuth.auth()?.currentUser {
+                    
+                    userInformationRef.child(String(user.uid)).child("\(currentAttributeChanging)").setValue(newAttribute)
+                    self.dismissPopup()
+                }
+            }
         }
         
     }
@@ -71,8 +123,6 @@ class SettingsViewController: UITableViewController {
     // ==========================================
     // ==========================================
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-        var attributePrompt: String = ""
         
         // Determine which attributes have been chosen for edit
         switch indexPath.row {
