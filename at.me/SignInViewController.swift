@@ -12,8 +12,8 @@ import Firebase
 class SignInViewController: UIViewController {
     
     // Firebase references
-    private lazy var usersRef: FIRDatabaseReference = FIRDatabase.database().reference().child("users")
-    
+    private lazy var userInformationRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userInformation")
+    private lazy var registeredUsernamesRef: FIRDatabaseReference = FIRDatabase.database().reference().child("registeredUsernames")
     
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
@@ -74,7 +74,7 @@ class SignInViewController: UIViewController {
         
         
         // Take snapshot of databse to check for existing username
-        usersRef.observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
+        registeredUsernamesRef.observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
             
             // If username is not found, we are OK to create account
             if (!snapshot.hasChild(username)) {
@@ -97,9 +97,13 @@ class SignInViewController: UIViewController {
                         "email" : email,
                         "firstName" : "FNAME",
                         "lastName" : "LNAME",
-                        "uid" : user?.uid
+                        "username" : username,
+                        //"uid" : user?.uid
                     ]
-                    self.usersRef.child(username).setValue(userEntry)
+                    
+                    // Add entry to usernames registry and user info registry
+                    self.registeredUsernamesRef.child(username).setValue((user?.uid)!)
+                    self.userInformationRef.child((user?.uid)!).setValue(userEntry)
                     
                     
                     // First time use, set up user name then log into app
@@ -126,10 +130,10 @@ class SignInViewController: UIViewController {
     // ==========================================
     override func viewDidAppear(_ animated: Bool) {
         
-        if let _ = FIRAuth.auth()?.currentUser {
-            print("<<<< AT.ME::DEBUG >>>>: Login Successful")
-            self.performSegue(withIdentifier: "showChatList", sender: nil)
-        }
+//        if let _ = FIRAuth.auth()?.currentUser {
+//            print("<<<< AT.ME::DEBUG >>>>: Login Successful")
+//            self.performSegue(withIdentifier: "showChatList", sender: nil)
+//        }
     }
     
     
