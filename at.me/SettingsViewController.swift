@@ -123,16 +123,26 @@ class SettingsViewController: UITableViewController {
     // ==========================================
     private func logout() {
         
-        do {
-            try FIRAuth.auth()?.signOut()
+        // Present a confirmation dialog to logout
+        let ac = UIAlertController(title: "Confirm Logout", message: "Are you sure you want to logout?", preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        ac.addAction(UIAlertAction(title: "Logout", style: .default, handler: { (action) in
             
-            // At this point, signOut() succeeded by not throwing any errors
-            self.performSegue(withIdentifier: "unwindToSignIn", sender: self)
-            print("<<<< AT.ME::DEBUG >>>>:: Successfully logged out")
-            
-        } catch let error as NSError {
-            print("<<<< AT.ME::DEBUG >>>>:: \(error.localizedDescription)")
-        }
+            do {
+                // Attempt to logout, may throw error
+                try FIRAuth.auth()?.signOut()
+                
+                // At this point, signOut() succeeded by not throwing any errors
+                self.performSegue(withIdentifier: "unwindToSignIn", sender: self)
+                print("<<<< AT.ME::DEBUG >>>>:: Successfully logged out")
+                
+            } catch let error as NSError {
+                print("<<<< AT.ME::DEBUG >>>>:: \(error.localizedDescription)")
+            }
+        }))
+        
+        // Present the alert
+        self.present(ac, animated: true, completion: nil)
     }
     
     // MARK: Table View
