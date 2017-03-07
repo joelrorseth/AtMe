@@ -119,6 +119,22 @@ class SettingsViewController: UITableViewController {
         
     }
     
+    // ==========================================
+    // ==========================================
+    private func logout() {
+        
+        do {
+            try FIRAuth.auth()?.signOut()
+            
+            // At this point, signOut() succeeded by not throwing any errors
+            self.performSegue(withIdentifier: "unwindToSignIn", sender: self)
+            print("<<<< AT.ME::DEBUG >>>>:: Successfully logged out")
+            
+        } catch let error as NSError {
+            print("<<<< AT.ME::DEBUG >>>>:: \(error.localizedDescription)")
+        }
+    }
+    
     // MARK: Table View
     // ==========================================
     // ==========================================
@@ -146,11 +162,14 @@ class SettingsViewController: UITableViewController {
             currentAttributeChanging = .password
             attributePrompt = "password"
             break
+        case 5:
+            self.logout()
+            return
         default:
             break
         }
         
-        
+        // TODO: Refactor custom view code (possibly into separate file)
         // Dimmed view appears on top of self.view, but under popup view
         let dimmedView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height))
         dimmedView.backgroundColor = UIColor.black

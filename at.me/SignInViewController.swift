@@ -146,11 +146,16 @@ class SignInViewController: UIViewController {
     // ==========================================
     override func viewDidAppear(_ animated: Bool) {
         
-//        if let _ = FIRAuth.auth()?.currentUser {
-//            print("<<<< AT.ME::DEBUG >>>>: Login Successful")
-//            self.performSegue(withIdentifier: "showChatList", sender: nil)
-//        }
+        if let currentUser = FIRAuth.auth()?.currentUser {
+            print("<<<< AT.ME::DEBUG >>>>: Automatically logged in \((currentUser.email)!)")
+            self.performSegue(withIdentifier: "showChatList", sender: nil)
+        }
     }
+    
+    // MARK: Segue
+    // ==========================================
+    // ==========================================
+    @IBAction func unwindToSignIn(segue: UIStoryboardSegue) {}
     
     
     // MARK: Firebase Config

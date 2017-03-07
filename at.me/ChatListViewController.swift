@@ -65,19 +65,4 @@ class ChatListViewController: UITableViewController {
         
         self.performSegue(withIdentifier: "ShowSettings", sender: self)
     }
-    
-    // ==========================================
-    // ==========================================
-    @objc private func logout() {
-        
-        do {
-            try FIRAuth.auth()?.signOut()
-            dismiss(animated: true, completion: {
-                print("<<<< AT.ME::DEBUG >>>>:: Successfully logged out")
-            })
-            
-        } catch let error as NSError {
-            print("<<<< AT.ME::DEBUG >>>>:: \(error.localizedDescription)")
-        }
-    }
 }
