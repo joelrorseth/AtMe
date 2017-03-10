@@ -20,6 +20,7 @@
 		5D3DDA3A1E6248DA00B6FBB7 /* NewConvoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3DDA391E6248DA00B6FBB7 /* NewConvoViewController.swift */; };
 		5DA9E0DD1E5B6E0900F38C96 /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA9E0DC1E5B6E0900F38C96 /* MessageCell.swift */; };
 		5DAF28B71E5BBCBC00288F31 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DAF28B61E5BBCBC00288F31 /* Constants.swift */; };
+		5DAFF1621E72FD02008DE303 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DAFF1611E72FD02008DE303 /* SignUpViewController.swift */; };
 		CBD13E33FC5A083122B9E03C /* Pods_at_me.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 997179A80F10509A4302F162 /* Pods_at_me.framework */; };
 /* End PBXBuildFile section */
 
@@ -40,6 +41,7 @@
 		5D3DDA391E6248DA00B6FBB7 /* NewConvoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewConvoViewController.swift; sourceTree = "<group>"; };
 		5DA9E0DC1E5B6E0900F38C96 /* MessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageCell.swift; sourceTree = "<group>"; };
 		5DAF28B61E5BBCBC00288F31 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		5DAFF1611E72FD02008DE303 /* SignUpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		997179A80F10509A4302F162 /* Pods_at_me.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_at_me.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9EE8D20090D5CD1754DCC1E5 /* Pods-at.me.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-at.me.debug.xcconfig"; path = "Pods/Target Support Files/Pods-at.me/Pods-at.me.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -113,6 +115,7 @@
 			isa = PBXGroup;
 			children = (
 				5D197AA01E58CE1900C9CB52 /* SignInViewController.swift */,
+				5DAFF1611E72FD02008DE303 /* SignUpViewController.swift */,
 				5D04E9891E58DD0C006D8CD5 /* ChatListViewController.swift */,
 				5D04E98B1E58E24E006D8CD5 /* ConvoViewController.swift */,
 				5D3DDA391E6248DA00B6FBB7 /* NewConvoViewController.swift */,
@@ -265,6 +268,7 @@
 				5D3DDA381E62469000B6FBB7 /* UserInfoCell.swift in Sources */,
 				5DA9E0DD1E5B6E0900F38C96 /* MessageCell.swift in Sources */,
 				5D04E98A1E58DD0C006D8CD5 /* ChatListViewController.swift in Sources */,
+				5DAFF1621E72FD02008DE303 /* SignUpViewController.swift in Sources */,
 				5D197AA11E58CE1900C9CB52 /* SignInViewController.swift in Sources */,
 				5D3DDA3A1E6248DA00B6FBB7 /* NewConvoViewController.swift in Sources */,
 				5D1C703C1E58C64A00FEDEC3 /* AppDelegate.swift in Sources */,
