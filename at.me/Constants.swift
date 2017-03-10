@@ -13,6 +13,11 @@ struct Constants {
         static let defaultTextSize = 14
     }
     
+    struct Segues {
+        static let signInSuccessSegue = "SignInSuccessSegue"
+        static let signUpSuccessSegue = "SignUpSuccessSegue"
+    }
+    
     struct Storyboard {
         static let messageId = "messageId"
     }

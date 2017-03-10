@@ -28,7 +28,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="qXI-Ge-Ogx"/>
                                 </constraints>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no"/>
                             </textField>
@@ -37,7 +37,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="Wg6-NX-uHp"/>
                                 </constraints>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" secureTextEntry="YES"/>
                             </textField>
@@ -46,7 +46,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="udM-lN-EJq"/>
                                 </constraints>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no"/>
                             </textField>
@@ -116,7 +116,7 @@
                         <outlet property="signInButton" destination="Dcr-WG-R5q" id="4Sb-82-0mq"/>
                         <outlet property="signUpButton" destination="Y8L-Bc-EXk" id="cIC-vX-8SH"/>
                         <outlet property="usernameField" destination="mtI-Db-0dl" id="0Vs-8G-Vf3"/>
-                        <segue destination="0Nr-uk-D2A" kind="show" identifier="showChatList" id="qvK-wc-N27"/>
+                        <segue destination="0Nr-uk-D2A" kind="show" identifier="SignInSuccessSegue" id="qvK-wc-N27"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -140,7 +140,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="iML-Yp-D9v"/>
                                 </constraints>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no"/>
                             </textField>
@@ -149,7 +149,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="1CA-G8-3yy"/>
                                 </constraints>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" secureTextEntry="YES"/>
                             </textField>
@@ -158,7 +158,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="Y00-lE-3DD"/>
                                 </constraints>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" secureTextEntry="YES"/>
                             </textField>
@@ -167,7 +167,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="jxK-Xb-39W"/>
                                 </constraints>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" secureTextEntry="YES"/>
                             </textField>
@@ -176,7 +176,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="bjp-UK-N8R"/>
                                 </constraints>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no"/>
                             </textField>
@@ -202,7 +202,6 @@
                                 </state>
                                 <connections>
                                     <action selector="didTapCreateAccount:" destination="cE4-CE-511" eventType="touchUpInside" id="8Xg-Zl-edK"/>
-                                    <action selector="didTapSignIn:" destination="BYZ-38-t0r" eventType="touchUpInside" id="eDk-WR-Plr"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rpW-da-n7M">
@@ -253,7 +252,7 @@
                         <outlet property="lastNameTextField" destination="mwz-qz-WvQ" id="SL3-Jk-t82"/>
                         <outlet property="passwordTextField" destination="1Rs-hK-izD" id="iVy-Ev-mFQ"/>
                         <outlet property="usernameTextField" destination="6Gq-Sf-xTx" id="c5W-M8-qBV"/>
-                        <segue destination="0Nr-uk-D2A" kind="show" identifier="CreateAccountSignIn" id="ngE-24-Ro9"/>
+                        <segue destination="0Nr-uk-D2A" kind="show" identifier="SignUpSuccessSegue" id="ngE-24-Ro9"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fdw-aU-tDq" userLabel="First Responder" sceneMemberID="firstResponder"/>
