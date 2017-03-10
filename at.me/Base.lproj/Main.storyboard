@@ -160,7 +160,7 @@
                                 </constraints>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" secureTextEntry="YES"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Last Name" textAlignment="natural" clearsOnBeginEditing="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="mwz-qz-WvQ">
                                 <rect key="frame" x="16" y="279" width="343" height="40"/>
@@ -677,6 +677,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="ngE-24-Ro9"/>
+        <segue reference="qvK-wc-N27"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -25,10 +25,26 @@ class SignUpViewController: UIViewController {
     // ==========================================
     @IBAction func didTapCreateAccount(_ sender: Any) {
         
-        // Make sure all important info is provided, then store
-        guard let email = emailTextField.text, let password = passwordTextField.text else { return }
-        let username = (self.usernameTextField.text == nil) ? email.components(separatedBy: "@")[0] : self.usernameTextField.text!
+        if (emailTextField.text == "" || usernameTextField.text! == "" || firstNameTextField.text == "" || lastNameTextField.text == "" || passwordTextField.text == "") {
+            
+            // Alert user that there are missing fields
+            let ac = UIAlertController(title: "Missing Fields", message: "Please fill in all required information", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            
+            // Present alert, escape function
+            self.present(ac, animated: true)
+            return
+            
+        }
         
+        // Make sure all important info is provided, then store
+        guard let email = emailTextField.text,
+            let password = passwordTextField.text,
+            let firstName = firstNameTextField.text,
+            let lastName = lastNameTextField.text
+        else { return }
+        
+        let username = (self.usernameTextField.text == nil) ? email.components(separatedBy: "@")[0] : self.usernameTextField.text!
         
         
         // ERROR CASE 1: Weak password
@@ -74,13 +90,15 @@ class SignUpViewController: UIViewController {
                         return
                     }
                     
+                    
+                    
                     // Add entry to database with public user information (username, email)
-                    // TODO: Link up text fields for name, display name etc in a separate controller
+                    // All fields are accounted for, displayName defaults to username
                     let userEntry = [
                         "displayName" : username,
                         "email" : email,
-                        "firstName" : "FNAME",
-                        "lastName" : "LNAME",
+                        "firstName" : firstName,
+                        "lastName" : lastName,
                         "username" : username,
                         ]
                     
@@ -94,9 +112,11 @@ class SignUpViewController: UIViewController {
                     changeRequest?.displayName = username
                     
                     
+                    
+                    
                     // First time use, set up user name then log into app
                     print("<<<< AT.ME::DEBUG >>>>:: New user creation successful")
-                    self.setAccountDetails(user!)
+                    self.setAccountDetails(user!, username, firstName, lastName)
                     self.attemptLogin(withEmail: email, andPassword: password)
                     
                 }
@@ -144,7 +164,7 @@ class SignUpViewController: UIViewController {
     // MARK: Firebase Config
     // ==========================================
     // ==========================================
-    func setAccountDetails(_ user: FIRUser?) {
+    func setAccountDetails(_ user: FIRUser?, _ username: String, _ firstName: String, _ lastName: String) {
         
         // Obtain an object (change request) to change details of account
         let changeRequest = user?.profileChangeRequest()
