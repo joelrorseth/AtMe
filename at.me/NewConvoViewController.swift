@@ -15,7 +15,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     @IBOutlet weak var usersTableView: UITableView!
     
     private lazy var registeredUsernamesRef: FIRDatabaseReference = FIRDatabase.database().reference().child("registeredUsernames")
-    private lazy var conversationMembersRef: FIRDatabaseReference = FIRDatabase.database().reference().child("conversationMembers")
+    private lazy var userConversationListRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userConversationList")
     
     var searchResults: [User] = []
     
@@ -62,6 +62,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         let cell = usersTableView.dequeueReusableCell(withIdentifier: "UserInfoCell", for: indexPath) as! UserInfoCell
         cell.displayName.text = searchResults[0].username
         cell.usernameLabel.text = searchResults[0].uid
+        cell.uid = searchResults[0].uid
         
         return cell
     }
@@ -72,6 +73,12 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         
         let cell = tableView.cellForRow(at: indexPath) as! UserInfoCell
         print("AT.ME:: Creating conversation with user wwith username: \(cell.usernameLabel.text!)")
+        
+        // TODO: Allow more than one conversation record to be stored. Must append new key value pair instead
+        if let uid = cell.uid {
+            userConversationListRef.child((FIRAuth.auth()?.currentUser?.uid)!).setValue([uid : true])
+            self.dismiss(animated: true, completion: nil)
+        }
     }
     
     
