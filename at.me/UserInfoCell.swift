@@ -13,4 +13,6 @@ class UserInfoCell: UITableViewCell {
     @IBOutlet weak var displayImage: UIImageView!
     @IBOutlet weak var displayName: UILabel!
     @IBOutlet weak var usernameLabel: UILabel!
+    
+    var uid: String?
 }

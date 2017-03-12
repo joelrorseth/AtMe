@@ -15,8 +15,9 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     @IBOutlet weak var usersTableView: UITableView!
     
     private lazy var registeredUsernamesRef: FIRDatabaseReference = FIRDatabase.database().reference().child("registeredUsernames")
+    private lazy var conversationMembersRef: FIRDatabaseReference = FIRDatabase.database().reference().child("conversationMembers")
     
-    var usernameResults: [String] = []
+    var searchResults: [User] = []
     
     // ==========================================
     // ==========================================
@@ -50,7 +51,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     // ==========================================
     // ==========================================
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return usernameResults.count
+        return searchResults.count
     }
     
     // ==========================================
@@ -59,8 +60,8 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         
         // Populate table with results from lookup
         let cell = usersTableView.dequeueReusableCell(withIdentifier: "UserInfoCell", for: indexPath) as! UserInfoCell
-        cell.displayName.text = "DISPLAY_NAME"
-        cell.usernameLabel.text = usernameResults[indexPath.row]
+        cell.displayName.text = searchResults[0].username
+        cell.usernameLabel.text = searchResults[0].uid
         
         return cell
     }
@@ -86,15 +87,19 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
             // If we find username registered, list it in table view
             if (snapshot.hasChild(searchBar.text!)) {
                 
+                // Obtain uid and username
+                let username = searchBar.text!
+                let uid = snapshot.childSnapshot(forPath: searchBar.text!).value as! String
+                
                 // Begin updates to table view, delete the most recently found user if currently shown
                 self.usersTableView.beginUpdates()
-                if (!(self.usernameResults.count == 0)) {
-                    self.usersTableView.deleteRows(at: [IndexPath.init(row: self.usernameResults.count - 1, section: 0)], with: .automatic)
+                if (!(self.searchResults.count == 0)) {
+                    self.usersTableView.deleteRows(at: [IndexPath.init(row: self.searchResults.count - 1, section: 0)], with: .automatic)
                 }
                 
                 // Update the data source, then insert the rows into the table view
-                self.usernameResults = ["\(searchBar.text!)"]
-                self.usersTableView.insertRows(at: [IndexPath.init(row: self.usernameResults.count - 1, section: 0)], with: .automatic)
+                self.searchResults = [User(username: username, uid: uid)]
+                self.usersTableView.insertRows(at: [IndexPath.init(row: self.searchResults.count - 1, section: 0)], with: .automatic)
                 
                 self.usersTableView.endUpdates()
                 
