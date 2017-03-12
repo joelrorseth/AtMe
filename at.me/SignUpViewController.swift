@@ -86,7 +86,7 @@ class SignUpViewController: UIViewController {
                     
                     // ERROR CASE 2: Any other error (Email taken)
                     if let error = error {
-                        print("<<<< AT.ME::DEBUG >>>>: \(error.localizedDescription)")
+                        print("AT.ME:: \(error.localizedDescription)")
                         return
                     }
                     
@@ -115,7 +115,7 @@ class SignUpViewController: UIViewController {
                     
                     
                     // First time use, set up user name then log into app
-                    print("<<<< AT.ME::DEBUG >>>>:: New user creation successful")
+                    print("AT.ME:: New user creation successful")
                     self.setAccountDetails(user!, username, firstName, lastName)
                     self.attemptLogin(withEmail: email, andPassword: password)
                     
@@ -150,12 +150,12 @@ class SignUpViewController: UIViewController {
                 self.present(ac, animated: true, completion: nil)
                 
                 // TODO: Handle seemingly impossible case of failed login after account creation
-                print("<<<< AT.ME::DEBUG >>>>: Login attempt unsuccessful, however account was created")
+                print("AT.ME:: Login attempt unsuccessful, however account was created")
                 return
             }
             
             // At this point, sign in was successful, so perform segue
-            print("<<<< AT.ME::DEBUG >>>>: Login attempt successful, now signed in as currentUser and performing segue")
+            print("AT.ME:: Login attempt successful, now signed in as currentUser and performing segue")
             self.performSegue(withIdentifier: Constants.Segues.signUpSuccessSegue, sender: nil)
         }
     }
@@ -173,7 +173,7 @@ class SignUpViewController: UIViewController {
         changeRequest?.displayName = user?.email!.components(separatedBy: "@")[0]
         changeRequest?.commitChanges() { (error) in
             
-            if let error = error { print("<<<< AT.ME::DEBUG >>>>: \(error.localizedDescription)"); return }
+            if let error = error { print("AT.ME:: \(error.localizedDescription)"); return }
         }
     }
     

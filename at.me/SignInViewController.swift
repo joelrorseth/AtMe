@@ -13,7 +13,6 @@ class SignInViewController: UIViewController {
     
     // Firebase references
     private lazy var userInformationRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userInformation")
-    //private lazy var registeredUsernamesRef: FIRDatabaseReference = FIRDatabase.database().reference().child("registeredUsernames")
     
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
@@ -40,11 +39,11 @@ class SignInViewController: UIViewController {
                 ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
                 self.present(ac, animated: true, completion: nil)
                 
-                print("<<<< AT.ME::DEBUG >>>>: Login unsuccessful")
+                print("AT.ME:: Login unsuccessful")
                 return
             }
             
-            print("<<<< AT.ME::DEBUG >>>>: Login successful")
+            print("AT.ME:: Login successful")
             self.performSegue(withIdentifier: Constants.Segues.signInSuccessSegue, sender: nil)
         }
     }
@@ -56,7 +55,7 @@ class SignInViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         
         if let currentUser = FIRAuth.auth()?.currentUser {
-            print("<<<< AT.ME::DEBUG >>>>: Automatically logged in \((currentUser.email)!)")
+            print("AT.ME:: Automatically logged in \((currentUser.email)!)")
             self.performSegue(withIdentifier: Constants.Segues.signInSuccessSegue, sender: nil)
         }
     }

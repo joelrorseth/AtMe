@@ -65,6 +65,14 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         return cell
     }
     
+    // ==========================================
+    // ==========================================
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        let cell = tableView.cellForRow(at: indexPath) as! UserInfoCell
+        print("AT.ME:: Creating conversation with user wwith username: \(cell.usernameLabel.text!)")
+    }
+    
     
     // MARK: UISearchBarDelegate
     // ==========================================
