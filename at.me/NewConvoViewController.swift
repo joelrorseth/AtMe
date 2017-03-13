@@ -74,9 +74,13 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         let cell = tableView.cellForRow(at: indexPath) as! UserInfoCell
         print("AT.ME:: Creating conversation with user wwith username: \(cell.usernameLabel.text!)")
         
-        // TODO: Allow more than one conversation record to be stored. Must append new key value pair instead
-        if let uid = cell.uid {
-            userConversationListRef.child((FIRAuth.auth()?.currentUser?.uid)!).setValue([uid : true])
+        // Retrieve uid of selected user, create conversation record in Firebase
+        if let selectedUid = cell.uid {
+            let currentUserUid = (FIRAuth.auth()?.currentUser?.uid)!
+            
+            // For both users separately, record the existence of an active conversation with the other
+            userConversationListRef.child(currentUserUid).child(selectedUid).setValue(true)
+            userConversationListRef.child(selectedUid).child(currentUserUid).setValue(true)
             self.dismiss(animated: true, completion: nil)
         }
     }
