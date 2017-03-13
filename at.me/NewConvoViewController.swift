@@ -16,8 +16,11 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     
     private lazy var registeredUsernamesRef: FIRDatabaseReference = FIRDatabase.database().reference().child("registeredUsernames")
     private lazy var userConversationListRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userConversationList")
+    private lazy var userInformationRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userInformation")
     
     var searchResults: [User] = []
+    var currentUserUsername: String?
+    let currentUserUid = (FIRAuth.auth()?.currentUser?.uid)!
     
     // ==========================================
     // ==========================================
@@ -32,6 +35,12 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     override func viewDidLoad() {
         
         self.usersSearchBar.delegate = self
+        
+        // TODO: Set user properties once at startup
+        userInformationRef.observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
+            self.currentUserUsername = snapshot.childSnapshot(forPath: "\(self.currentUserUid)/username").value as? String
+            print("my username is \(self.currentUserUsername!)")
+        })
     }
 
     
@@ -63,6 +72,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         cell.displayName.text = searchResults[0].username
         cell.usernameLabel.text = searchResults[0].uid
         cell.uid = searchResults[0].uid
+        cell.username = searchResults[0].username
         
         return cell
     }
@@ -72,15 +82,14 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         let cell = tableView.cellForRow(at: indexPath) as! UserInfoCell
-        print("AT.ME:: Creating conversation with user wwith username: \(cell.usernameLabel.text!)")
+        print("AT.ME:: Creating conversation with user with username: \(cell.usernameLabel.text!)")
         
         // Retrieve uid of selected user, create conversation record in Firebase
-        if let selectedUid = cell.uid {
-            let currentUserUid = (FIRAuth.auth()?.currentUser?.uid)!
+        if let selectedUserUid = cell.uid, let selectedUserUsername = cell.username {
             
             // For both users separately, record the existence of an active conversation with the other
-            userConversationListRef.child(currentUserUid).child(selectedUid).setValue(true)
-            userConversationListRef.child(selectedUid).child(currentUserUid).setValue(true)
+            userConversationListRef.child(currentUserUid).child(selectedUserUid).setValue(selectedUserUsername)
+            userConversationListRef.child(selectedUserUid).child(currentUserUid).setValue(currentUserUsername)
             self.dismiss(animated: true, completion: nil)
         }
     }
@@ -93,7 +102,6 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         
         // Search registered Firebase users that match search criteria
         registeredUsernamesRef.observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
-
             
             // If we find username registered, list it in table view
             if (snapshot.hasChild(searchBar.text!)) {

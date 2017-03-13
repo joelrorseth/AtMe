@@ -15,4 +15,5 @@ class UserInfoCell: UITableViewCell {
     @IBOutlet weak var usernameLabel: UILabel!
     
     var uid: String?
+    var username: String?
 }
