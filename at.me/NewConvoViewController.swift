@@ -35,11 +35,19 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     override func viewDidLoad() {
         
         self.usersSearchBar.delegate = self
+        self.usersSearchBar.becomeFirstResponder()
+        
+        // Little trick to hide empty cells from table view
+        // TODO: Add suggestions to start a convo instead of a blank screen
+        self.usersTableView.tableFooterView = UIView()
+        
+        // Add gesture recognizer to handle tapping outside of keyboard
+        let dismissKeyboardTap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        self.view.addGestureRecognizer(dismissKeyboardTap)
         
         // TODO: Set user properties once at startup
         userInformationRef.observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
             self.currentUserUsername = snapshot.childSnapshot(forPath: "\(self.currentUserUid)/username").value as? String
-            print("my username is \(self.currentUserUsername!)")
         })
     }
 
@@ -90,6 +98,8 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
             // For both users separately, record the existence of an active conversation with the other
             userConversationListRef.child(currentUserUid).child(selectedUserUid).setValue(selectedUserUsername)
             userConversationListRef.child(selectedUserUid).child(currentUserUid).setValue(currentUserUsername)
+            
+            // TODO: For now, just dismiss. Future update: dismiss then open up conversation
             self.dismiss(animated: true, completion: nil)
         }
     }
@@ -130,5 +140,13 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
                 self.present(ac, animated: true) { self.usersSearchBar.becomeFirstResponder() }
             }
         })
+    }
+    
+    
+    // MARK: Additional Functions
+    // ==========================================
+    // ==========================================
+    func dismissKeyboard() {
+        self.view.endEditing(true)
     }
 }
