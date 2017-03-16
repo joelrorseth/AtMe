@@ -77,11 +77,13 @@ class ChatListViewController: UITableViewController {
     // ==========================================
     // ==========================================
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ChatListCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ChatListCell", for: indexPath) as! ConversationCell
         
         // TODO: Obtain most recent message for detail text
-        // TODO: Design custom class to model a conversation cell
-        cell.textLabel?.text = activeConversations[indexPath.row]
+        cell.nameLabel.text = activeConversations[indexPath.row]
+        cell.recentMessageLabel.text = "Need to come back here to add the most recent message in future update."
+        cell.recentMessageTimeStampLabel.text = "12:34 PM"
+        //cell.userDisplayImageView.image =
         
         return cell
     }

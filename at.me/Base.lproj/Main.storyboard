@@ -503,7 +503,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ChatListCell" rowHeight="80" id="RQK-Tm-HT6">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ChatListCell" rowHeight="80" id="RQK-Tm-HT6" customClass="ConversationCell" customModule="at_me" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="375" height="80"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="RQK-Tm-HT6" id="VB3-B0-OEO">
@@ -560,6 +560,10 @@
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
+                                    <outlet property="nameLabel" destination="Bqg-Sv-x3B" id="vzb-Qr-lCB"/>
+                                    <outlet property="recentMessageLabel" destination="a9Q-E9-dqz" id="eye-nB-GBH"/>
+                                    <outlet property="recentMessageTimeStampLabel" destination="t6Y-lr-onH" id="N7Y-Pz-fdH"/>
+                                    <outlet property="userDisplayImageView" destination="lJk-Ac-HDo" id="iUu-vq-tgm"/>
                                     <segue destination="UWH-2D-z4o" kind="show" id="YHQ-rr-B2W"/>
                                 </connections>
                             </tableViewCell>
