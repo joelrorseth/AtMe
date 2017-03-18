@@ -14,7 +14,9 @@ class ChatListViewController: UITableViewController {
     // Firebase references are used for read/write at referenced location
     private lazy var userConversationListRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userConversationList")
     
+    // TODO: Refactor these two arrays into enumerable array of tuples or other data structure
     var activeConversations: [String] = []
+    var activeConversationsUIDs: [String] = []
     
     // MARK: View
     // ==========================================
@@ -22,6 +24,7 @@ class ChatListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Set table view properties
         tableView.tintColor = Constants.Colors.primaryColor
         
         // Establish bar button items in conversations view
@@ -46,8 +49,9 @@ class ChatListViewController: UITableViewController {
                 // TODO: Change db model to store username in each conversation record value
                 print("Child key for user is \(convo.key), value is \(convo.value as! String)")
                 
-                // Add username into table view data source
+                // Add username and uid into table view data sources
                 self.activeConversations.append("\(convo.value as! String)")
+                self.activeConversationsUIDs.append("\(convo.key)")
             }
 
             self.tableView.reloadData()
@@ -87,6 +91,35 @@ class ChatListViewController: UITableViewController {
         
         return cell
     }
+    
+    // ==========================================
+    // ==========================================
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    // ==========================================
+    // ==========================================
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        
+        // Handle the user deleting a conversation
+        // In Firebase, delete only the current users record of being in this conversation
+        if (editingStyle == UITableViewCellEditingStyle.delete) {
+            
+            // Update records in Firebase
+            let currentUserUid = (FIRAuth.auth()?.currentUser?.uid)!
+            userConversationListRef.child(currentUserUid).child(activeConversationsUIDs[indexPath.row]).removeValue()
+            
+            // Also remove records from local table view data source
+            activeConversations.remove(at: indexPath.row)
+            activeConversationsUIDs.remove(at: indexPath.row)
+            
+            // Delete row in tableView
+            tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.right)
+            tableView.reloadData()
+        }
+    }
+    
     
     
     // MARK: Functionality
