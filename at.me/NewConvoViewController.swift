@@ -35,7 +35,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     override func viewDidLoad() {
         
         self.usersSearchBar.delegate = self
-        self.usersSearchBar.becomeFirstResponder()
+        //self.usersSearchBar.becomeFirstResponder()
         
         // Little trick to hide empty cells from table view
         // TODO: Add suggestions to start a convo instead of a blank screen
@@ -43,6 +43,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         
         // Add gesture recognizer to handle tapping outside of keyboard
         let dismissKeyboardTap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        dismissKeyboardTap.cancelsTouchesInView = false
         self.view.addGestureRecognizer(dismissKeyboardTap)
         
         // TODO: Set user properties once at startup
