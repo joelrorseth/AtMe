@@ -46,9 +46,6 @@ class ChatListViewController: UITableViewController {
             for item in snapshot.children {
                 let convo = item as! FIRDataSnapshot
                 
-                // TODO: Change db model to store username in each conversation record value
-                print("Child key for user is \(convo.key), value is \(convo.value as! String)")
-                
                 // Add username and uid into table view data sources
                 self.activeConversations.append("\(convo.value as! String)")
                 self.activeConversationsUIDs.append("\(convo.key)")

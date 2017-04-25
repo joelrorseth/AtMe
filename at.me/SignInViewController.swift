@@ -43,8 +43,7 @@ class SignInViewController: UIViewController {
                 return
             }
             
-            print("AT.ME:: Login successful")
-            self.performSegue(withIdentifier: Constants.Segues.signInSuccessSegue, sender: nil)
+            self.processSignIn(forUser: user)
         }
     }
     
@@ -55,8 +54,7 @@ class SignInViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         
         if let currentUser = FIRAuth.auth()?.currentUser {
-            print("AT.ME:: Automatically logged in \((currentUser.email)!)")
-            self.performSegue(withIdentifier: Constants.Segues.signInSuccessSegue, sender: nil)
+            self.processSignIn(forUser: currentUser)
         }
     }
     
@@ -64,4 +62,38 @@ class SignInViewController: UIViewController {
     // ==========================================
     // ==========================================
     @IBAction func unwindToSignIn(segue: UIStoryboardSegue) {}
+    
+    
+    // MARK: Additional Functions
+    // ==========================================
+    // ==========================================
+    private func processSignIn(forUser user: FIRUser?) {
+
+        // If any of the user details are nil, report error and break
+        if let uid = user?.uid, let email = user?.email {
+
+            // TODO: Implement error handling in case of failed read for 'username' record
+            userInformationRef.observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
+                UserState.currentUser.username = snapshot.childSnapshot(forPath: "\(uid)/username").value as? String
+            })
+            
+            // Maintain information of current user for duration of the app lifetime
+            UserState.currentUser.uid = uid
+            UserState.currentUser.email = email
+            
+        } else {
+            
+            // Let user know that email/password is invalid
+            let ac = UIAlertController(title: "Something Went Wrong", message: "Please try signing in again.", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            self.present(ac, animated: true, completion: nil)
+            
+            print("AT.ME:: Login unsuccessful due to nil properties for the FIRUser")
+            return
+        }
+        
+        // Initiate segue to next view
+        self.performSegue(withIdentifier: Constants.Segues.signInSuccessSegue, sender: nil)
+        print("AT.ME:: Login successful")
+    }
 }
