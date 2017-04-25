@@ -134,10 +134,10 @@ class SettingsViewController: UITableViewController {
                 
                 // At this point, signOut() succeeded by not throwing any errors
                 self.performSegue(withIdentifier: "unwindToSignIn", sender: self)
-                print("<<<< AT.ME::DEBUG >>>>:: Successfully logged out")
+                print("AT.ME:: Successfully logged out")
                 
             } catch let error as NSError {
-                print("<<<< AT.ME::DEBUG >>>>:: \(error.localizedDescription)")
+                print("AT.ME:: \(error.localizedDescription)")
             }
         }))
         

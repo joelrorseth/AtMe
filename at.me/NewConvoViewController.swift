@@ -19,8 +19,6 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     private lazy var userInformationRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userInformation")
     
     var searchResults: [User] = []
-    var currentUserUsername: String?
-    let currentUserUid = (FIRAuth.auth()?.currentUser?.uid)!
     
     // ==========================================
     // ==========================================
@@ -45,11 +43,6 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         let dismissKeyboardTap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         dismissKeyboardTap.cancelsTouchesInView = false
         self.view.addGestureRecognizer(dismissKeyboardTap)
-        
-        // TODO: Set user properties once at startup
-        userInformationRef.observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
-            self.currentUserUsername = snapshot.childSnapshot(forPath: "\(self.currentUserUid)/username").value as? String
-        })
     }
 
     
@@ -97,8 +90,8 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         if let selectedUserUid = cell.uid, let selectedUserUsername = cell.username {
             
             // For both users separately, record the existence of an active conversation with the other
-            userConversationListRef.child(currentUserUid).child(selectedUserUid).setValue(selectedUserUsername)
-            userConversationListRef.child(selectedUserUid).child(currentUserUid).setValue(currentUserUsername)
+            userConversationListRef.child(UserState.currentUser.uid!).child(selectedUserUid).setValue(selectedUserUsername)
+            userConversationListRef.child(selectedUserUid).child(UserState.currentUser.uid!).setValue(UserState.currentUser.username!)
             
             // TODO: For now, just dismiss. Future update: dismiss then open up conversation
             self.dismiss(animated: true, completion: nil)

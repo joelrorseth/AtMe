@@ -111,14 +111,10 @@ class SignUpViewController: UIViewController {
                     let changeRequest = user?.profileChangeRequest()
                     changeRequest?.displayName = username
                     
-                    
-                    
-                    
                     // First time use, set up user name then log into app
                     print("AT.ME:: New user creation successful")
                     self.setAccountDetails(user!, username, firstName, lastName)
                     self.attemptLogin(withEmail: email, andPassword: password)
-                    
                 }
                 
                 
@@ -133,6 +129,8 @@ class SignUpViewController: UIViewController {
         })
     }
     
+    
+    // MARK: Login Processing
     // ==========================================
     // ==========================================
     private func attemptLogin(withEmail email: String, andPassword password: String) {
@@ -154,10 +152,41 @@ class SignUpViewController: UIViewController {
                 return
             }
             
-            // At this point, sign in was successful, so perform segue
-            print("AT.ME:: Login attempt successful, now signed in as currentUser and performing segue")
-            self.performSegue(withIdentifier: Constants.Segues.signUpSuccessSegue, sender: nil)
+            // At this point, sign in was successful
+            self.processSignIn(forUser: user)
         }
+    }
+    
+    // ==========================================
+    // ==========================================
+    private func processSignIn(forUser user: FIRUser?) {
+        
+        // If any of the user details are nil, report error and break
+        if let uid = user?.uid, let email = user?.email {
+            
+            // TODO: Implement error handling in case of failed read for 'username' record
+            userInformationRef.observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
+                UserState.currentUser.username = snapshot.childSnapshot(forPath: "\(uid)/username").value as? String
+            })
+            
+            // Maintain information of current user for duration of the app lifetime
+            UserState.currentUser.uid = uid
+            UserState.currentUser.email = email
+            
+        } else {
+            
+            // Let user know that email/password is invalid
+            let ac = UIAlertController(title: "Something Went Wrong", message: "Please try signing in again.", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            self.present(ac, animated: true, completion: nil)
+            
+            print("AT.ME:: Login unsuccessful due to nil properties for the FIRUser")
+            return
+        }
+        
+        // Initiate segue to next view
+        self.performSegue(withIdentifier: Constants.Segues.signUpSuccessSegue, sender: nil)
+        print("AT.ME:: Login successful")
     }
     
     

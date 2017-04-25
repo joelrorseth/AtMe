@@ -31,14 +31,11 @@ class ChatListViewController: UITableViewController {
         let settingsIcon = UIImage(named: "settings")
         let settingsButton = UIBarButtonItem(image: settingsIcon, style: .plain, target: self, action: #selector(didTapSettings))
         
-
         self.navigationItem.leftBarButtonItem = settingsButton
         self.navigationItem.title = "@ Me"
         
         // Establish the current active conversations to populate the table view data source
-        let currentUserUid = FIRAuth.auth()?.currentUser?.uid
-        
-        userConversationListRef.child(currentUserUid!).queryOrderedByKey().observe(.value, with: { snapshot in
+        userConversationListRef.child(UserState.currentUser.uid!).queryOrderedByKey().observe(.value, with: { snapshot in
             
             // Clear current list of convos
             self.activeConversations.removeAll()
@@ -104,8 +101,7 @@ class ChatListViewController: UITableViewController {
         if (editingStyle == UITableViewCellEditingStyle.delete) {
             
             // Update records in Firebase
-            let currentUserUid = (FIRAuth.auth()?.currentUser?.uid)!
-            userConversationListRef.child(currentUserUid).child(activeConversationsUIDs[indexPath.row]).removeValue()
+            userConversationListRef.child(UserState.currentUser.uid!).child(activeConversationsUIDs[indexPath.row]).removeValue()
             
             // Also remove records from local table view data source
             activeConversations.remove(at: indexPath.row)
