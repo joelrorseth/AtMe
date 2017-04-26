@@ -13,10 +13,11 @@ class ChatListViewController: UITableViewController {
     
     // Firebase references are used for read/write at referenced location
     private lazy var userConversationListRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userConversationList")
+    private lazy var conversationsRef: FIRDatabaseReference = FIRDatabase.database().reference().child("conversations")
     
-    // TODO: Refactor these two arrays into enumerable array of tuples or other data structure
+    // TODO: Refactor arrays into enumerable array of tuples or other data structure
     var activeConversations: [String] = []
-    var activeConversationsUIDs: [String] = []
+    var activeConversationIds: [String] = []
     
     // MARK: View
     // ==========================================
@@ -44,8 +45,8 @@ class ChatListViewController: UITableViewController {
                 let convo = item as! FIRDataSnapshot
                 
                 // Add username and uid into table view data sources
-                self.activeConversations.append("\(convo.value as! String)")
-                self.activeConversationsUIDs.append("\(convo.key)")
+                self.activeConversations.append("\(convo.key)")
+                self.activeConversationIds.append("\(convo.value as! String)")
             }
 
             self.tableView.reloadData()
@@ -101,11 +102,36 @@ class ChatListViewController: UITableViewController {
         if (editingStyle == UITableViewCellEditingStyle.delete) {
             
             // Update records in Firebase
-            userConversationListRef.child(UserState.currentUser.uid!).child(activeConversationsUIDs[indexPath.row]).removeValue()
+            // Delete current user's reference to convo, then decrement number of members in convo
+            
+            userConversationListRef.child(UserState.currentUser.uid!).child(activeConversations[indexPath.row]).removeValue()
+            
+            // Extract conversation unique id and Firebase ref to activeMembers record
+            let convoId = activeConversationIds[indexPath.row]
+            let activeMembersRef = conversationsRef.child("\(activeConversationIds[indexPath.row])/activeMembers")
+            
+            activeMembersRef.observeSingleEvent(of: .value, with: { snapshot in
+                
+                // Decrement value since current user is leaving convo
+                let membersCount = (snapshot.value as? Int)! - 1
+                
+                // If no members left in convo, delete the conversation entirely!
+                if (membersCount == 0) {
+                    
+                    // Delete conversation
+                    self.conversationsRef.child(convoId).removeValue()
+                    
+                } else {
+                    
+                    // Otherwise, just decrement number of convo members
+                    activeMembersRef.setValue(membersCount)
+                }
+            })
+            
             
             // Also remove records from local table view data source
             activeConversations.remove(at: indexPath.row)
-            activeConversationsUIDs.remove(at: indexPath.row)
+            activeConversationIds.remove(at: indexPath.row)
             
             // Delete row in tableView
             tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.right)

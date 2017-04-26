@@ -17,6 +17,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     private lazy var registeredUsernamesRef: FIRDatabaseReference = FIRDatabase.database().reference().child("registeredUsernames")
     private lazy var userConversationListRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userConversationList")
     private lazy var userInformationRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userInformation")
+    private lazy var conversationsRef: FIRDatabaseReference = FIRDatabase.database().reference().child("conversations")
     
     var searchResults: [User] = []
     
@@ -89,9 +90,18 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         // Retrieve uid of selected user, create conversation record in Firebase
         if let selectedUserUid = cell.uid, let selectedUserUsername = cell.username {
             
-            // For both users separately, record the existence of an active conversation with the other
-            userConversationListRef.child(UserState.currentUser.uid!).child(selectedUserUid).setValue(selectedUserUsername)
-            userConversationListRef.child(selectedUserUid).child(UserState.currentUser.uid!).setValue(UserState.currentUser.username!)
+            
+            // IMPORTANT: First obtain unique id separately to use in userConversationList
+            // In new record, store creator username and starting number of active participants
+            
+            let convoId = conversationsRef.childByAutoId().key
+            conversationsRef.child("\(convoId)/creator").setValue(UserState.currentUser.username!)
+            conversationsRef.child("\(convoId)/activeMembers").setValue(2)
+            
+            // For both users separately, record the convoId in a record identified by other user's username
+            userConversationListRef.child(UserState.currentUser.uid!).child(selectedUserUsername).setValue(convoId)
+            userConversationListRef.child(selectedUserUid).child(UserState.currentUser.username!).setValue(convoId)
+            
             
             // TODO: For now, just dismiss. Future update: dismiss then open up conversation
             self.dismiss(animated: true, completion: nil)
