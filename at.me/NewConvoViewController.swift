@@ -11,13 +11,14 @@ import Firebase
 
 class NewConvoViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
 
-    @IBOutlet weak var usersSearchBar: UISearchBar!
-    @IBOutlet weak var usersTableView: UITableView!
-    
+    // Firebase references
     private lazy var registeredUsernamesRef: FIRDatabaseReference = FIRDatabase.database().reference().child("registeredUsernames")
     private lazy var userConversationListRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userConversationList")
     private lazy var userInformationRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userInformation")
     private lazy var conversationsRef: FIRDatabaseReference = FIRDatabase.database().reference().child("conversations")
+    
+    @IBOutlet weak var usersSearchBar: UISearchBar!
+    @IBOutlet weak var usersTableView: UITableView!
     
     var searchResults: [User] = []
     
@@ -72,8 +73,10 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         
         // Populate table with results from lookup
         let cell = usersTableView.dequeueReusableCell(withIdentifier: "UserInfoCell", for: indexPath) as! UserInfoCell
+        
         cell.displayName.text = searchResults[0].displayName
         cell.usernameLabel.text = searchResults[0].username
+        
         cell.uid = searchResults[0].uid
         cell.username = searchResults[0].username
         

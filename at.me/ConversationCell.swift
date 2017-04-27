@@ -10,7 +10,7 @@ import UIKit
 
 class ConversationCell: UITableViewCell {
     
-    var uid: String!
+    var convoId: String!
     
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var recentMessageLabel: UILabel!

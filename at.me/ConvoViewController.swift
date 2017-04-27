@@ -7,8 +7,12 @@
 //
 
 import UIKit
+import Firebase
 
 class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    
+    // Firebase references
+    private lazy var conversationsRef: FIRDatabaseReference = FIRDatabase.database().reference().child("conversations")
     
     // MARK: Storyboard
     @IBOutlet weak var messageTextField: UITextField!

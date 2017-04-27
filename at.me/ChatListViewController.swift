@@ -35,22 +35,11 @@ class ChatListViewController: UITableViewController {
         self.navigationItem.leftBarButtonItem = settingsButton
         self.navigationItem.title = "@ Me"
         
-        // Establish the current active conversations to populate the table view data source
-        userConversationListRef.child(UserState.currentUser.uid!).queryOrderedByKey().observe(.value, with: { snapshot in
-            
-            // Clear current list of convos
-            self.activeConversations.removeAll()
-            
-            for item in snapshot.children {
-                let convo = item as! FIRDataSnapshot
-                
-                // Add username and uid into table view data sources
-                self.activeConversations.append("\(convo.key)")
-                self.activeConversationIds.append("\(convo.value as! String)")
-            }
-
-            self.tableView.reloadData()
-        })
+        // On a background thread, dispatch a queue to handle populating list of conversations
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
+            self.populateDataSource()
+        }
+        
     }
     
     
@@ -139,6 +128,27 @@ class ChatListViewController: UITableViewController {
         }
     }
     
+    // ==========================================
+    // ==========================================
+    private func populateDataSource() {
+        
+        // Establish the current active conversations to populate the table view data source
+        userConversationListRef.child(UserState.currentUser.uid!).queryOrderedByKey().observe(.value, with: { snapshot in
+            
+            // Clear current list of convos
+            self.activeConversations.removeAll()
+            
+            for item in snapshot.children {
+                let convo = item as! FIRDataSnapshot
+                
+                // Add username and uid into table view data sources
+                self.activeConversations.append("\(convo.key)")
+                self.activeConversationIds.append("\(convo.value as! String)")
+            }
+            
+            self.tableView.reloadData()
+        })
+    }
     
     
     // MARK: Functionality
