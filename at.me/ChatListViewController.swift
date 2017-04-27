@@ -15,9 +15,7 @@ class ChatListViewController: UITableViewController {
     private lazy var userConversationListRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userConversationList")
     private lazy var conversationsRef: FIRDatabaseReference = FIRDatabase.database().reference().child("conversations")
     
-    // TODO: Refactor arrays into enumerable array of tuples or other data structure
-    var activeConversations: [String] = []
-    var activeConversationIds: [String] = []
+    var conversations: [Conversation] = []
     
     // MARK: View
     // ==========================================
@@ -37,7 +35,11 @@ class ChatListViewController: UITableViewController {
         
         // On a background thread, dispatch a queue to handle populating list of conversations
         DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
-            self.populateDataSource()
+            
+            self.loadActiveConvoIds(completion: {
+                self.loadConvoDetails()
+                self.tableView.reloadData()
+            })
         }
         
     }
@@ -59,7 +61,7 @@ class ChatListViewController: UITableViewController {
     // ==========================================
     // ==========================================
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return activeConversations.count
+        return conversations.count
     }
     
     // ==========================================
@@ -67,10 +69,12 @@ class ChatListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChatListCell", for: indexPath) as! ConversationCell
         
-        // TODO: Obtain most recent message for detail text
-        cell.nameLabel.text = activeConversations[indexPath.row]
-        cell.recentMessageLabel.text = "Need to come back here to add the most recent message in future update."
-        cell.recentMessageTimeStampLabel.text = "12:34 PM"
+        // Extract details from conversations retrieved
+        
+        cell.nameLabel.text = conversations[indexPath.row].otherUsername
+        cell.recentMessageLabel.text = conversations[indexPath.row].newestMessage
+        cell.recentMessageTimeStampLabel.text = conversations[indexPath.row].newestMessageTimeStamp
+        
         //cell.userDisplayImageView.image =
         
         return cell
@@ -88,16 +92,17 @@ class ChatListViewController: UITableViewController {
         
         // Handle the user deleting a conversation
         // In Firebase, delete only the current users record of being in this conversation
+        
         if (editingStyle == UITableViewCellEditingStyle.delete) {
             
             // Update records in Firebase
             // Delete current user's reference to convo, then decrement number of members in convo
             
-            userConversationListRef.child(UserState.currentUser.uid!).child(activeConversations[indexPath.row]).removeValue()
+            userConversationListRef.child(UserState.currentUser.uid!).child(conversations[indexPath.row].otherUsername).removeValue()
             
             // Extract conversation unique id and Firebase ref to activeMembers record
-            let convoId = activeConversationIds[indexPath.row]
-            let activeMembersRef = conversationsRef.child("\(activeConversationIds[indexPath.row])/activeMembers")
+            let convoId = conversations[indexPath.row].convoId
+            let activeMembersRef = conversationsRef.child("\(convoId)/activeMembers")
             
             activeMembersRef.observeSingleEvent(of: .value, with: { snapshot in
                 
@@ -119,8 +124,7 @@ class ChatListViewController: UITableViewController {
             
             
             // Also remove records from local table view data source
-            activeConversations.remove(at: indexPath.row)
-            activeConversationIds.remove(at: indexPath.row)
+            conversations.remove(at: indexPath.row)
             
             // Delete row in tableView
             tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.right)
@@ -130,24 +134,38 @@ class ChatListViewController: UITableViewController {
     
     // ==========================================
     // ==========================================
-    private func populateDataSource() {
+    private func loadActiveConvoIds(completion: @escaping (Void) -> Void) {
         
         // Establish the current active conversations to populate the table view data source
         userConversationListRef.child(UserState.currentUser.uid!).queryOrderedByKey().observe(.value, with: { snapshot in
             
             // Clear current list of convos
-            self.activeConversations.removeAll()
+            self.conversations.removeAll()
             
-            for item in snapshot.children {
-                let convo = item as! FIRDataSnapshot
+            for convoRecord in snapshot.children {
+                let convoSnapshot = convoRecord as! FIRDataSnapshot
                 
-                // Add username and uid into table view data sources
-                self.activeConversations.append("\(convo.key)")
-                self.activeConversationIds.append("\(convo.value as! String)")
+                // Create and store (partially incomplete) Conversation object
+                // These objects will provide all info needed for table cells
+                
+                self.conversations.append(
+                    Conversation(
+                        convoId: convoSnapshot.value as! String,
+                        otherUsername: convoSnapshot.key,
+                        newestMessage: "",
+                        newestMessageTimeStamp: ""
+                    )
+                )
             }
-            
-            self.tableView.reloadData()
+
+            completion()
         })
+    }
+    
+    // ==========================================
+    // ==========================================
+    private func loadConvoDetails() {
+        // TODO: Load most recent message and timestamp
     }
     
     
@@ -155,7 +173,6 @@ class ChatListViewController: UITableViewController {
     // ==========================================
     // ==========================================
     @objc private func didTapSettings() {
-        
         self.performSegue(withIdentifier: "ShowSettings", sender: self)
     }
 }
