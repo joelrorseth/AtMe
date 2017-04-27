@@ -72,8 +72,8 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         
         // Populate table with results from lookup
         let cell = usersTableView.dequeueReusableCell(withIdentifier: "UserInfoCell", for: indexPath) as! UserInfoCell
-        cell.displayName.text = searchResults[0].username   // TODO: Display displayName instead
-        cell.usernameLabel.text = searchResults[0].uid      // TODO: Display username instead
+        cell.displayName.text = searchResults[0].displayName
+        cell.usernameLabel.text = searchResults[0].username
         cell.uid = searchResults[0].uid
         cell.username = searchResults[0].username
         
