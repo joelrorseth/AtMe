@@ -72,8 +72,8 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         
         // Populate table with results from lookup
         let cell = usersTableView.dequeueReusableCell(withIdentifier: "UserInfoCell", for: indexPath) as! UserInfoCell
-        cell.displayName.text = searchResults[0].username
-        cell.usernameLabel.text = searchResults[0].uid
+        cell.displayName.text = searchResults[0].username   // TODO: Display displayName instead
+        cell.usernameLabel.text = searchResults[0].uid      // TODO: Display username instead
         cell.uid = searchResults[0].uid
         cell.username = searchResults[0].username
         
@@ -109,32 +109,33 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     
-    // MARK: UISearchBarDelegate
+    // MARK: Search Bar + Results
     // ==========================================
     // ==========================================
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
-        // Search registered Firebase users that match search criteria
-        registeredUsernamesRef.observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
+        
+        // Look inside registeredUsernames, determine if username is registered or not
+        // Extract the uid recorded here if found, then use it to find user details
+        
+        self.registeredUsernamesRef.observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
             
-            // If we find username registered, list it in table view
+            // If valid user is found in the search
             if (snapshot.hasChild(searchBar.text!)) {
                 
-                // Obtain uid and username
-                let username = searchBar.text!
-                let uid = snapshot.childSnapshot(forPath: searchBar.text!).value as! String
+                // The value of key (username) is the uid of that user!
+                let uidFound = snapshot.childSnapshot(forPath: searchBar.text!).value as! String
+
+                // Return a User object with details about user with id 'uidFound'
+                // Completion block will initiate update in table view (results)
                 
-                // Begin updates to table view, delete the most recently found user if currently shown
-                self.usersTableView.beginUpdates()
-                if (!(self.searchResults.count == 0)) {
-                    self.usersTableView.deleteRows(at: [IndexPath.init(row: self.searchResults.count - 1, section: 0)], with: .automatic)
-                }
+                self.findUserDetail(forUID: uidFound, completion: { (user: User) in
+                    print("AT.ME:: Search found user: \(user.displayName) \(user.uid) \(user.username)")
+        
+                    // Update results to show all users in array (just one for now)
+                    self.updateResults(users: [user])
+                })
                 
-                // Update the data source, then insert the rows into the table view
-                self.searchResults = [User(username: username, uid: uid)]
-                self.usersTableView.insertRows(at: [IndexPath.init(row: self.searchResults.count - 1, section: 0)], with: .automatic)
-                
-                self.usersTableView.endUpdates()
                 
             } else {
                 
@@ -146,6 +147,46 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         })
     }
     
+    // ==========================================
+    // ==========================================
+    private func updateResults(users: [User]) {
+        
+        // Begin updates to table view, delete the most recently found user if currently shown
+        self.usersTableView.beginUpdates()
+        
+        if (self.searchResults.count != 0) {
+            self.usersTableView.deleteRows(at: [IndexPath.init(row: self.searchResults.count - 1, section: 0)], with: .automatic)
+        }
+        
+        // Update the data source, then insert the rows into the table view
+        self.searchResults = users
+        self.usersTableView.insertRows(at: [IndexPath.init(row: self.searchResults.count - 1, section: 0)], with: .automatic)
+        
+        self.usersTableView.endUpdates()
+    }
+    
+    
+    // MARK: Database Retrieval Functions
+    // ==========================================
+    // ==========================================
+    private func findUserDetail(forUID uid: String, completion: @escaping (_ user: User) -> Void) {
+        
+        // Using userInformation record, lookup using 'uid' as key
+        userInformationRef.child(uid).observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
+            
+            let user = User(
+                displayName: snapshot.childSnapshot(forPath: "displayName").value as! String,
+                uid: uid,
+                username: snapshot.childSnapshot(forPath: "username").value as! String
+            )
+            
+            // IMPORTANT: Initiate user specified callback (provided when called)
+            // User object must be returned through completion callback to
+            // allow observeSingleEvent() time to execute asynchronously!
+            
+            completion(user)
+        })
+    }
     
     // MARK: Additional Functions
     // ==========================================

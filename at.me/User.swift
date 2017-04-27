@@ -10,11 +10,13 @@ import Foundation
 
 public class User {
     
-    var username: String
+    var displayName: String
     var uid: String
+    var username: String
 
-    init(username: String, uid: String) {
-        self.username = username
+    init(displayName: String, uid: String, username: String) {
+        self.displayName = displayName
         self.uid = uid
+        self.username = username
     }
 }
