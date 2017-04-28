@@ -96,13 +96,19 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
         // This closure is triggered once for every existing record found, and for each record added here
         newMessageRefHandle = messagesQuery.observe(FIRDataEventType.childAdded, with: { (snapshot) in
             
-            // Extract fields from this message record
-            if let sender = snapshot.childSnapshot(forPath: "sender").value as! String!,
-                let text = snapshot.childSnapshot(forPath: "text").value as! String! {
-                
-                print("AT.ME:: Just retrieved message from \(sender): \(text)")
-                self.addMessage(message: Message(sender: sender, text: text))
-            }
+            let sender = snapshot.childSnapshot(forPath: "sender").value as! String
+            let text = snapshot.childSnapshot(forPath: "text").value as! String
+            
+            print("AT.ME:: Just retrieved message from \(sender): \(text)")
+            self.addMessage(message: Message(sender: sender, text: text))
+            
+//            // Extract fields from this message record
+//            if let sender = snapshot.childSnapshot(forPath: "sender").value as! String!,
+//                let text = snapshot.childSnapshot(forPath: "text").value as! String! {
+//                
+//                print("AT.ME:: Just retrieved message from \(sender): \(text)")
+//                self.addMessage(message: Message(sender: sender, text: text))
+//            }
         })
     }
     
@@ -191,44 +197,21 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
         )
 
         
-        // CASE 1: INCOMING
-        if ((arc4random_uniform(2)) == 1) {
+        // CASE 1: OUTGOING
+        if (message.sender == UserState.currentUser.username!) {
             
             // Set bubble and text frames
             cell.messageTextView.frame = CGRect(
-                                        x: 15 + 5,
-                                        y: 1,
-                                        width: messageFrame.width + 11,
-                                        height: messageFrame.height + 20
+                x: ((view.frame.width - (messageFrame.width + 11 + 20))),
+                y: 1,
+                width: messageFrame.width + 16 - 5,
+                height: messageFrame.height + 20
             )
             cell.bubbleView.frame = CGRect(
-                                        x: 15,
-                                        y: -4,
-                                        width: messageFrame.width + 20 + 11 - 10,
-                                        height: messageFrame.height + 26
-            )
-            
-            // Set bubble attributes
-            cell.bubbleView.backgroundColor = UIColor.darkGray
-            cell.messageTextView.textColor = UIColor.white
-        }
-        
-            
-        // CASE 2: OUTGOING
-        else {
-            
-            // Set bubble and text frames
-            cell.messageTextView.frame = CGRect(
-                                        x: ((view.frame.width - (messageFrame.width + 11 + 20))),
-                                        y: 1,
-                                        width: messageFrame.width + 16 - 5,
-                                        height: messageFrame.height + 20
-            )
-            cell.bubbleView.frame = CGRect(
-                                        x: (view.frame.width - 15) - (messageFrame.width + 11 + 20) + 5 + 5,
-                                        y: -4,
-                                        width: messageFrame.width + 11 + 20 - 5 - 5,
-                                        height: messageFrame.height + 26
+                x: (view.frame.width - 15) - (messageFrame.width + 11 + 20) + 5 + 5,
+                y: -4,
+                width: messageFrame.width + 11 + 20 - 5 - 5,
+                height: messageFrame.height + 26
             )
             
             // Set bubble attributes
@@ -236,6 +219,28 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
             cell.messageTextView.textColor = UIColor.black
         }
         
+        // CASE 2: INCOMING
+        else {
+            
+            // Set bubble and text frames
+            cell.messageTextView.frame = CGRect(
+                x: 15 + 5,
+                y: 1,
+                width: messageFrame.width + 11,
+                height: messageFrame.height + 20
+            )
+            cell.bubbleView.frame = CGRect(
+                x: 15,
+                y: -4,
+                width: messageFrame.width + 20 + 11 - 10,
+                height: messageFrame.height + 26
+            )
+            
+            // Set bubble attributes
+            cell.bubbleView.backgroundColor = UIColor.darkGray
+            cell.messageTextView.textColor = UIColor.white
+        }
+
         return cell
     }
     
