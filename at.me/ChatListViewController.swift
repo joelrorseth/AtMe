@@ -196,7 +196,10 @@ class ChatListViewController: UITableViewController {
             // Pass along convoId of selected conversation
             
             let indexPath = tableView.indexPathForSelectedRow
-            cvc.convoId = conversations[(indexPath?.row)!].convoId
+            let selectedConvoId = conversations[(indexPath?.row)!].convoId
+            
+            cvc.messagesRef = conversationsRef.child("\(selectedConvoId)/messages")
+            cvc.convoId = selectedConvoId
         }
     }
     

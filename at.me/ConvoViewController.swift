@@ -12,7 +12,11 @@ import Firebase
 class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     // Firebase references
-    private lazy var conversationsRef: FIRDatabaseReference = FIRDatabase.database().reference().child("conversations")
+    //private lazy var conversationsRef: FIRDatabaseReference = FIRDatabase.database().reference().child("conversations")
+    var messagesRef: FIRDatabaseReference?
+    
+    // Firebase handles
+    private var newMessageRefHandle: FIRDatabaseHandle?
     
     // MARK: Storyboard
     @IBOutlet weak var messageTextField: UITextField!
@@ -64,6 +68,9 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 14
         messageCollectionView.setCollectionViewLayout(layout, animated: true)
+        
+        // Start observing changes in the Firebase database
+        observeReceivedMessages()
     }
     
     
@@ -73,13 +80,30 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
     private func send(message: String) {
         
         // Write the message to Firebase
-        let messageId = conversationsRef.child("\(convoId!)/messages").childByAutoId().key
+        let messageId = messagesRef!.childByAutoId().key
         
         // Each message record (uniquely identified) will record sender and message text
-        conversationsRef.child("\(convoId!)/messages/\(messageId)/text").setValue(message)
-        conversationsRef.child("\(convoId!)/messages/\(messageId)/sender").setValue(UserState.currentUser.username!)
+        messagesRef?.child("\(messageId)/text").setValue(message)
+        messagesRef?.child("\(messageId)/sender").setValue(UserState.currentUser.username!)
         
         // Possibly add message to local array etc?
+    }
+    
+    // ==========================================
+    // ==========================================
+    private func observeReceivedMessages() {
+        
+        let messagesQuery = messagesRef!.queryLimited(toLast: 25)
+        
+        // This closure is triggered once for every existing record found, and for each record added here
+        newMessageRefHandle = messagesQuery.observe(FIRDataEventType.childAdded, with: { (snapshot) in
+            
+            // Extract fields from this message record
+            let sender = snapshot.childSnapshot(forPath: "sender").value as! String
+            let text = snapshot.childSnapshot(forPath: "text").value as! String
+            
+            print("AT.ME:: Just retrieved message from \(sender): \(text)")
+        })
     }
     
 
@@ -126,6 +150,16 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
     // ==========================================
     func dismissKeyboard() {
         self.view.endEditing(true)
+    }
+    
+    
+    // ==========================================
+    // ==========================================
+    deinit {
+        if let handle = newMessageRefHandle {
+            messagesRef?.removeObserver(withHandle: handle)
+            print("AT.ME:: Removed observer with handle \(handle) from messagesRef")
+        }
     }
     
     
