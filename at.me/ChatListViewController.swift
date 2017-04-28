@@ -37,7 +37,7 @@ class ChatListViewController: UITableViewController {
         DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
             
             self.loadActiveConvoIds(completion: {
-                self.loadConvoDetails()
+                self.loadDetailForConvos()
                 self.tableView.reloadData()
             })
         }
@@ -164,8 +164,22 @@ class ChatListViewController: UITableViewController {
     
     // ==========================================
     // ==========================================
-    private func loadConvoDetails() {
-        // TODO: Load most recent message and timestamp
+    private func loadDetailForConvos() {
+        
+//        // Load most recent message and timestamp
+//        conversationsRef.observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
+//            
+//            for activeConvo in self.conversations {
+//                
+//                // TODO: Load newest message and timestamp
+//                // Come back to this once messaging has been hooked up
+//                
+//                let convoSnapshot = snapshot.childSnapshot(forPath: activeConvo.convoId)
+//                
+//                //activeConvo.newestMessage = convoSnapshot ...
+//                //activeConvo.newestMessageTimeStamp = convoSnapshot ...
+//            }
+//        })
     }
     
     
