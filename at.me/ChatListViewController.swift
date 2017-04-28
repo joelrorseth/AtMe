@@ -183,6 +183,24 @@ class ChatListViewController: UITableViewController {
     }
     
     
+    // MARK: Segue
+    // ==========================================
+    // ==========================================
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if (segue.identifier == "LoadConvoSegue") {
+            let cvc = segue.destination as! ConvoViewController
+            
+            // Get the index path of selected row that triggered segue
+            // The rows correspond directly with ordering in table view
+            // Pass along convoId of selected conversation
+            
+            let indexPath = tableView.indexPathForSelectedRow
+            cvc.convoId = conversations[(indexPath?.row)!].convoId
+        }
+    }
+    
+    
     // MARK: Functionality
     // ==========================================
     // ==========================================

@@ -19,6 +19,8 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
     @IBOutlet weak var messageToolbar: UIToolbar!
     @IBOutlet weak var messageToolbarBottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var messageCollectionView: UICollectionView!
+    
+    var convoId: String! = ""
 
     
     // A sample array with messages to test the table view

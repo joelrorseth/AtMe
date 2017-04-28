@@ -16,6 +16,7 @@ struct Constants {
     struct Segues {
         static let signInSuccessSegue = "SignInSuccessSegue"
         static let signUpSuccessSegue = "SignUpSuccessSegue"
+        static let loadConvoSegue = "LoadConvoSegue"
     }
     
     struct Storyboard {
