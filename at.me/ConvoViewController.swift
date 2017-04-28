@@ -24,24 +24,26 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     
     // A sample array with messages to test the table view
-    var messagesArrayTest = ["Hello, my name is Joel. I will be conducting your interview today.", "Hi Joel, nice to meet you", "For the first portion, we will be discussing your work history."]
+    var messagesArrayTest = ["Hello, my name is Joel. I will be conducting your interview today.",
+                             "Hi Joel, nice to meet you",
+                             "For the first portion, we will be discussing your work history."]
+    
     
     // ==========================================
     // ==========================================
     @IBAction func didPressSend(_ sender: Any) {
         
-        if (messageTextField.text == "") {
-            return
-        }
+        if (messageTextField.text == "" || messageTextField.text == nil) { return }
+        
+        // Pass message along to be stored
+        send(message: messageTextField.text!)
         
         // Add text from textfield to temp array, insert row into collection view
         messagesArrayTest.append(messageTextField.text!)
         messageCollectionView.insertItems(at: [IndexPath.init(row: messagesArrayTest.count - 1, section: 0)])
         
-        // Clear message text field
+        // Clear message text field and dismiss keyboard
         messageTextField.text = ""
-        
-        // Dismiss keyboard now that message is "sent"
         messageTextField.resignFirstResponder()
     }
 
@@ -63,6 +65,23 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
         layout.minimumLineSpacing = 14
         messageCollectionView.setCollectionViewLayout(layout, animated: true)
     }
+    
+    
+    // MARK: Sending & Receiving Messages
+    // ==========================================
+    // ==========================================
+    private func send(message: String) {
+        
+        // Write the message to Firebase
+        let messageId = conversationsRef.child("\(convoId!)/messages").childByAutoId().key
+        
+        // Each message record (uniquely identified) will record sender and message text
+        conversationsRef.child("\(convoId!)/messages/\(messageId)/text").setValue(message)
+        conversationsRef.child("\(convoId!)/messages/\(messageId)/sender").setValue(UserState.currentUser.username!)
+        
+        // Possibly add message to local array etc?
+    }
+    
 
     
     // MARK: Keyboard Handling

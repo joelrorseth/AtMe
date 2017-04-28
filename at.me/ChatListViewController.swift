@@ -188,7 +188,7 @@ class ChatListViewController: UITableViewController {
     // ==========================================
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        if (segue.identifier == "LoadConvoSegue") {
+        if (segue.identifier == Constants.Segues.loadConvoSegue) {
             let cvc = segue.destination as! ConvoViewController
             
             // Get the index path of selected row that triggered segue
