@@ -12,7 +12,6 @@ import Firebase
 class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     // Firebase references
-    //private lazy var conversationsRef: FIRDatabaseReference = FIRDatabase.database().reference().child("conversations")
     var messagesRef: FIRDatabaseReference?
     
     // Firebase handles
@@ -24,14 +23,8 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
     @IBOutlet weak var messageToolbarBottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var messageCollectionView: UICollectionView!
     
+    var messages: [Message] = []
     var convoId: String! = ""
-
-    
-    // A sample array with messages to test the table view
-    var messagesArrayTest = ["Hello, my name is Joel. I will be conducting your interview today.",
-                             "Hi Joel, nice to meet you",
-                             "For the first portion, we will be discussing your work history."]
-    
     
     // ==========================================
     // ==========================================
@@ -40,11 +33,7 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
         if (messageTextField.text == "" || messageTextField.text == nil) { return }
         
         // Pass message along to be stored
-        send(message: messageTextField.text!)
-        
-        // Add text from textfield to temp array, insert row into collection view
-        messagesArrayTest.append(messageTextField.text!)
-        messageCollectionView.insertItems(at: [IndexPath.init(row: messagesArrayTest.count - 1, section: 0)])
+        send(message: Message(sender: UserState.currentUser.username!, text: messageTextField.text!))
         
         // Clear message text field and dismiss keyboard
         messageTextField.text = ""
@@ -74,19 +63,28 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
     }
     
     
-    // MARK: Sending & Receiving Messages
+    // MARK: Managing messages
     // ==========================================
     // ==========================================
-    private func send(message: String) {
+    private func send(message: Message) {
         
         // Write the message to Firebase
         let messageId = messagesRef!.childByAutoId().key
         
         // Each message record (uniquely identified) will record sender and message text
-        messagesRef?.child("\(messageId)/text").setValue(message)
-        messagesRef?.child("\(messageId)/sender").setValue(UserState.currentUser.username!)
+        messagesRef?.child("\(messageId)/text").setValue(message.text)
+        messagesRef?.child("\(messageId)/sender").setValue(message.sender)
         
         // Possibly add message to local array etc?
+    }
+    
+    // ==========================================
+    // ==========================================
+    private func addMessage(message: Message) {
+        
+        // Add text from textfield to temp array, insert row into collection view
+        messages.append(message)
+        messageCollectionView.insertItems(at: [IndexPath.init(row: messages.count - 1, section: 0)])
     }
     
     // ==========================================
@@ -99,10 +97,12 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
         newMessageRefHandle = messagesQuery.observe(FIRDataEventType.childAdded, with: { (snapshot) in
             
             // Extract fields from this message record
-            let sender = snapshot.childSnapshot(forPath: "sender").value as! String
-            let text = snapshot.childSnapshot(forPath: "text").value as! String
-            
-            print("AT.ME:: Just retrieved message from \(sender): \(text)")
+            if let sender = snapshot.childSnapshot(forPath: "sender").value as! String!,
+                let text = snapshot.childSnapshot(forPath: "text").value as! String! {
+                
+                print("AT.ME:: Just retrieved message from \(sender): \(text)")
+                self.addMessage(message: Message(sender: sender, text: text))
+            }
         })
     }
     
@@ -176,14 +176,14 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
         
         // Dequeue a custom cell for collection view
         let cell = messageCollectionView.dequeueReusableCell(withReuseIdentifier: Constants.Storyboard.messageId, for: indexPath) as! MessageCell
-        let message = messagesArrayTest[indexPath.row]
+        let message = messages[indexPath.row]
         
         // Important: Set message text in the cell
         cell.messageTextView.font = UIFont.systemFont(ofSize: 14)
-        cell.messageTextView.text = message
+        cell.messageTextView.text = message.text
         
         // Calculate how large the bubble will need to be to house the message
-        let messageFrame = NSString(string: message).boundingRect(
+        let messageFrame = NSString(string: message.text).boundingRect(
             with: CGSize(width: (view.bounds.size.width * 0.72), height: 1000),
             options: NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin),
             attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)],
@@ -243,12 +243,12 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
     // ==========================================
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        if messagesArrayTest[indexPath.row] == "" {
+        if messages[indexPath.row].text == "" {
             return CGSize(width: view.frame.width, height: 100)
         }
         
         // Obtain a frame for the size of the message to be displayed
-        let messageFrame = NSString(string: messagesArrayTest[indexPath.row]).boundingRect(
+        let messageFrame = NSString(string: messages[indexPath.row].text).boundingRect(
             with: CGSize(width: 250, height: 1000),
             options: NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin),
             attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)],
@@ -262,7 +262,7 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
     // ==========================================
     // ==========================================
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return messagesArrayTest.count
+        return messages.count
     }
     
     // ==========================================
