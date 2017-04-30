@@ -69,13 +69,13 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
     private func send(message: Message) {
         
         // Write the message to Firebase
-        let messageId = messagesRef!.childByAutoId().key
+        let randomMessageId = messagesRef!.childByAutoId().key
         
         // Each message record (uniquely identified) will record sender and message text
-        messagesRef?.child("\(messageId)/text").setValue(message.text)
-        messagesRef?.child("\(messageId)/sender").setValue(message.sender)
+        messagesRef?.child(randomMessageId).setValue(["sender" : message.sender, "text" : message.text])
         
-        // Possibly add message to local array etc?
+        // TODO: Possibly cache messages for certain amount of time / 3 messages
+        // Look into solution to avoid loading sent messages from server (no point in that?)
     }
     
     // ==========================================
@@ -90,7 +90,7 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
     // ==========================================
     // ==========================================
     private func observeReceivedMessages() {
-        
+
         let messagesQuery = messagesRef!.queryLimited(toLast: 25)
         
         // This closure is triggered once for every existing record found, and for each record added here
@@ -102,7 +102,11 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
             print("AT.ME:: Just retrieved message from \(sender): \(text)")
             self.addMessage(message: Message(sender: sender, text: text))
             
+            
 //            // Extract fields from this message record
+//            // Potentially unwrap optionals this way to avoid app crash
+//            // Message records should ALWAYS have sender and text records though...
+//
 //            if let sender = snapshot.childSnapshot(forPath: "sender").value as! String!,
 //                let text = snapshot.childSnapshot(forPath: "text").value as! String! {
 //                
