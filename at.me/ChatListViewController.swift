@@ -15,7 +15,10 @@ class ChatListViewController: UITableViewController {
     private lazy var userConversationListRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userConversationList")
     private lazy var conversationsRef: FIRDatabaseReference = FIRDatabase.database().reference().child("conversations")
     
-    var conversations: [Conversation] = []
+    // Firebase handles
+    private var messageHandles: [FIRDatabaseHandle] = []
+    
+    private var conversations: [Conversation] = []
     
     // MARK: View
     // ==========================================
@@ -165,21 +168,30 @@ class ChatListViewController: UITableViewController {
     // ==========================================
     // ==========================================
     private func loadDetailForConvos() {
-        
-//        // Load most recent message and timestamp
-//        conversationsRef.observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
-//            
-//            for activeConvo in self.conversations {
-//                
-//                // TODO: Load newest message and timestamp
-//                // Come back to this once messaging has been hooked up
-//                
-//                let convoSnapshot = snapshot.childSnapshot(forPath: activeConvo.convoId)
-//                
-//                //activeConvo.newestMessage = convoSnapshot ...
-//                //activeConvo.newestMessageTimeStamp = convoSnapshot ...
-//            }
-//        })
+
+        // Add one observer for each convo to notify when new messages appear
+        for conversation in conversations {
+            
+            // For each observer, add the corresponding handle into array of handles
+            messageHandles.append(
+                
+                // Query the most recent message record for each conversation loaded previously
+                // This block is called for each new message detected thereafter
+                
+                conversationsRef.child("\(conversation.convoId)/messages").queryLimited(toLast: 1)
+                    .observe(FIRDataEventType.childAdded, with: { (snapshot) in
+
+                        // Extract the new message, set as the current convo's newest message!
+                        conversation.newestMessage = snapshot.childSnapshot(forPath: "text").value as! String
+                        
+                        // TODO: Timestamp
+                        //conversation.newestMessageTimeStamp = snapshot.childSnapshot(forPath: "timestamp")
+                        
+                        // TODO: Possibly refactor to avoid reloading every time?
+                        self.tableView.reloadData()
+                    })
+            )
+        }
     }
     
     
@@ -209,5 +221,18 @@ class ChatListViewController: UITableViewController {
     // ==========================================
     @objc private func didTapSettings() {
         self.performSegue(withIdentifier: "ShowSettings", sender: self)
+    }
+    
+    // ==========================================
+    // ==========================================
+    deinit {
+
+        // For each handle, remove observer for incoming messages
+        // TODO: Refactor for neat method of removing all observers added
+        
+        for handle in messageHandles {
+            conversationsRef.removeObserver(withHandle: handle)
+            print("AT.ME:: Removed observer with handle \(handle) in ChatListViewController")
+        }
     }
 }

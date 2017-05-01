@@ -168,7 +168,7 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
     deinit {
         if let handle = newMessageRefHandle {
             messagesRef?.removeObserver(withHandle: handle)
-            print("AT.ME:: Removed observer with handle \(handle) from messagesRef")
+            print("AT.ME:: Removed observer with handle \(handle) in ConvoViewController")
         }
     }
     
