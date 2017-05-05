@@ -76,7 +76,7 @@ class ChatListViewController: UITableViewController {
         
         cell.nameLabel.text = conversations[indexPath.row].otherUsername
         cell.recentMessageLabel.text = conversations[indexPath.row].newestMessage
-        cell.recentMessageTimeStampLabel.text = conversations[indexPath.row].newestMessageTimeStamp
+        cell.recentMessageTimeStampLabel.text = conversations[indexPath.row].newestMessageTimestamp
         
         //cell.userDisplayImageView.image =
         
@@ -156,7 +156,7 @@ class ChatListViewController: UITableViewController {
                         convoId: convoSnapshot.value as! String,
                         otherUsername: convoSnapshot.key,
                         newestMessage: "",
-                        newestMessageTimeStamp: ""
+                        newestMessageTimestamp: ""
                     )
                 )
             }
@@ -183,9 +183,7 @@ class ChatListViewController: UITableViewController {
 
                         // Extract the new message, set as the current convo's newest message!
                         conversation.newestMessage = snapshot.childSnapshot(forPath: "text").value as! String
-                        
-                        // TODO: Timestamp
-                        //conversation.newestMessageTimeStamp = snapshot.childSnapshot(forPath: "timestamp")
+                        conversation.newestMessageTimestamp = snapshot.childSnapshot(forPath: "timestamp").value as! String
                         
                         // TODO: Possibly refactor to avoid reloading every time?
                         self.tableView.reloadData()

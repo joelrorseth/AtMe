@@ -26,14 +26,28 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
     var messages: [Message] = []
     var convoId: String! = ""
     
+    private lazy var dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = DateFormatter.Style.none
+        formatter.timeStyle = DateFormatter.Style.short
+        
+        return formatter
+    }()
+    
     // ==========================================
     // ==========================================
     @IBAction func didPressSend(_ sender: Any) {
         
         if (messageTextField.text == "" || messageTextField.text == nil) { return }
         
+        let message = Message(
+            sender: UserState.currentUser.username!,
+            text: messageTextField.text!,
+            timestamp: getCurrentTimestamp()
+        )
+        
         // Pass message along to be stored
-        send(message: Message(sender: UserState.currentUser.username!, text: messageTextField.text!))
+        send(message: message)
         
         // Clear message text field and dismiss keyboard
         messageTextField.text = ""
@@ -72,7 +86,9 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
         let randomMessageId = messagesRef!.childByAutoId().key
         
         // Each message record (uniquely identified) will record sender and message text
-        messagesRef?.child(randomMessageId).setValue(["sender" : message.sender, "text" : message.text])
+        messagesRef?.child(randomMessageId).setValue(
+            ["sender" : message.sender, "text" : message.text, "timestamp" : message.timestamp]
+        )
         
         // TODO: Possibly cache messages for certain amount of time / 3 messages
         // Look into solution to avoid loading sent messages from server (no point in that?)
@@ -98,9 +114,10 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
             
             let sender = snapshot.childSnapshot(forPath: "sender").value as! String
             let text = snapshot.childSnapshot(forPath: "text").value as! String
+            let timestamp = snapshot.childSnapshot(forPath: "timestamp").value as! String
             
             print("AT.ME:: Just retrieved message from \(sender): \(text)")
-            self.addMessage(message: Message(sender: sender, text: text))
+            self.addMessage(message: Message(sender: sender, text: text, timestamp: timestamp))
             
             
 //            // Extract fields from this message record
@@ -162,6 +179,13 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
         self.view.endEditing(true)
     }
     
+    
+    // MARK: Additional functions
+    // ==========================================
+    // ==========================================
+    private func getCurrentTimestamp() -> String {
+        return dateFormatter.string(from: Date())
+    }
     
     // ==========================================
     // ==========================================

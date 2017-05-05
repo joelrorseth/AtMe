@@ -13,12 +13,12 @@ public class Conversation {
     var convoId: String
     var otherUsername: String
     var newestMessage: String
-    var newestMessageTimeStamp: String
+    var newestMessageTimestamp: String
     
-    init(convoId: String, otherUsername: String, newestMessage: String, newestMessageTimeStamp: String) {
+    init(convoId: String, otherUsername: String, newestMessage: String, newestMessageTimestamp: String) {
         self.convoId = convoId
         self.otherUsername = otherUsername
         self.newestMessage = newestMessage
-        self.newestMessageTimeStamp = newestMessageTimeStamp
+        self.newestMessageTimestamp = newestMessageTimestamp
     }
 }

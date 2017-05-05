@@ -12,9 +12,11 @@ public class Message {
     
     var sender: String
     var text: String
+    var timestamp: String
     
-    init(sender: String, text: String) {
+    init(sender: String, text: String, timestamp: String) {
         self.sender = sender
         self.text = text
+        self.timestamp = timestamp
     }
 }
