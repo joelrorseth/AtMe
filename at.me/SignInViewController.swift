@@ -75,6 +75,7 @@ class SignInViewController: UIViewController {
             // TODO: Implement error handling in case of failed read for 'username' record
             userInformationRef.observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
                 UserState.currentUser.username = snapshot.childSnapshot(forPath: "\(uid)/username").value as? String
+                UserState.currentUser.displayName = snapshot.childSnapshot(forPath: "\(uid)/displayName").value as? String
             })
             
             // Maintain information of current user for duration of the app lifetime

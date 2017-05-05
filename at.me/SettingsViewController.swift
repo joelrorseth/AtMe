@@ -20,11 +20,33 @@ class SettingsViewController: UITableViewController {
     private var currentAttributeChanging: UserAttribute = UserAttribute.none
     private var attributePrompt: String = ""
 
+    @IBOutlet weak var userPictureImageView: UIImageView!
+    @IBOutlet weak var userDisplayNameLabel: UILabel!
+    @IBOutlet weak var usernameLabel: UILabel!
+    
+    // TODO: Add gesture recognizer / action method for
+    // image view, allow user to select new profile pic
+    
+    // TODO: Load profile pic into image view
+    
     // ==========================================
     // ==========================================
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        loadCurrentUserLabels()
+    }
+    
+    // ==========================================
+    // ==========================================
+    private func loadCurrentUserLabels() {
+        
+        // TODO: It is possible to switch into this Settings controller before
+        // UserState.currentUser has been properly set upon sign in. Must add
+        // asynchronous load to await non-nil values, then proceed to update UI here
+        
+        userDisplayNameLabel.text = UserState.currentUser.displayName ?? "Loading..."
+        usernameLabel.text = UserState.currentUser.username ?? "Loading..."
     }
     
     // ==========================================
@@ -79,8 +101,6 @@ class SettingsViewController: UITableViewController {
                         self.present(ac, animated: true, completion: {
                             self.dismissPopup()
                         })
-                        
-                        return
                     })
                 }
                 
@@ -101,6 +121,7 @@ class SettingsViewController: UITableViewController {
                     // Change Firebase's internal record of <FIRUser>.displayName
                     let changeRequest = FIRAuth.auth()?.currentUser?.profileChangeRequest()
                     changeRequest?.displayName = newAttribute
+                    UserState.currentUser.displayName = newAttribute
                     
                     // Allow fallthrough to allow our maintained user records to be updated
                 }
@@ -117,6 +138,8 @@ class SettingsViewController: UITableViewController {
             }
         }
         
+        loadCurrentUserLabels()
+        self.tableView.reloadData()
     }
     
     // ==========================================

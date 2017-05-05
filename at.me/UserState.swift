@@ -12,7 +12,8 @@ class UserState: NSObject {
     
     static let currentUser = UserState()
     
+    var displayName: String?
+    var email: String?
     var uid: String?
     var username: String?
-    var email: String?
 }

@@ -267,6 +267,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="sectionIndexBackgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <sections>
                             <tableViewSection headerTitle="" id="oQO-aM-CWJ">
                                 <cells>
@@ -412,6 +413,9 @@
                         </connections>
                     </tableView>
                     <connections>
+                        <outlet property="userDisplayNameLabel" destination="ynd-17-MAP" id="rii-3x-NTU"/>
+                        <outlet property="userPictureImageView" destination="nfq-RV-Ba3" id="PDj-n3-CDy"/>
+                        <outlet property="usernameLabel" destination="P0O-xx-Sbx" id="UHg-2s-2BI"/>
                         <segue destination="zHr-Ew-ICi" kind="unwind" identifier="unwindToSignIn" unwindAction="unwindToSignInSegue:" id="lHz-0J-yfa"/>
                     </connections>
                 </tableViewController>
