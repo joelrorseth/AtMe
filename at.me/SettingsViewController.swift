@@ -152,27 +152,27 @@ class SettingsViewController: UITableViewController {
         
         // Determine which attributes have been chosen for edit
         switch indexPath.row {
-        case 0:
+        case 1:
             currentAttributeChanging = .displayName
             attributePrompt = "display name"
             break
-        case 1:
+        case 2:
             currentAttributeChanging = .email
             attributePrompt = "email address"
             break
-        case 2:
+        case 3:
             currentAttributeChanging = .firstName
             attributePrompt = "first name"
             break
-        case 3:
+        case 4:
             currentAttributeChanging = .lastName
             attributePrompt = "last name"
             break
-        case 4:
+        case 5:
             currentAttributeChanging = .password
             attributePrompt = "password"
             break
-        case 5:
+        case 6:
             self.logout()
             return
         default:
