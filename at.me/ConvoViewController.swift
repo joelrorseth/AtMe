@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class ConvoViewController: UIViewController {
     
     // Firebase references
     var messagesRef: FIRDatabaseReference?
@@ -195,14 +195,11 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
             print("AT.ME:: Removed observer with handle \(handle) in ConvoViewController")
         }
     }
-    
+}
+
+extension ConvoViewController: UICollectionViewDataSource {
     
     // MARK: Collection View
-    // ==========================================
-    // ==========================================
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
     
     // ==========================================
     // ==========================================
@@ -290,17 +287,5 @@ class ConvoViewController: UIViewController, UICollectionViewDelegate, UICollect
         
         // Return size intended to house entire cell / message bubble
         return CGSize(width: view.frame.width, height: messageFrame.height + 20)
-    }
-    
-    // ==========================================
-    // ==========================================
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return messages.count
-    }
-    
-    // ==========================================
-    // ==========================================
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsetsMake(8, 0, 0, 0)
     }
 }
