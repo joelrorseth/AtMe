@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class SignInViewController: UIViewController {
+class SignInViewController: UIViewController, AlertController {
     
     // Firebase references
     private lazy var userInformationRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userInformation")
@@ -32,14 +32,9 @@ class SignInViewController: UIViewController {
             
             // In the case of invalid login, handle gracefully
             if let error = error {
-                print(error.localizedDescription);
+                print("AT.ME:: Error during login\n\(error.localizedDescription)")
                 
-                // Let user know that email/password is invalid
-                let ac = UIAlertController(title: "Invalid Login", message: "Please double check your email and password.", preferredStyle: .alert)
-                ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                self.present(ac, animated: true, completion: nil)
-                
-                print("AT.ME:: Login unsuccessful")
+                self.presentSimpleAlert(title: "Invalid Login", message: "Please double check your email and password.", completion: nil)
                 return
             }
             
@@ -84,10 +79,7 @@ class SignInViewController: UIViewController {
             
         } else {
             
-            // Let user know that email/password is invalid
-            let ac = UIAlertController(title: "Something Went Wrong", message: "Please try signing in again.", preferredStyle: .alert)
-            ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            self.present(ac, animated: true, completion: nil)
+            presentSimpleAlert(title: "Something Went Wrong", message: "Please try signing in again.", completion: nil)
             
             print("AT.ME:: Login unsuccessful due to nil properties for the FIRUser")
             return

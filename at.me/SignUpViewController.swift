@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class SignUpViewController: UIViewController {
+class SignUpViewController: UIViewController, AlertController {
     
     // Firebase References
     private lazy var userInformationRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userInformation")
@@ -25,23 +25,17 @@ class SignUpViewController: UIViewController {
     // ==========================================
     @IBAction func didTapCreateAccount(_ sender: Any) {
         
-        if (emailTextField.text == "" || usernameTextField.text! == "" || firstNameTextField.text == "" || lastNameTextField.text == "" || passwordTextField.text == "") {
+        if (emailTextField.text == "" || usernameTextField.text! == "" || firstNameTextField.text == ""
+            || lastNameTextField.text == "" || passwordTextField.text == "") {
             
-            // Alert user that there are missing fields
-            let ac = UIAlertController(title: "Missing Fields", message: "Please fill in all required information", preferredStyle: .alert)
-            ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            
-            // Present alert, escape function
-            self.present(ac, animated: true)
+            // At least one required field is empty
+            self.presentSimpleAlert(title: "Missing Fields", message: "Please fill in all required information", completion: nil)
             return
-            
         }
         
         // Make sure all important info is provided, then store
-        guard let email = emailTextField.text,
-            let password = passwordTextField.text,
-            let firstName = firstNameTextField.text,
-            let lastName = lastNameTextField.text
+        guard let email = emailTextField.text, let password = passwordTextField.text,
+            let firstName = firstNameTextField.text, let lastName = lastNameTextField.text
         else { return }
         
         let username = (self.usernameTextField.text == nil) ? email.components(separatedBy: "@")[0] : self.usernameTextField.text!
@@ -50,25 +44,21 @@ class SignUpViewController: UIViewController {
         // ERROR CASE 1: Weak password
         if (password.characters.count < 6) {
             
-            // Alert user that their password needs to be stronger
-            let ac = UIAlertController(title: "Password Is Too Weak", message: "Your password must be 6 or more characters.", preferredStyle: .alert)
-            ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            presentSimpleAlert(title: "Password is Too Weak", message: "Your password must be 6 or more characters.", completion: {
+                self.passwordTextField.becomeFirstResponder()
+            })
             
-            // Present alert, then shift focus to password field
-            self.present(ac, animated: true) { self.passwordTextField.becomeFirstResponder() }
             return
         }
         
         // ERROR CASE 2: Improper username specified at signup
         // TODO: Look into restrictions on <FIRDataSnapshot>.hasChild() which will affect valid usernames
         if (username.characters.count < 4 || username.contains(" ")) {
+
+            presentSimpleAlert(title: "Username is Invalid", message: "Your username must be 4 or more valid characters", completion: {
+                self.usernameTextField.becomeFirstResponder()
+            })
             
-            // Alert user that their username needs to be better
-            let ac = UIAlertController(title: "Username is Invalid", message: "Your username must be 4 or more valid characters", preferredStyle: .alert)
-            ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            
-            // Present alert, then shift focus to username field
-            self.present(ac, animated: true) { self.usernameTextField.becomeFirstResponder() }
             return
         }
         
@@ -91,16 +81,11 @@ class SignUpViewController: UIViewController {
                     }
                     
                     
-                    
                     // Add entry to database with public user information (username, email)
                     // All fields are accounted for, displayName defaults to username
-                    let userEntry = [
-                        "displayName" : username,
-                        "email" : email,
-                        "firstName" : firstName,
-                        "lastName" : lastName,
-                        "username" : username,
-                        ]
+                    
+                    let userEntry = ["displayName" : username, "email" : email, "firstName" : firstName,
+                        "lastName" : lastName, "username" : username]
                     
                     
                     // Add entry to usernames registry and user info registry
@@ -121,10 +106,9 @@ class SignUpViewController: UIViewController {
             } else {
                 
                 // ERROR CASE 3: Username was already taken
-                // Alert user that username already exists, shift focus to username field
-                let ac = UIAlertController(title: "Username Already Taken", message: "Please choose another username.", preferredStyle: .alert)
-                ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                self.present(ac, animated: true) { self.usernameTextField.becomeFirstResponder() }
+                self.presentSimpleAlert(title: "Username Already Taken", message: "Please choose another username.", completion: {
+                    self.usernameTextField.becomeFirstResponder()
+                })
             }
         })
     }
@@ -140,15 +124,12 @@ class SignUpViewController: UIViewController {
             
             // In the case of invalid login, handle gracefully
             if let error = error {
-                print(error.localizedDescription);
-                
-                // Let user know that email/password is invalid
-                let ac = UIAlertController(title: "Invalid Login", message: "Please double check your email and password.", preferredStyle: .alert)
-                ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                self.present(ac, animated: true, completion: nil)
                 
                 // TODO: Handle seemingly impossible case of failed login after account creation
-                print("AT.ME:: Login attempt unsuccessful, however account was created")
+                
+                print("AT.ME:: Login failed, however account was created\n\(error.localizedDescription)");
+                self.presentSimpleAlert(title: "Invalid Login", message: "Please double check your email and password", completion: nil)
+                
                 return
             }
             
@@ -175,12 +156,9 @@ class SignUpViewController: UIViewController {
             
         } else {
             
-            // Let user know that email/password is invalid
-            let ac = UIAlertController(title: "Something Went Wrong", message: "Please try signing in again.", preferredStyle: .alert)
-            ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            self.present(ac, animated: true, completion: nil)
-            
             print("AT.ME:: Login unsuccessful due to nil properties for the FIRUser")
+            presentSimpleAlert(title: "Something Went Wrong", message: "Please try signing in again.", completion: nil)
+            
             return
         }
         
@@ -212,5 +190,4 @@ class SignUpViewController: UIViewController {
     @IBAction func transitionToSignIn(_ sender: Any) {
         self.dismiss(animated: false, completion: nil)
     }
-    
 }
