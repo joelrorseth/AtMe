@@ -41,10 +41,7 @@ class SettingsViewController: UITableViewController {
     // ==========================================
     private func loadCurrentUserLabels() {
         
-        // TODO: It is possible to switch into this Settings controller before
-        // UserState.currentUser has been properly set upon sign in. Must add
-        // asynchronous load to await non-nil values, then proceed to update UI here
-        
+        // Should never happen, app blocks until these have been set at login
         userDisplayNameLabel.text = UserState.currentUser.displayName ?? "Loading..."
         usernameLabel.text = UserState.currentUser.username ?? "Loading..."
     }

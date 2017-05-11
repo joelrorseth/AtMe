@@ -69,24 +69,24 @@ class SignInViewController: UIViewController, AlertController {
 
             // TODO: Implement error handling in case of failed read for 'username' record
             userInformationRef.observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
+                
                 UserState.currentUser.username = snapshot.childSnapshot(forPath: "\(uid)/username").value as? String
                 UserState.currentUser.displayName = snapshot.childSnapshot(forPath: "\(uid)/displayName").value as? String
+                
+                // Maintain information of current user for duration of the app lifetime
+                UserState.currentUser.uid = uid
+                UserState.currentUser.email = email
+                
+                
+                // Initiate segue to next view
+                self.performSegue(withIdentifier: Constants.Segues.signInSuccessSegue, sender: nil)
+                print("AT.ME:: Current user set. Login successful")
             })
-            
-            // Maintain information of current user for duration of the app lifetime
-            UserState.currentUser.uid = uid
-            UserState.currentUser.email = email
             
         } else {
             
             presentSimpleAlert(title: "Something Went Wrong", message: "Please try signing in again.", completion: nil)
-            
             print("AT.ME:: Login unsuccessful due to nil properties for the FIRUser")
-            return
         }
-        
-        // Initiate segue to next view
-        self.performSegue(withIdentifier: Constants.Segues.signInSuccessSegue, sender: nil)
-        print("AT.ME:: Login successful")
     }
 }
