@@ -24,15 +24,19 @@ class SettingsViewController: UITableViewController {
     @IBOutlet weak var userDisplayNameLabel: UILabel!
     @IBOutlet weak var usernameLabel: UILabel!
     
-    // TODO: Add gesture recognizer / action method for
-    // image view, allow user to select new profile pic
-    
     // TODO: Load profile pic into image view
     
     // ==========================================
     // ==========================================
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
+        // Add gesture recognizer to the profile picture UIImageView
+        let imageGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(SettingsViewController.promptImageSelection))
+        
+        userPictureImageView.addGestureRecognizer(imageGestureRecognizer)
+        userPictureImageView.isUserInteractionEnabled = true
         
         loadCurrentUserLabels()
     }
@@ -44,6 +48,15 @@ class SettingsViewController: UITableViewController {
         // Should never happen, app blocks until these have been set at login
         userDisplayNameLabel.text = UserState.currentUser.displayName ?? "Loading..."
         usernameLabel.text = UserState.currentUser.username ?? "Loading..."
+    }
+    
+    // ==========================================
+    // ==========================================
+    func promptImageSelection() {
+     
+        // TODO:
+        //let picker = UIImagePickerController()
+        //self.present(picker, animated: true, completion: nil)
     }
     
     // ==========================================
