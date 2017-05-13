@@ -22,24 +22,3 @@ extension AlertController where Self:UIViewController {
         self.present(controller, animated: true, completion: completion)
     }
 }
-
-extension ConvoViewController: UICollectionViewDelegate {
-    
-    // ==========================================
-    // ==========================================
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-    
-    // ==========================================
-    // ==========================================
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return messages.count
-    }
-    
-    // ==========================================
-    // ==========================================
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsetsMake(8, 0, 0, 0)
-    }
-}

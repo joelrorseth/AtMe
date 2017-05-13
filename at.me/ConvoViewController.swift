@@ -100,7 +100,7 @@ class ConvoViewController: UIViewController {
         
         // Add text from textfield to temp array, insert row into collection view
         messages.append(message)
-        messageCollectionView.insertItems(at: [IndexPath.init(row: messages.count - 1, section: 0)])
+        messageCollectionView.insertItems(at: [IndexPath(row: messages.count - 1, section: 0)] )
     }
     
     // ==========================================
@@ -197,7 +197,29 @@ class ConvoViewController: UIViewController {
     }
 }
 
-extension ConvoViewController: UICollectionViewDataSource {
+extension ConvoViewController: UICollectionViewDelegate {
+    
+    // ==========================================
+    // ==========================================
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    // ==========================================
+    // ==========================================
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return messages.count
+    }
+    
+    // ==========================================
+    // ==========================================
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsetsMake(8, 0, 0, 0)
+    }
+}
+
+
+extension ConvoViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     // MARK: Collection View
     
@@ -220,11 +242,10 @@ extension ConvoViewController: UICollectionViewDataSource {
             attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)],
             context: nil
         )
-
         
         // CASE 1: OUTGOING
         if (message.sender == UserState.currentUser.username!) {
-            
+
             // Set bubble and text frames
             cell.messageTextView.frame = CGRect(
                 x: ((view.frame.width - (messageFrame.width + 11 + 20))),
@@ -232,6 +253,7 @@ extension ConvoViewController: UICollectionViewDataSource {
                 width: messageFrame.width + 16 - 5,
                 height: messageFrame.height + 20
             )
+            
             cell.bubbleView.frame = CGRect(
                 x: (view.frame.width - 15) - (messageFrame.width + 11 + 20) + 5 + 5,
                 y: -4,
