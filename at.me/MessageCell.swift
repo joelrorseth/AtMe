@@ -17,10 +17,7 @@ class MessageCell: UICollectionViewCell {
     // UIView for outside chat bubble
     let bubbleView: UIView = {
         let view = UIView()
-        //view.layer.cornerRadius = 3
-        //view.layer.borderWidth = 0.25
-        view.layer.borderColor = UIColor.black.cgColor
-        view.backgroundColor = UIColor.white
+        view.layer.cornerRadius = 12
         view.layer.masksToBounds = true
         return view
     }()
@@ -29,7 +26,6 @@ class MessageCell: UICollectionViewCell {
     let messageTextView: UITextView = {
         let textView = UITextView()
         textView.font = UIFont.systemFont(ofSize: CGFloat(Constants.Text.defaultTextSize))
-        textView.text = ""
         textView.isEditable = false
         textView.backgroundColor = UIColor.clear
         return textView
