@@ -7,11 +7,15 @@
 //
 
 import UIKit
+import Photos
 import Firebase
 
 class SettingsViewController: UITableViewController, AlertController {
     
-    private lazy var userInformationRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userInformation")
+    private lazy var userInformationRef: FIRDatabaseReference =
+        FIRDatabase.database().reference().child("userInformation")
+    lazy var userDisplayPictureRef: FIRStorageReference =
+        FIRStorage.storage().reference().child("displayPictures")
     
     private enum UserAttribute {
         case none, displayName, email, firstName, lastName, password
@@ -57,6 +61,7 @@ class SettingsViewController: UITableViewController, AlertController {
         // Create picker, and set this controller as delegate
         let picker = UIImagePickerController()
         picker.delegate = self
+        picker.allowsEditing = true
         
         // Call AlertController method to display ActionSheet allowing Camera or Photo Library selection
         // Use callback to set picker source type determined in the alert controller
@@ -160,6 +165,26 @@ class SettingsViewController: UITableViewController, AlertController {
         loadCurrentUserLabels()
         self.tableView.reloadData()
     }
+    
+    // ==========================================
+    // ==========================================
+//    func uploadDisplayPicture(image: UIImage) {
+//        
+//        guard let imageData = UIImageJPEGRepresentation(image, 1.0) else { return }
+//        
+//        if let uid = UserState.currentUser.uid {
+//            userDisplayPictureRef.child("\(uid).jpg").put(imageData, metadata: nil, completion: { (metadata, error) in
+//                
+//                if let error = error {
+//                    print("AT.ME:: Error uploading profile picture to Firebase storage")
+//                    return
+//                }
+//                
+//                
+//            })
+//        }
+//
+//    }
     
     // ==========================================
     // ==========================================
@@ -267,7 +292,7 @@ class SettingsViewController: UITableViewController, AlertController {
         // Add gesture recognizer to handle tapping outside of keyboard
         dimmedView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissPopup)))
         popupView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
-        
+
         self.view.addSubview(dimmedView)
         self.view.addSubview(popupView)
         
@@ -289,7 +314,72 @@ extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationC
     // ==========================================
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
-        // TODO
+        // TODO: Refactor
+        // TODO: Save edited image
+        // TODO: Cache image
+        // TODO: Update storage url for user in Firebase so we can load it at startup etc
+        
+        
+        guard let uid = UserState.currentUser.uid else { return }
+        
+        // Full destination path in Firebase (with file extension)
+        let path = "\(uid)/\(uid).JPG"
+        
+        
+        // Case 1: Image was selected from photo library
+        if let imageURL = info[UIImagePickerControllerReferenceURL] as? String {
+            
+            let url = URL(fileURLWithPath: imageURL)
+            
+            // Use PHAsset class to manage stored images in device Photo Library
+            let assets = PHAsset.fetchAssets(withALAssetURLs: [url], options: nil)
+            let asset = assets.firstObject
+            
+            asset?.requestContentEditingInput(with: nil, completionHandler: { (contentEditingInput, info) in
+                
+                let file = contentEditingInput?.fullSizeImageURL    // URL for photo on device
+    
+                // Use putFile() to upload photo from device using its local URL
+                self.userDisplayPictureRef.child(path).putFile(file!, metadata: nil) { (metadata, error) in
+                    
+                    if let error = error {
+                        print("AT.ME:: Error uploading display picture to Firebase \(error.localizedDescription)")
+                        return
+                    }
+                }
+                
+            })
+            
+        }
+        
+        // Case 2: Image was taken by camera
+        else if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            
+            // Convert UIImage -> Data for storage purposes
+            let imageData = UIImageJPEGRepresentation(image, 1.0)
+            
+            // Use put() to upload photo using a Data object
+            userDisplayPictureRef.child(path).put(imageData!, metadata: nil) { (metadata, error) in
+                
+                if let error = error {
+                    print("AT.ME:: Error uploading display picture to Firebase \(error.localizedDescription)")
+                    return
+                }
+            }
+        }
+        
+        else {
+            
+            print("AT.ME:: Error extracting selected photo from UIImagePickerController")
+            return
+        }
+        
+        dismiss(animated: true)
+    }
+    
+    // ==========================================
+    // ==========================================
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         dismiss(animated: true)
     }
 }
