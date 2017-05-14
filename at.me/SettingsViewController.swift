@@ -54,9 +54,12 @@ class SettingsViewController: UITableViewController {
     // ==========================================
     func promptImageSelection() {
      
-        // TODO:
-        //let picker = UIImagePickerController()
-        //self.present(picker, animated: true, completion: nil)
+        // Create picker, and set this controller as delegate
+        let picker = UIImagePickerController()
+        picker.allowsEditing = true
+        picker.delegate = self
+        
+        self.present(picker, animated: true, completion: nil)
     }
     
     // ==========================================
@@ -269,5 +272,17 @@ class SettingsViewController: UITableViewController {
             popupView.frame.origin.y = 50
         })
         
+    }
+}
+
+
+// MARK: Image Picker Delegate Methods
+extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    // ==========================================
+    // ==========================================
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        
+        // TODO:
     }
 }
