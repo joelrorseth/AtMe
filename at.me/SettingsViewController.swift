@@ -42,16 +42,23 @@ class SettingsViewController: UITableViewController, AlertController {
         userPictureImageView.addGestureRecognizer(imageGestureRecognizer)
         userPictureImageView.isUserInteractionEnabled = true
         
-        loadCurrentUserLabels()
+        loadCurrentUserInformation()
     }
     
     // ==========================================
     // ==========================================
-    private func loadCurrentUserLabels() {
+    private func loadCurrentUserInformation() {
         
         // Should never happen, app blocks until these have been set at login
         userDisplayNameLabel.text = UserState.currentUser.displayName ?? "Loading..."
         usernameLabel.text = UserState.currentUser.username ?? "Loading..."
+        
+        // Display picture may very well be nil if not set or loaded yet
+        // This is because display pictures are loaded asynchronously at launch
+        
+        if let image = UserState.currentUser.displayPicture {
+            userPictureImageView.image = image
+        }
     }
     
     // ==========================================
@@ -162,7 +169,7 @@ class SettingsViewController: UITableViewController, AlertController {
             }
         }
         
-        loadCurrentUserLabels()
+        loadCurrentUserInformation()
         self.tableView.reloadData()
     }
     
