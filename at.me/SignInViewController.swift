@@ -13,6 +13,7 @@ class SignInViewController: UIViewController, AlertController {
     
     // Firebase references
     private lazy var userInformationRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userInformation")
+    private lazy var userDisplayPictureRef: FIRStorageReference = FIRStorage.storage().reference().child("displayPictures")
     
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
@@ -76,6 +77,28 @@ class SignInViewController: UIViewController, AlertController {
                 // Maintain information of current user for duration of the app lifetime
                 UserState.currentUser.uid = uid
                 UserState.currentUser.email = email
+                
+                // Note: This block is error safe, handles all errors
+                // TODO: Determine if displayPicture recorded path is even necessary since it is predictable using 'uid'
+                
+                // Load profile picture on a background thread
+                // Extract stored path, download data at location if path is set
+                
+                if let relativeURL = snapshot.childSnapshot(forPath: "\(uid)/displayPicture").value as? String {
+                    
+                    // Asynchronously download the file data stored at 'path' (display picture)
+                    self.userDisplayPictureRef.child(relativeURL).data(withMaxSize: INT64_MAX, completion: { (data, error) in
+                        
+                        if let image = data {
+                            UserState.currentUser.displayPicture = UIImage(data: image)
+                            print("AT.ME:: Loaded display picture into local memory")
+                        } else {
+                            print("AT.ME:: Image data was nil at path: \(relativeURL)")
+                        }
+                    })
+                    
+                } else { print("AT.ME:: Did not find a display picture to load") }
+
                 
                 
                 // Initiate segue to next view

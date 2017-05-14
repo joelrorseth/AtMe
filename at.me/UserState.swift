@@ -7,12 +7,14 @@
 //
 
 import Foundation
+import UIKit.UIImage
 
 class UserState: NSObject {
     
     static let currentUser = UserState()
     
     var displayName: String?
+    var displayPicture: UIImage?
     var email: String?
     var uid: String?
     var username: String?
