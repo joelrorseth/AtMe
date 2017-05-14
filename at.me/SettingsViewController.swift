@@ -12,7 +12,7 @@ import Firebase
 
 class SettingsViewController: UITableViewController, AlertController {
     
-    private lazy var userInformationRef: FIRDatabaseReference =
+    lazy var userInformationRef: FIRDatabaseReference =
         FIRDatabase.database().reference().child("userInformation")
     lazy var userDisplayPictureRef: FIRStorageReference =
         FIRStorage.storage().reference().child("displayPictures")
@@ -346,6 +346,11 @@ extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationC
                         print("AT.ME:: Error uploading display picture to Firebase \(error.localizedDescription)")
                         return
                     }
+                    
+                    // Record Storage URL in user information record
+                    // This is important, allows display image to be cached at app launch
+                    
+                    self.userInformationRef.child("\(uid)/displayPicture").setValue(path)
                 }
                 
             })
@@ -365,6 +370,8 @@ extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationC
                     print("AT.ME:: Error uploading display picture to Firebase \(error.localizedDescription)")
                     return
                 }
+                
+                self.userInformationRef.child("\(uid)/displayPicture").setValue(path)
             }
         }
         
