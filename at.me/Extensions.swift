@@ -21,4 +21,27 @@ extension AlertController where Self:UIViewController {
         // UIAlertController must be presented by the calling controller (self)
         self.present(controller, animated: true, completion: completion)
     }
+    
+    // ==========================================
+    // ==========================================
+    func presentPhotoSelectionPrompt(completion: ((UIImagePickerControllerSourceType) -> Void)?) {
+        
+        let controller = UIAlertController(title: "Change Profile Picture", message: "Where do you want to take your picture?", preferredStyle: UIAlertControllerStyle.actionSheet)
+
+        if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera)) {
+            controller.addAction(UIAlertAction(title: "Camera", style: UIAlertActionStyle.default, handler: { _ in
+ 
+                completion!(UIImagePickerControllerSourceType.camera)
+            }))
+        }
+        
+        controller.addAction(UIAlertAction(title: "Photo Library", style: UIAlertActionStyle.default, handler: { _ in
+            completion!(UIImagePickerControllerSourceType.photoLibrary)
+        }))
+        
+        controller.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: nil))
+        
+        self.present(controller, animated: true, completion: nil)
+        
+    }
 }

@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class SettingsViewController: UITableViewController {
+class SettingsViewController: UITableViewController, AlertController {
     
     private lazy var userInformationRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userInformation")
     
@@ -56,10 +56,16 @@ class SettingsViewController: UITableViewController {
      
         // Create picker, and set this controller as delegate
         let picker = UIImagePickerController()
-        picker.allowsEditing = true
         picker.delegate = self
         
-        self.present(picker, animated: true, completion: nil)
+        // Call AlertController method to display ActionSheet allowing Camera or Photo Library selection
+        // Use callback to set picker source type determined in the alert controller
+        
+        presentPhotoSelectionPrompt(completion: { (sourceType: UIImagePickerControllerSourceType) in
+            
+            picker.sourceType = sourceType
+            self.present(picker, animated: true, completion: nil)
+        })
     }
     
     // ==========================================
@@ -283,6 +289,7 @@ extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationC
     // ==========================================
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
-        // TODO:
+        // TODO
+        dismiss(animated: true)
     }
 }
