@@ -17,6 +17,8 @@
 		5D1C70411E58C64A00FEDEC3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5D1C703F1E58C64A00FEDEC3 /* Main.storyboard */; };
 		5D1C70431E58C64A00FEDEC3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D1C70421E58C64A00FEDEC3 /* Assets.xcassets */; };
 		5D1C70461E58C64A00FEDEC3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5D1C70441E58C64A00FEDEC3 /* LaunchScreen.storyboard */; };
+		5D2B62601EC909A300B8363E /* PromptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2B625F1EC909A300B8363E /* PromptViewController.swift */; };
+		5D2B62621EC909CC00B8363E /* PromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2B62611EC909CC00B8363E /* PromptView.swift */; };
 		5D3DDA381E62469000B6FBB7 /* UserInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3DDA371E62469000B6FBB7 /* UserInfoCell.swift */; };
 		5D3DDA3A1E6248DA00B6FBB7 /* NewConvoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3DDA391E6248DA00B6FBB7 /* NewConvoViewController.swift */; };
 		5D5EDF851EC3D14C00F7FC44 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D5EDF841EC3D14C00F7FC44 /* Extensions.swift */; };
@@ -44,6 +46,8 @@
 		5D1C70421E58C64A00FEDEC3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5D1C70451E58C64A00FEDEC3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5D1C70471E58C64A00FEDEC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5D2B625F1EC909A300B8363E /* PromptViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromptViewController.swift; sourceTree = "<group>"; };
+		5D2B62611EC909CC00B8363E /* PromptView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromptView.swift; sourceTree = "<group>"; };
 		5D3DDA371E62469000B6FBB7 /* UserInfoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoCell.swift; sourceTree = "<group>"; };
 		5D3DDA391E6248DA00B6FBB7 /* NewConvoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewConvoViewController.swift; sourceTree = "<group>"; };
 		5D5EDF841EC3D14C00F7FC44 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -129,6 +133,7 @@
 		5D1C704E1E58C68A00FEDEC3 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				5D2B625F1EC909A300B8363E /* PromptViewController.swift */,
 				5D197AA01E58CE1900C9CB52 /* SignInViewController.swift */,
 				5DAFF1611E72FD02008DE303 /* SignUpViewController.swift */,
 				5D04E9891E58DD0C006D8CD5 /* ChatListViewController.swift */,
@@ -152,6 +157,7 @@
 		5D5EDF831EC3D01900F7FC44 /* Customization */ = {
 			isa = PBXGroup;
 			children = (
+				5D2B62611EC909CC00B8363E /* PromptView.swift */,
 				5D5EDF841EC3D14C00F7FC44 /* Extensions.swift */,
 			);
 			name = Customization;
@@ -294,6 +300,7 @@
 				5D3DDA381E62469000B6FBB7 /* UserInfoCell.swift in Sources */,
 				5DA9E0DD1E5B6E0900F38C96 /* MessageCell.swift in Sources */,
 				5D04E98A1E58DD0C006D8CD5 /* ChatListViewController.swift in Sources */,
+				5D2B62621EC909CC00B8363E /* PromptView.swift in Sources */,
 				5D9027231EB2A3E60021AEE9 /* Conversation.swift in Sources */,
 				5DAFF1621E72FD02008DE303 /* SignUpViewController.swift in Sources */,
 				5D197AA11E58CE1900C9CB52 /* SignInViewController.swift in Sources */,
@@ -305,6 +312,7 @@
 				5D0B5AB81E668EFB0077BE46 /* SettingsViewController.swift in Sources */,
 				5DF36ED91EB3D35400346868 /* Message.swift in Sources */,
 				5D07CAB21E752C0100316D75 /* User.swift in Sources */,
+				5D2B62601EC909A300B8363E /* PromptViewController.swift in Sources */,
 				5D9D443A1EAEE81500CF25F7 /* UserState.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
