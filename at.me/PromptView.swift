@@ -9,14 +9,17 @@
 import UIKit
 
 protocol PromptViewDelegate {
-    func didCommitChange()
+    func didCommitChange(value: String)
     func didCancelChange()
 }
 
 class PromptView: UIView {
     
     var promptDelegate: PromptViewDelegate?
-
+    
+    var changingAttribute: Constants.UserAttribute = .none
+    
+    var textField: UITextField!
     
     // MARK: Initialization
     // ==========================================
@@ -25,6 +28,7 @@ class PromptView: UIView {
         super.init(frame: frame)
         
         self.backgroundColor = UIColor.clear
+        
         
         // Dimmed view appears on top of self.view, but under popup view
         let dimmedView = UIView(frame: CGRect(x: 0, y: 0, width: frame.width, height: frame.height))
@@ -48,7 +52,7 @@ class PromptView: UIView {
         label.text = "PLACEHOLDER MESSAGE"
         
         // Text field is added to the popup view
-        let textField = UITextField(frame: CGRect(x: 20, y: 50, width: popupView.bounds.size.width - 40, height: 34))
+        textField = UITextField(frame: CGRect(x: 20, y: 50, width: popupView.bounds.size.width - 40, height: 34))
         textField.tag = 4000
         textField.borderStyle = .roundedRect
         textField.textColor = UIColor.darkGray
@@ -88,7 +92,10 @@ class PromptView: UIView {
     // ==========================================
     func changeCommitted() {
         dismissKeyboard()
-        promptDelegate?.didCommitChange()
+        
+        if let change = textField.text {
+            promptDelegate?.didCommitChange(value: change)
+        }
     }
     
     // ==========================================

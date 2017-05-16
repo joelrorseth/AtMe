@@ -11,6 +11,7 @@ import UIKit
 class PromptViewController: UIViewController {
     
     var promptDelegate: PromptViewDelegate?
+    var changingAttribute: Constants.UserAttribute = .none
     
     // ==========================================
     // ==========================================
@@ -19,7 +20,9 @@ class PromptViewController: UIViewController {
         
         // Important: Set delegate of the custom UIView
         let promptView = PromptView(frame: self.view.frame)
+        
         promptView.promptDelegate = self
+        promptView.changingAttribute = changingAttribute
         
         self.view.addSubview(promptView)
     }
@@ -29,7 +32,9 @@ extension PromptViewController: PromptViewDelegate {
     
     // ==========================================
     // ==========================================
-    func didCommitChange() {
+    func didCommitChange(value: String) {
+        
+        print("Commiting value: \(value) for key \(changingAttribute)")
         self.dismiss(animated: true, completion: nil)
     }
     

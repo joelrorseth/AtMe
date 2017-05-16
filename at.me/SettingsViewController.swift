@@ -15,9 +15,7 @@ class SettingsViewController: UITableViewController, AlertController {
     lazy var userInformationRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userInformation")
     lazy var userDisplayPictureRef: FIRStorageReference = FIRStorage.storage().reference().child("displayPictures")
     
-    enum UserAttribute { case none, displayName, email, firstName, lastName, password }
-    
-    var currentAttributeChanging: UserAttribute = UserAttribute.none
+    var currentAttributeChanging: Constants.UserAttribute = Constants.UserAttribute.none
     var attributePrompt: String = ""
 
     @IBOutlet weak var userPictureImageView: UIImageView!
@@ -108,66 +106,66 @@ class SettingsViewController: UITableViewController, AlertController {
     
     // ==========================================
     // ==========================================
-    func changeSaved() {
-        
-        // Find text field with changed attribute, unwrap
-        if let textfield = self.view.viewWithTag(4000) as? UITextField {
-            
-            // Check if attribute is suitable
-            if let newAttribute = textfield.text {
-                
-                
-                // SPECIAL CASE 1: Password change
-                // ---------------------------------------------
-                if currentAttributeChanging == .password {
-                    
-                    FIRAuth.auth()?.sendPasswordReset(withEmail: (FIRAuth.auth()?.currentUser?.email!)!, completion: { (error) in
-                        
-                        // Alert user of password reset, dismiss popup
-                        self.presentSimpleAlert(
-                            title: "Your Password Has Been Reset",
-                            message: "Please check your emails for instructions on how to change your password",
-                            completion: { self.dismissPopup() })
-                    })
-                }
-                
-                
-                // TODO: SPECIAL CASE 2: Email change (May not be possible due to Firebase restrictions)
-                // ---------------------------------------------
-                if currentAttributeChanging == .email {
-                    
-                    //let changeRequest = FIRAuth.auth()?.currentUser?.profileChangeRequest()
-                }
-                
-                
-                
-                // SPECIAL CASE 3: Display Name
-                // ---------------------------------------------
-                if currentAttributeChanging == .displayName {
-                    
-                    // Change Firebase's internal record of <FIRUser>.displayName
-                    let changeRequest = FIRAuth.auth()?.currentUser?.profileChangeRequest()
-                    changeRequest?.displayName = newAttribute
-                    UserState.currentUser.displayName = newAttribute
-                    
-                    // Allow fallthrough to allow our maintained user records to be updated
-                }
-                
-             
-                // All Other Changes
-                // Lookup and change user attribute
-                // ---------------------------------------------
-                if let user = FIRAuth.auth()?.currentUser {
-                    
-                    userInformationRef.child(String(user.uid)).child("\(currentAttributeChanging)").setValue(newAttribute)
-                    self.dismissPopup()
-                }
-            }
-        }
-        
-        loadCurrentUserInformation()
-        self.tableView.reloadData()
-    }
+//    func changeSaved() {
+//        
+//        // Find text field with changed attribute, unwrap
+//        if let textfield = self.view.viewWithTag(4000) as? UITextField {
+//            
+//            // Check if attribute is suitable
+//            if let newAttribute = textfield.text {
+//                
+//                
+//                // SPECIAL CASE 1: Password change
+//                // ---------------------------------------------
+//                if currentAttributeChanging == .password {
+//                    
+//                    FIRAuth.auth()?.sendPasswordReset(withEmail: (FIRAuth.auth()?.currentUser?.email!)!, completion: { (error) in
+//                        
+//                        // Alert user of password reset, dismiss popup
+//                        self.presentSimpleAlert(
+//                            title: "Your Password Has Been Reset",
+//                            message: "Please check your emails for instructions on how to change your password",
+//                            completion: { self.dismissPopup() })
+//                    })
+//                }
+//                
+//                
+//                // TODO: SPECIAL CASE 2: Email change (May not be possible due to Firebase restrictions)
+//                // ---------------------------------------------
+//                if currentAttributeChanging == .email {
+//                    
+//                    //let changeRequest = FIRAuth.auth()?.currentUser?.profileChangeRequest()
+//                }
+//                
+//                
+//                
+//                // SPECIAL CASE 3: Display Name
+//                // ---------------------------------------------
+//                if currentAttributeChanging == .displayName {
+//                    
+//                    // Change Firebase's internal record of <FIRUser>.displayName
+//                    let changeRequest = FIRAuth.auth()?.currentUser?.profileChangeRequest()
+//                    changeRequest?.displayName = newAttribute
+//                    UserState.currentUser.displayName = newAttribute
+//                    
+//                    // Allow fallthrough to allow our maintained user records to be updated
+//                }
+//                
+//             
+//                // All Other Changes
+//                // Lookup and change user attribute
+//                // ---------------------------------------------
+//                if let user = FIRAuth.auth()?.currentUser {
+//                    
+//                    userInformationRef.child(String(user.uid)).child("\(currentAttributeChanging)").setValue(newAttribute)
+//                    self.dismissPopup()
+//                }
+//            }
+//        }
+//        
+//        loadCurrentUserInformation()
+//        self.tableView.reloadData()
+//    }
     
     // ==========================================
     // ==========================================
@@ -198,8 +196,14 @@ class SettingsViewController: UITableViewController, AlertController {
     // ==========================================
     // ==========================================
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        let promptViewController = segue.destination as! PromptViewController
-//        promptV
+        
+        if segue.identifier == "ShowPrompt" {
+            if let destination = segue.destination as? PromptViewController {
+                let selectedRow = tableView.indexPathForSelectedRow!.row
+                
+                destination.changingAttribute = Constants.UserAttribute(rawValue: selectedRow + 1)!
+            }
+        }
     }
 }
 
@@ -295,11 +299,28 @@ extension SettingsViewController {
     // ==========================================
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        DispatchQueue.main.async {
-            self.performSegue(withIdentifier: "ShowPrompt", sender: nil)
-        }
+//        if (indexPath.section == 1) {
+//            let changingAttribute: Constants.UserAttribute
+//            
+//            switch (indexPath.row) {
+//            case 0:
+//                changingAttribute = .displayName
+//                break
+//            case 1:
+//                changingAttribute = .firstName
+//                break
+//            case 2:
+//                changingAttribute = .lastName
+//                break
+//            default:
+//                return
+//            }
         
-    }
+            DispatchQueue.main.async {
+                self.performSegue(withIdentifier: "ShowPrompt", sender: self)
+            }
+        
+    
         
 //        // Determine which attributes have been chosen for edit
 //        switch indexPath.row {
@@ -387,4 +408,5 @@ extension SettingsViewController {
 //            popupView.frame.origin.y = 50
 //        })
 //    }
+    }
 }
