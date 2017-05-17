@@ -202,6 +202,7 @@ class SettingsViewController: UITableViewController, AlertController {
                 let selectedRow = tableView.indexPathForSelectedRow!.row
                 
                 destination.changingAttribute = Constants.UserAttribute(rawValue: selectedRow + 1)!
+                destination.changingAttributeName = Constants.UserAttributes.UserAttributeNames[selectedRow + 1]
             }
         }
     }

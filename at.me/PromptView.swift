@@ -18,8 +18,10 @@ class PromptView: UIView {
     var promptDelegate: PromptViewDelegate?
     
     var changingAttribute: Constants.UserAttribute = .none
+    var changingAttributeName: String = ""
     
     var textField: UITextField!
+    var label: UILabel!
     
     // MARK: Initialization
     // ==========================================
@@ -45,11 +47,11 @@ class PromptView: UIView {
         popupView.tag = 1000
         
         // Label is added to the popup view
-        let label = UILabel(frame: CGRect(x: 0, y: 20, width: popupView.bounds.size.width, height: 20))
+        label = UILabel(frame: CGRect(x: 0, y: 20, width: popupView.bounds.size.width, height: 20))
         label.textColor = UIColor.black
         label.textAlignment = .center
         label.font = UIFont(name: "System", size: 14)
-        label.text = "PLACEHOLDER MESSAGE"
+        label.text = "Enter a new \(changingAttributeName)"
         
         // Text field is added to the popup view
         textField = UITextField(frame: CGRect(x: 20, y: 50, width: popupView.bounds.size.width - 40, height: 34))
@@ -68,13 +70,14 @@ class PromptView: UIView {
         button.titleLabel?.font = UIFont(name: "System", size: 16)
         button.layer.cornerRadius = 5
         
-        popupView.addSubview(label)
-        popupView.addSubview(textField)
-        popupView.addSubview(button)
-        
         // Add gesture recognizer to handle tapping outside of keyboard
         dimmedView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissPopup)))
         popupView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
+        
+        // Add views to this view
+        popupView.addSubview(label)
+        popupView.addSubview(textField)
+        popupView.addSubview(button)
         
         self.addSubview(dimmedView)
         self.addSubview(popupView)
@@ -96,6 +99,12 @@ class PromptView: UIView {
         if let change = textField.text {
             promptDelegate?.didCommitChange(value: change)
         }
+    }
+    
+    // ==========================================
+    // ==========================================
+    func setLabel(label: String) {
+        self.label.text = "Enter a new " + label
     }
     
     // ==========================================

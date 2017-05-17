@@ -12,6 +12,7 @@ class PromptViewController: UIViewController {
     
     var promptDelegate: PromptViewDelegate?
     var changingAttribute: Constants.UserAttribute = .none
+    var changingAttributeName: String = ""
     
     // ==========================================
     // ==========================================
@@ -23,6 +24,7 @@ class PromptViewController: UIViewController {
         
         promptView.promptDelegate = self
         promptView.changingAttribute = changingAttribute
+        promptView.setLabel(label: changingAttributeName)
         
         self.view.addSubview(promptView)
     }
