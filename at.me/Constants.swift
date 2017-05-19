@@ -27,9 +27,9 @@ struct Constants {
         static let primaryColor = UIColor.init(red: 185, green: 24, blue: 19, alpha: 1)
     }
     
-    enum UserAttribute: Int { case none = 0, displayName, firstName, lastName}
+    enum UserAttribute: Int { case none = 0, displayName, firstName, lastName, email, password}
     
     struct UserAttributes {
-        static let UserAttributeNames = ["None", "display name", "first name", "last name"]
+        static let UserAttributeNames = ["None", "display name", "first name", "last name", "email address", "password"]
     }
 }
