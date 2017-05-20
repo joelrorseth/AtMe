@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class ConvoViewController: UIViewController {
+class ConvoViewController: UIViewController, AlertController {
     
     // Firebase references
     var messagesRef: FIRDatabaseReference?
@@ -52,6 +52,25 @@ class ConvoViewController: UIViewController {
         // Clear message text field and dismiss keyboard
         messageTextField.text = ""
         messageTextField.resignFirstResponder()
+    }
+
+    // ==========================================
+    // ==========================================
+    @IBAction func didPressCameraIcon(_ sender: Any) {
+        
+        // Create picker, and set this controller as delegate
+        let picker = UIImagePickerController()
+        picker.delegate = self
+        picker.allowsEditing = true
+        
+        // Call AlertController method to display ActionSheet allowing Camera or Photo Library selection
+        // Use callback to set picker source type determined in the alert controller
+        
+        presentPhotoSelectionPrompt(completion: { (sourceType: UIImagePickerControllerSourceType) in
+            
+            picker.sourceType = sourceType
+            self.present(picker, animated: true, completion: nil)
+        })
     }
 
     
@@ -195,6 +214,10 @@ class ConvoViewController: UIViewController {
             print("AT.ME:: Removed observer with handle \(handle) in ConvoViewController")
         }
     }
+}
+
+extension ConvoViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
 }
 
 extension ConvoViewController: UICollectionViewDelegate {
