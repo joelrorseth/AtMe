@@ -49,36 +49,30 @@ extension AlertController where Self:UIViewController {
 
 extension UIImagePickerControllerDelegate {
     
-    // ==========================================
-    // ==========================================
-    func determineImageSource()  {
-        
-    }
+//    // ==========================================
+//    // ==========================================
+//    func extractLibraryImage(from url: String) -> URL? {
+//        
+//        let imageURL = URL(fileURLWithPath: url)
+//        var fullSizeURL: URL?
+//        
+//        // Use PHAsset class to manage stored images in device Photo Library
+//        let assets = PHAsset.fetchAssets(withALAssetURLs: [imageURL], options: nil)
+//        
+//        if let asset = assets.firstObject {
+//            asset.requestContentEditingInput(with: nil, completionHandler: { (contentEditingInput, info) in
+//                if let url = contentEditingInput?.fullSizeImageURL {
+//                    fullSizeURL = url
+//                }
+//            })
+//        }
+//        
+//        return fullSizeURL
+//    }
     
     // ==========================================
     // ==========================================
-    func extractLibraryImage(from url: String) -> URL? {
-        
-        let imageURL = URL(fileURLWithPath: url)
-        var fullSizeURL: URL?
-        
-        // Use PHAsset class to manage stored images in device Photo Library
-        let assets = PHAsset.fetchAssets(withALAssetURLs: [imageURL], options: nil)
-        
-        if let asset = assets.firstObject {
-            asset.requestContentEditingInput(with: nil, completionHandler: { (contentEditingInput, info) in
-                if let url = contentEditingInput?.fullSizeImageURL {
-                    fullSizeURL = url
-                }
-            })
-        }
-        
-        return fullSizeURL
-    }
-    
-    // ==========================================
-    // ==========================================
-    func extractCameraImage(image: UIImage) -> Data? {
-        return UIImageJPEGRepresentation(image, 1.0) 
+    func convertImageToData(image: UIImage) -> Data? {
+        return UIImageJPEGRepresentation(image, 0.8)
     }
 }

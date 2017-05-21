@@ -28,7 +28,6 @@ class SettingsViewController: UITableViewController, AlertController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
         // Add gesture recognizer to the profile picture UIImageView
         let imageGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(SettingsViewController.promptImageSelection))
         
@@ -69,6 +68,11 @@ class SettingsViewController: UITableViewController, AlertController {
         if let uid = UserState.currentUser.uid {
             let path = "\(uid)/\(uid).JPG"
             self.userInformationRef.child("\(uid)/displayPicture").setValue(path)
+            
+            // Update current user stored display picture, reload image view
+            UserState.currentUser.displayPicture = image
+            loadCurrentUserInformation()
+            
         } else {
             print("AT.ME:: Could not determine current user uid to update display picture")
         }
@@ -155,44 +159,25 @@ extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationC
     // ==========================================
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
-        // TODO: Save edited image
-        // TODO: Cache image
-        
         guard let uid = UserState.currentUser.uid else { return }
         let path = "\(uid)/\(uid).JPG"
         
-        if let urlString = info[UIImagePickerControllerReferenceURL] as? String {
-            
-            // Case 1: Image was selected from photo library
-            if let url = extractLibraryImage(from: urlString) {
-                DatabaseController.uploadLibraryImage(url: url, to: self.userDisplayPictureRef.child(path), completion: { (error) in
+        // Extract the image after editing, upload to database as Data object
+        if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
+            if let data = convertImageToData(image: image) {
+                
+                DatabaseController.uploadImage(data: data, to: userDisplayPictureRef.child(path), completion: { (error) in
                     if let error = error {
-                        print("AT.ME:: Error uploading display picture to Firebase \(error.localizedDescription)")
+                        print("AT.ME:: Error uploading display picture to Firebase. \(error.localizedDescription)")
                         return
                     }
                     
-                    // TODO: Cache new profile picture, update UserState.currentUser
-                    // Have to figure out how to load picture using URL
-                    
-                    print("AT.ME:: Image uploaded successfully")
-                    self.userInformationRef.child("\(uid)/displayPicture").setValue(path)
-                })
-            } else { print("AT.ME:: Error extracting image from library") }
-        } else if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            
-            // Case 2: Image was taken by camera
-            if let data = extractCameraImage(image: image) {
-                DatabaseController.uploadCameraImage(data: data, to: userDisplayPictureRef.child(path), completion: { (error) in
-                    if let error = error {
-                        print("AT.ME:: Error uploading display picture to Firebase \(error.localizedDescription)")
-                        return
-                    }
-                    
-                    print("AT.ME:: Image uploaded successfully")
+                    print("AT.ME:: Camera image uploaded successfully")
                     self.updateUserDisplayPicture(image: image)
                 })
+                
             } else { print("AT.ME:: Error extracting image from camera source") }
-        } else { print("AT.ME:: Error extracting selected photo from UIImagePickerController") }
+        } else { print("AT.ME:: Error extracting edited UIImage from info dictionary") }
 
         dismiss(animated: true)
     }
