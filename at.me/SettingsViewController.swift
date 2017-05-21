@@ -164,22 +164,20 @@ extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationC
             
             asset?.requestContentEditingInput(with: nil, completionHandler: { (contentEditingInput, info) in
                 
-                let file = contentEditingInput?.fullSizeImageURL    // URL for photo on device
-    
-                // Use putFile() to upload photo from device using its local URL
-                self.userDisplayPictureRef.child(path).putFile(file!, metadata: nil) { (metadata, error) in
-                    
-                    if let error = error {
-                        print("AT.ME:: Error uploading display picture to Firebase \(error.localizedDescription)")
-                        return
-                    }
-                    
-                    // Record Storage URL in user information record
-                    // This is important, allows display image to be cached at app launch
-                    
-                    self.userInformationRef.child("\(uid)/displayPicture").setValue(path)
+                if let url = contentEditingInput?.fullSizeImageURL {
+                    DatabaseController.uploadLibraryImage(url: url, to: self.userDisplayPictureRef.child(path), completion: { (error) in
+                        
+                        if let error = error {
+                            print("AT.ME:: Error uploading display picture to Firebase \(error.localizedDescription)")
+                            return
+                        }
+                        
+                        // Record Storage URL in user information record
+                        // This is important, allows display image to be cached at app launch
+                        
+                        self.userInformationRef.child("\(uid)/displayPicture").setValue(path)
+                    })
                 }
-                
             })
             
         }
@@ -188,17 +186,16 @@ extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationC
         else if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
             
             // Convert UIImage -> Data for storage purposes
-            let imageData = UIImageJPEGRepresentation(image, 1.0)
-            
-            // Use put() to upload photo using a Data object
-            userDisplayPictureRef.child(path).put(imageData!, metadata: nil) { (metadata, error) in
-                
-                if let error = error {
-                    print("AT.ME:: Error uploading display picture to Firebase \(error.localizedDescription)")
-                    return
-                }
-                
-                self.userInformationRef.child("\(uid)/displayPicture").setValue(path)
+            if let data = UIImageJPEGRepresentation(image, 1.0) {
+                DatabaseController.uploadCameraImage(data: data, to: userDisplayPictureRef.child(path), completion: { (error) in
+                    
+                    if let error = error {
+                        print("AT.ME:: Error uploading display picture to Firebase \(error.localizedDescription)")
+                        return
+                    }
+                    
+                    self.userInformationRef.child("\(uid)/displayPicture").setValue(path)
+                })
             }
         }
         

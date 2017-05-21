@@ -21,6 +21,7 @@
 		5D2B62621EC909CC00B8363E /* PromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2B62611EC909CC00B8363E /* PromptView.swift */; };
 		5D3DDA381E62469000B6FBB7 /* UserInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3DDA371E62469000B6FBB7 /* UserInfoCell.swift */; };
 		5D3DDA3A1E6248DA00B6FBB7 /* NewConvoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3DDA391E6248DA00B6FBB7 /* NewConvoViewController.swift */; };
+		5D5D67761ED1E90200FF8F2A /* DatabaseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D5D67751ED1E90200FF8F2A /* DatabaseController.swift */; };
 		5D5EDF851EC3D14C00F7FC44 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D5EDF841EC3D14C00F7FC44 /* Extensions.swift */; };
 		5D9027231EB2A3E60021AEE9 /* Conversation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D9027221EB2A3E60021AEE9 /* Conversation.swift */; };
 		5D9D443A1EAEE81500CF25F7 /* UserState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D9D44391EAEE81500CF25F7 /* UserState.swift */; };
@@ -50,6 +51,7 @@
 		5D2B62611EC909CC00B8363E /* PromptView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromptView.swift; sourceTree = "<group>"; };
 		5D3DDA371E62469000B6FBB7 /* UserInfoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoCell.swift; sourceTree = "<group>"; };
 		5D3DDA391E6248DA00B6FBB7 /* NewConvoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewConvoViewController.swift; sourceTree = "<group>"; };
+		5D5D67751ED1E90200FF8F2A /* DatabaseController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseController.swift; sourceTree = "<group>"; };
 		5D5EDF841EC3D14C00F7FC44 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		5D9027221EB2A3E60021AEE9 /* Conversation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Conversation.swift; sourceTree = "<group>"; };
 		5D9D44391EAEE81500CF25F7 /* UserState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserState.swift; sourceTree = "<group>"; };
@@ -126,6 +128,7 @@
 				5D07CAB11E752C0100316D75 /* User.swift */,
 				5D9D44391EAEE81500CF25F7 /* UserState.swift */,
 				5DF36ED81EB3D35400346868 /* Message.swift */,
+				5D5D67751ED1E90200FF8F2A /* DatabaseController.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -305,6 +308,7 @@
 				5DAFF1621E72FD02008DE303 /* SignUpViewController.swift in Sources */,
 				5D197AA11E58CE1900C9CB52 /* SignInViewController.swift in Sources */,
 				5D3DDA3A1E6248DA00B6FBB7 /* NewConvoViewController.swift in Sources */,
+				5D5D67761ED1E90200FF8F2A /* DatabaseController.swift in Sources */,
 				5D1C703C1E58C64A00FEDEC3 /* AppDelegate.swift in Sources */,
 				5DFC7F3D1E7A27CF003C6594 /* ConversationCell.swift in Sources */,
 				5DAF28B71E5BBCBC00288F31 /* Constants.swift in Sources */,
