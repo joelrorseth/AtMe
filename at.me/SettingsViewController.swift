@@ -64,6 +64,18 @@ class SettingsViewController: UITableViewController, AlertController {
     
     // ==========================================
     // ==========================================
+    func updateUserDisplayPicture(image: UIImage) {
+        
+        if let uid = UserState.currentUser.uid {
+            let path = "\(uid)/\(uid).JPG"
+            self.userInformationRef.child("\(uid)/displayPicture").setValue(path)
+        } else {
+            print("AT.ME:: Could not determine current user uid to update display picture")
+        }
+    }
+    
+    // ==========================================
+    // ==========================================
     func promptImageSelection() {
      
         // Create picker, and set this controller as delegate
@@ -143,68 +155,45 @@ extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationC
     // ==========================================
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
-        // TODO: Refactor
         // TODO: Save edited image
         // TODO: Cache image
         
         guard let uid = UserState.currentUser.uid else { return }
-        
-        // Full destination path in Firebase (with file extension)
         let path = "\(uid)/\(uid).JPG"
         
-        
-        // Case 1: Image was selected from photo library
-        if let imageURL = info[UIImagePickerControllerReferenceURL] as? String {
+        if let urlString = info[UIImagePickerControllerReferenceURL] as? String {
             
-            let url = URL(fileURLWithPath: imageURL)
-            
-            // Use PHAsset class to manage stored images in device Photo Library
-            let assets = PHAsset.fetchAssets(withALAssetURLs: [url], options: nil)
-            let asset = assets.firstObject
-            
-            asset?.requestContentEditingInput(with: nil, completionHandler: { (contentEditingInput, info) in
-                
-                if let url = contentEditingInput?.fullSizeImageURL {
-                    DatabaseController.uploadLibraryImage(url: url, to: self.userDisplayPictureRef.child(path), completion: { (error) in
-                        
-                        if let error = error {
-                            print("AT.ME:: Error uploading display picture to Firebase \(error.localizedDescription)")
-                            return
-                        }
-                        
-                        // Record Storage URL in user information record
-                        // This is important, allows display image to be cached at app launch
-                        
-                        self.userInformationRef.child("\(uid)/displayPicture").setValue(path)
-                    })
-                }
-            })
-            
-        }
-        
-        // Case 2: Image was taken by camera
-        else if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            
-            // Convert UIImage -> Data for storage purposes
-            if let data = UIImageJPEGRepresentation(image, 1.0) {
-                DatabaseController.uploadCameraImage(data: data, to: userDisplayPictureRef.child(path), completion: { (error) in
-                    
+            // Case 1: Image was selected from photo library
+            if let url = extractLibraryImage(from: urlString) {
+                DatabaseController.uploadLibraryImage(url: url, to: self.userDisplayPictureRef.child(path), completion: { (error) in
                     if let error = error {
                         print("AT.ME:: Error uploading display picture to Firebase \(error.localizedDescription)")
                         return
                     }
                     
+                    // TODO: Cache new profile picture, update UserState.currentUser
+                    // Have to figure out how to load picture using URL
+                    
+                    print("AT.ME:: Image uploaded successfully")
                     self.userInformationRef.child("\(uid)/displayPicture").setValue(path)
                 })
-            }
-        }
-        
-        else {
+            } else { print("AT.ME:: Error extracting image from library") }
+        } else if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
             
-            print("AT.ME:: Error extracting selected photo from UIImagePickerController")
-            return
-        }
-        
+            // Case 2: Image was taken by camera
+            if let data = extractCameraImage(image: image) {
+                DatabaseController.uploadCameraImage(data: data, to: userDisplayPictureRef.child(path), completion: { (error) in
+                    if let error = error {
+                        print("AT.ME:: Error uploading display picture to Firebase \(error.localizedDescription)")
+                        return
+                    }
+                    
+                    print("AT.ME:: Image uploaded successfully")
+                    self.updateUserDisplayPicture(image: image)
+                })
+            } else { print("AT.ME:: Error extracting image from camera source") }
+        } else { print("AT.ME:: Error extracting selected photo from UIImagePickerController") }
+
         dismiss(animated: true)
     }
     

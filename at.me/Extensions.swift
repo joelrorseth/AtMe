@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Photos
 
 protocol AlertController{}
 extension AlertController where Self:UIViewController {
@@ -43,5 +44,41 @@ extension AlertController where Self:UIViewController {
         
         self.present(controller, animated: true, completion: nil)
         
+    }
+}
+
+extension UIImagePickerControllerDelegate {
+    
+    // ==========================================
+    // ==========================================
+    func determineImageSource()  {
+        
+    }
+    
+    // ==========================================
+    // ==========================================
+    func extractLibraryImage(from url: String) -> URL? {
+        
+        let imageURL = URL(fileURLWithPath: url)
+        var fullSizeURL: URL?
+        
+        // Use PHAsset class to manage stored images in device Photo Library
+        let assets = PHAsset.fetchAssets(withALAssetURLs: [imageURL], options: nil)
+        
+        if let asset = assets.firstObject {
+            asset.requestContentEditingInput(with: nil, completionHandler: { (contentEditingInput, info) in
+                if let url = contentEditingInput?.fullSizeImageURL {
+                    fullSizeURL = url
+                }
+            })
+        }
+        
+        return fullSizeURL
+    }
+    
+    // ==========================================
+    // ==========================================
+    func extractCameraImage(image: UIImage) -> Data? {
+        return UIImageJPEGRepresentation(image, 1.0) 
     }
 }
