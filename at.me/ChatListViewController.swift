@@ -181,9 +181,14 @@ class ChatListViewController: UITableViewController {
                 conversationsRef.child("\(conversation.convoId)/messages").queryLimited(toLast: 1)
                     .observe(FIRDataEventType.childAdded, with: { (snapshot) in
 
-                        // Extract the new message, set as the current convo's newest message!
-                        conversation.newestMessage = snapshot.childSnapshot(forPath: "text").value as! String
                         conversation.newestMessageTimestamp = snapshot.childSnapshot(forPath: "timestamp").value as! String
+                        
+                        // Extract the new message, set as the current convo's newest message!
+                        if let text = snapshot.childSnapshot(forPath: "text").value as? String {
+                            conversation.newestMessage = text
+                        } else if let _ = snapshot.childSnapshot(forPath: "imageURL").value {
+                            conversation.newestMessage = "Picture Message"
+                        }
                         
                         // TODO: Possibly refactor to avoid reloading every time?
                         self.tableView.reloadData()

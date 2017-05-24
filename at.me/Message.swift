@@ -15,7 +15,7 @@ public class Message {
     var text: String?
     var timestamp: String
     
-    init(imageURL: String?, sender: String, text: String, timestamp: String) {
+    init(imageURL: String?, sender: String, text: String?, timestamp: String) {
         self.imageURL = imageURL
         self.sender = sender
         self.text = text

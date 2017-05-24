@@ -101,14 +101,14 @@ class ConvoViewController: UIViewController, AlertController {
     // MARK: Managing messages
     // ==========================================
     // ==========================================
-    private func send(message: Message) {
+    func send(message: Message) {
         
         // Write the message to Firebase
         let randomMessageId = messagesRef!.childByAutoId().key
         
         // Each message record (uniquely identified) will record sender and message text
         messagesRef?.child(randomMessageId).setValue(
-            ["sender" : message.sender, "text" : message.text, "timestamp" : message.timestamp]
+            ["imageURL": message.imageURL, "sender" : message.sender, "text" : message.text, "timestamp" : message.timestamp]
         )
         
         // TODO: Possibly cache messages for certain amount of time / 3 messages
@@ -133,24 +133,23 @@ class ConvoViewController: UIViewController, AlertController {
         // This closure is triggered once for every existing record found, and for each record added here
         newMessageRefHandle = messagesQuery.observe(FIRDataEventType.childAdded, with: { (snapshot) in
             
+            var imageURL: String?
+            var text: String?
+            
+            // Unwrap picture message url or text message, can and must always be only one or the other
+            if let imageURLValue = snapshot.childSnapshot(forPath: "imageURL").value as? String {
+                imageURL = imageURLValue
+            }
+            
+            if let textValue = snapshot.childSnapshot(forPath: "text").value as? String {
+                text = textValue
+            }
+            
             let sender = snapshot.childSnapshot(forPath: "sender").value as! String
-            let text = snapshot.childSnapshot(forPath: "text").value as! String
             let timestamp = snapshot.childSnapshot(forPath: "timestamp").value as! String
-            
-            print("AT.ME:: Just retrieved message from \(sender): \(text)")
-            self.addMessage(message: Message(imageURL: nil, sender: sender, text: text, timestamp: timestamp))
-            
-            
-//            // Extract fields from this message record
-//            // Potentially unwrap optionals this way to avoid app crash
-//            // Message records should ALWAYS have sender and text records though...
-//
-//            if let sender = snapshot.childSnapshot(forPath: "sender").value as! String!,
-//                let text = snapshot.childSnapshot(forPath: "text").value as! String! {
-//                
-//                print("AT.ME:: Just retrieved message from \(sender): \(text)")
-//                self.addMessage(message: Message(sender: sender, text: text))
-//            }
+
+            // Add message to local messages cache
+            self.addMessage(message: Message(imageURL: imageURL, sender: sender, text: text, timestamp: timestamp))
         })
     }
     
@@ -204,7 +203,7 @@ class ConvoViewController: UIViewController, AlertController {
     // MARK: Additional functions
     // ==========================================
     // ==========================================
-    private func getCurrentTimestamp() -> String {
+    func getCurrentTimestamp() -> String {
         return dateFormatter.string(from: Date())
     }
     
@@ -239,7 +238,13 @@ extension ConvoViewController: UIImagePickerControllerDelegate, UINavigationCont
                         return
                     }
                     
-                    print("AT.ME:: Image uploaded successfully")
+                    // Now that image has uploaded, officially send the message record to the database with storage URL
+                    print("AT.ME:: Image uploaded successfully to \(self.pictureMessagesRef.child(path).fullPath)")
+                    self.send(message: Message(
+                        imageURL: self.pictureMessagesRef.child(path).fullPath,
+                        sender: UserState.currentUser.username!,
+                        text: nil,
+                        timestamp: self.getCurrentTimestamp()))
                 })
                 
             } else { print("AT.ME:: Error extracting image from source") }
