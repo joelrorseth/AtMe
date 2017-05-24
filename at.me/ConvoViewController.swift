@@ -13,6 +13,7 @@ class ConvoViewController: UIViewController, AlertController {
     
     // Firebase references
     var messagesRef: FIRDatabaseReference?
+    lazy var pictureMessagesRef: FIRStorageReference = FIRStorage.storage().reference().child("pictureMessages")
     
     // Firebase handles
     private var newMessageRefHandle: FIRDatabaseHandle?
@@ -218,6 +219,37 @@ class ConvoViewController: UIViewController, AlertController {
 
 extension ConvoViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
+    // ==========================================
+    // ==========================================
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        
+        guard let uid = UserState.currentUser.uid else { return }
+        let path = uid + "/\(Int(Date.timeIntervalSinceReferenceDate * 1000)).jpg"
+        
+        // Extract the image after editing, upload to database as Data object
+        if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
+            if let data = convertImageToData(image: image) {
+                
+                DatabaseController.uploadImage(data: data, to: pictureMessagesRef.child(path), completion: { (error) in
+                    if let error = error {
+                        print("AT.ME:: Error uploading picture message to Firebase. \(error.localizedDescription)")
+                        return
+                    }
+                    
+                    print("AT.ME:: Image uploaded successfully")
+                })
+                
+            } else { print("AT.ME:: Error extracting image from source") }
+        } else { print("AT.ME:: Error extracting edited UIImage from info dictionary") }
+        
+        dismiss(animated: true)
+    }
+    
+    // ==========================================
+    // ==========================================
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true)
+    }
 }
 
 extension ConvoViewController: UICollectionViewDelegate {
