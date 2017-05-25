@@ -15,12 +15,29 @@ class SignUpViewController: UIViewController, AlertController {
     private lazy var userInformationRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userInformation")
     private lazy var registeredUsernamesRef: FIRDatabaseReference = FIRDatabase.database().reference().child("registeredUsernames")
 
+    @IBOutlet weak var createAccountButton: UIButton!
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var firstNameTextField: UITextField!
     @IBOutlet weak var lastNameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     
+    
+    // MARK: View
+    // ==========================================
+    // ==========================================
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        // Set background gradient
+        self.view.layer.insertSublayer(self.renderGradientLayer(), at: 0)
+        
+        // Set button rounded edges amd color
+        createAccountButton.layer.cornerRadius = 12
+        createAccountButton.backgroundColor = Constants.Colors.primaryAccent
+    }
+    
+    // MARK: Button Handling
     // ==========================================
     // ==========================================
     @IBAction func didTapCreateAccount(_ sender: Any) {

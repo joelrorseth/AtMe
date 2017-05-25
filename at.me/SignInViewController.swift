@@ -17,7 +17,6 @@ class SignInViewController: UIViewController, AlertController {
     
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
-    @IBOutlet weak var usernameField: UITextField!
     @IBOutlet weak var signInButton: UIButton!
     @IBOutlet weak var signUpButton: UIButton!
     
@@ -43,8 +42,20 @@ class SignInViewController: UIViewController, AlertController {
         }
     }
     
-    
     // MARK: View
+    // ==========================================
+    // ==========================================
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        // Set background gradient
+        self.view.layer.insertSublayer(self.renderGradientLayer(), at: 0)
+        
+        // Set button rounded edges amd color
+        signInButton.layer.cornerRadius = 12
+        signInButton.backgroundColor = Constants.Colors.primaryAccent
+    }
+    
     // ==========================================
     // ==========================================
     override func viewDidAppear(_ animated: Bool) {

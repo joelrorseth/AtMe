@@ -56,7 +56,7 @@ class MessageCell: UICollectionViewCell {
     func setupViews() {
         
         // The message and bubble view are subviews of cell
-        addSubview(bubbleView)
-        addSubview(messageTextView)
+        self.addSubview(bubbleView)
+        self.addSubview(messageTextView)
     }
 }

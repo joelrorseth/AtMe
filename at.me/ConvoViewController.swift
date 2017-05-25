@@ -35,6 +35,8 @@ class ConvoViewController: UIViewController, AlertController {
         return formatter
     }()
     
+    
+    // MARK: IBAction methods
     // ==========================================
     // ==========================================
     @IBAction func didPressSend(_ sender: Any) {
@@ -74,18 +76,13 @@ class ConvoViewController: UIViewController, AlertController {
             self.present(picker, animated: true, completion: nil)
         })
     }
-
     
     // MARK: View
     // ==========================================
     // ==========================================
     override func viewDidLoad() {
         
-        // Set some properties of UI elements
-        messageTextField.borderStyle = .none
-        messageCollectionView?.register(MessageCell.self, forCellWithReuseIdentifier: Constants.Storyboard.messageId)
-        
-        addKeyboardObservers()
+        self.messageCollectionView.backgroundColor = Constants.Colors.primaryLight
         
         // Establish a flow layout with spacing for collection view of messages
         let layout = UICollectionViewFlowLayout()
@@ -93,6 +90,12 @@ class ConvoViewController: UIViewController, AlertController {
         layout.minimumLineSpacing = 14
         messageCollectionView.setCollectionViewLayout(layout, animated: true)
         
+        // Set some properties of UI elements
+        messageTextField.borderStyle = .none
+        messageCollectionView?.register(MessageCell.self, forCellWithReuseIdentifier: Constants.Storyboard.messageId)
+        
+        addKeyboardObservers()
+
         // Start observing changes in the Firebase database
         observeReceivedMessages()
     }
@@ -360,6 +363,8 @@ extension ConvoViewController: UICollectionViewDataSource, UICollectionViewDeleg
             cell.messageTextView.textColor = UIColor.white
         }
 
+        cell.bubbleView.alpha = 0.45
+        //cell.messageTextView.in = 0.45
         return cell
     }
     
@@ -389,4 +394,5 @@ extension ConvoViewController: UICollectionViewDataSource, UICollectionViewDeleg
             return CGSize(width: view.frame.width, height: 300)
         }
     }
+    
 }

@@ -26,15 +26,18 @@ class ChatListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.navigationController?.navigationBar.barTintColor = Constants.Colors.primaryLight
+        
         // Set table view properties
         tableView.tintColor = Constants.Colors.primaryColor
+        tableView.backgroundColor = Constants.Colors.primaryLight
         
         // Establish bar button items in conversations view
         let settingsIcon = UIImage(named: "settings")
         let settingsButton = UIBarButtonItem(image: settingsIcon, style: .plain, target: self, action: #selector(didTapSettings))
         
         self.navigationItem.leftBarButtonItem = settingsButton
-        self.navigationItem.title = "@ Me"
+        self.navigationItem.title = "@Me"
         
         // On a background thread, dispatch a queue to handle populating list of conversations
         DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
@@ -45,6 +48,15 @@ class ChatListViewController: UITableViewController {
             })
         }
         
+    }
+    
+    // ==========================================
+    // ==========================================
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Set the back button in the vc being pushed to have no text
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
     
     
@@ -72,8 +84,11 @@ class ChatListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChatListCell", for: indexPath) as! ConversationCell
         
-        // Extract details from conversations retrieved
+        cell.nameLabel.textColor = Constants.Colors.primaryText
+        cell.recentMessageLabel.textColor = Constants.Colors.primaryText
+        cell.recentMessageTimeStampLabel.textColor = Constants.Colors.primaryText
         
+        // Extract details from conversations retrieved
         cell.nameLabel.text = conversations[indexPath.row].otherUsername
         cell.recentMessageLabel.text = conversations[indexPath.row].newestMessage
         cell.recentMessageTimeStampLabel.text = conversations[indexPath.row].newestMessageTimestamp
@@ -206,15 +221,22 @@ class ChatListViewController: UITableViewController {
         if (segue.identifier == Constants.Segues.loadConvoSegue) {
             let cvc = segue.destination as! ConvoViewController
             
+            
             // Get the index path of selected row that triggered segue
             // The rows correspond directly with ordering in table view
             // Pass along convoId of selected conversation
             
-            let indexPath = tableView.indexPathForSelectedRow
-            let selectedConvoId = conversations[(indexPath?.row)!].convoId
-            
-            cvc.messagesRef = conversationsRef.child("\(selectedConvoId)/messages")
-            cvc.convoId = selectedConvoId
+            if let indexPath = tableView.indexPathForSelectedRow {
+                let selectedConvoId = conversations[indexPath.row].convoId
+                
+                cvc.messagesRef = conversationsRef.child("\(selectedConvoId)/messages")
+                cvc.convoId = selectedConvoId
+                
+                // Pass the username selected to the title of convo
+                if let selectedUsername = (tableView.cellForRow(at: indexPath) as! ConversationCell).nameLabel.text {
+                    cvc.navigationItem.title = selectedUsername
+                }
+            }
         }
     }
     

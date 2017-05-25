@@ -47,6 +47,17 @@ extension AlertController where Self:UIViewController {
     }
 }
 
+extension UIViewController {
+    
+    func renderGradientLayer() -> CAGradientLayer {
+        let gradient = CAGradientLayer()
+        gradient.frame = UIScreen.main.bounds
+        //gradient.frame = CGRect(x: 0, y: -300, width: self.view.frame.width, height: self.view.frame.height + 400)
+        gradient.colors = [Constants.Colors.primaryDark.cgColor, Constants.Colors.primaryLight.cgColor]
+        return gradient
+    }
+}
+
 extension UIImagePickerControllerDelegate {
     
 //    // ==========================================
