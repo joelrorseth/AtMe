@@ -95,11 +95,12 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
             
             
             // IMPORTANT: First obtain unique id separately to use in userConversationList
-            // In new record, store creator username and starting number of active participants
+            // In new record, store creator username, starting number of active participants, number of messages
             
             let convoId = conversationsRef.childByAutoId().key
             conversationsRef.child("\(convoId)/creator").setValue(UserState.currentUser.username!)
             conversationsRef.child("\(convoId)/activeMembers").setValue(2)
+            conversationsRef.child("\(convoId)/messagesCount").setValue(0)
             
             // For both users separately, record the convoId in a record identified by other user's username
             userConversationListRef.child(UserState.currentUser.uid!).child(selectedUserUsername).setValue(convoId)

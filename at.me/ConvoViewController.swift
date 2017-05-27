@@ -13,6 +13,7 @@ class ConvoViewController: UIViewController, AlertController {
     
     // Firebase references
     var messagesRef: FIRDatabaseReference?
+    lazy var conversationsRef: FIRDatabaseReference = FIRDatabase.database().reference().child("conversations")
     lazy var pictureMessagesRef: FIRStorageReference = FIRStorage.storage().reference().child("pictureMessages")
     
     // Firebase handles
@@ -25,7 +26,7 @@ class ConvoViewController: UIViewController, AlertController {
     @IBOutlet weak var messageCollectionView: UICollectionView!
     
     var messages: [Message] = []
-    var convoId: String! = ""
+    var convoId: String = ""
     
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -108,6 +109,18 @@ class ConvoViewController: UIViewController, AlertController {
         
         // Write the message to Firebase
         let randomMessageId = messagesRef!.childByAutoId().key
+        
+        // TODO: Refactor convoId to be an optional
+
+        // Increment message count by 1
+        // TODO: Look into better method of doing this. Look up Firebase Transcation
+        
+        conversationsRef.child(convoId).observeSingleEvent(of: .value, with: { snapshot in
+            
+            let incrementedValue = (snapshot.childSnapshot(forPath: "messagesCount").value as! Int) + 1
+            FIRDatabase.database().reference(withPath: "conversations/\(self.convoId)/messagesCount").setValue(incrementedValue)
+        })
+
         
         // Each message record (uniquely identified) will record sender and message text
         messagesRef?.child(randomMessageId).setValue(

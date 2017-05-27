@@ -14,6 +14,8 @@ class ChatListViewController: UITableViewController {
     // Firebase references are used for read/write at referenced location
     lazy var userConversationListRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userConversationList")
     lazy var conversationsRef: FIRDatabaseReference = FIRDatabase.database().reference().child("conversations")
+    lazy var rootDatabaseRef: FIRDatabaseReference = FIRDatabase.database().reference()
+    lazy var userDisplayPictureRef: FIRStorageReference = FIRStorage.storage().reference().child("displayPictures")
     
     // Firebase handles
     private var messageHandles: [FIRDatabaseHandle] = []
@@ -49,14 +51,26 @@ class ChatListViewController: UITableViewController {
         self.navigationItem.leftBarButtonItem = settingsButton
         self.navigationItem.title = "@Me"
         
+//        self.loadActiveConvoIds(completion: {
+//            //self.loadDetailForConvos()
+//            print("Reloading now that details have been loaded")
+//            self.tableView.reloadData()
+//        })
+        
+        
+        
+        observeConversations()
+        
+        
         // On a background thread, dispatch a queue to handle populating list of conversations
-        DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
-            
-            self.loadActiveConvoIds(completion: {
-                self.loadDetailForConvos()
-                self.tableView.reloadData()
-            })
-        }
+//        DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
+//            
+//            self.loadActiveConvoIds(completion: {
+//                //self.loadDetailForConvos()
+//                print("Reloading now that details have been loaded")
+//                self.tableView.reloadData()
+//            })
+//        }
     }
     
     // ==========================================
@@ -70,7 +84,7 @@ class ChatListViewController: UITableViewController {
     
     
 
-    // MARK: Loading and formatting
+    // MARK: Formatting
     // ==========================================
     // ==========================================
     func formatConversationCell(cell: ConversationCell) {
@@ -95,69 +109,86 @@ class ChatListViewController: UITableViewController {
         cell.userDisplayImageView.layer.cornerRadius = cell.userDisplayImageView.frame.width / 2
     }
     
-    
+    // MARK: Loading
     // ==========================================
     // ==========================================
-    private func loadActiveConvoIds(completion: @escaping (Void) -> Void) {
+    private func observeConversations() {
         
-        // Establish the current active conversations to populate the table view data source
-        userConversationListRef.child(UserState.currentUser.uid!).queryOrderedByKey().observe(.value, with: { snapshot in
+        // TODO: Refactor UserState to make everything non-optional
+        if let uid = UserState.currentUser.uid {
             
-            // Clear current list of convos
-            self.conversations.removeAll()
-            
-            for convoRecord in snapshot.children {
-                let convoSnapshot = convoRecord as! FIRDataSnapshot
+            // Call this closure once for every conversation record, and any time a record is added
+            userConversationListRef.child(uid).observe(FIRDataEventType.childAdded, with: { snapshot in
                 
-                // Create and store (partially incomplete) Conversation object
-                // These objects will provide all info needed for table cells
-                
-                self.conversations.append(
-                    Conversation(
-                        convoId: convoSnapshot.value as! String,
-                        otherUsername: convoSnapshot.key,
-                        newestMessage: "",
-                        newestMessageTimestamp: ""
-                    )
-                )
-            }
-
-            completion()
-        })
+                let otherUsername = snapshot.key
+                if let convoId = snapshot.value as? String {
+                    
+                    self.addConversation(convoId: convoId, with: otherUsername)
+                }
+            })
+        }
     }
     
     // ==========================================
     // ==========================================
-    private func loadDetailForConvos() {
-
-        // Add one observer for each convo to notify when new messages appear
-        for conversation in conversations {
-            
-            // For each observer, add the corresponding handle into array of handles
-            messageHandles.append(
+    private func addConversation(convoId: String, with username: String) {
+        
+        self.conversationsRef.child("\(convoId)/").observeSingleEvent(of: .value, with: { (snapshot) in
+            if ((snapshot.childSnapshot(forPath: "messagesCount").value as! Int) == 0) {
+                // Convo has no messages
                 
-                // Query the most recent message record for each conversation loaded previously
-                // This block is called for each new message detected thereafter
+                // Insert placeholder to prompt user to start the conversation
+                self.conversations.append(
+                    Conversation(convoId: convoId, otherUsername: username,
+                                 newestMessage: "This is the beginning of your conversation with \(username)", newestMessageTimestamp: ""))
                 
-                conversationsRef.child("\(conversation.convoId)/messages").queryLimited(toLast: 1)
+                self.tableView.reloadData()
+                
+            } else { // Convo has messages
+                
+                // TODO: Possibly switch design to store a most recent message in the convo record
+                // This would avoid querying every time, but would take more space and work require
+                // updating this every time a message is ever sent
+                
+                // Retrieve a snapshot for the most recent message record in this conversation
+                self.conversationsRef.child("\(convoId)/messages").queryLimited(toLast: 1)
                     .observe(FIRDataEventType.childAdded, with: { (snapshot) in
-
-                        conversation.newestMessageTimestamp = snapshot.childSnapshot(forPath: "timestamp").value as! String
+                        
+                        let timestamp = snapshot.childSnapshot(forPath: "timestamp").value as! String
+                        var message = "This is the beginning of your conversation with \(username)"
                         
                         // Extract the new message, set as the current convo's newest message!
-                        if let text = snapshot.childSnapshot(forPath: "text").value as? String {
-                            conversation.newestMessage = text
-                        } else if let _ = snapshot.childSnapshot(forPath: "imageURL").value {
-                            conversation.newestMessage = "Picture Message"
+                        // If picture message, don't load, but let user know it was a picture message
+                        
+                        if let text = snapshot.childSnapshot(forPath: "text").value as? String { message = text }
+                        else if let _ = snapshot.childSnapshot(forPath: "imageURL").value { message = "Picture Message" }
+                        
+                        
+                        // If conversation has already been created, simply update message displayed instead of making new convo
+                        // TODO: Find better way
+                        
+                        for convo in self.conversations {
+                            if (convo.otherUsername == username) {
+                                convo.newestMessage = message
+                                convo.newestMessageTimestamp = timestamp
+                                
+                                self.tableView.reloadData()
+                                return
+                            }
                         }
+                        
+                        // Otherwise, need to make a new conversation cell
+                        self.conversations.append(
+                            Conversation(convoId: convoId, otherUsername: username,
+                                         newestMessage: message, newestMessageTimestamp: timestamp))
                         
                         // TODO: Possibly refactor to avoid reloading every time?
                         self.tableView.reloadData()
                     })
-            )
-        }
+            }
+        })
     }
-    
+
     
     // MARK: Segue
     // ==========================================
@@ -228,7 +259,9 @@ extension ChatListViewController {
     // ==========================================
     // ==========================================
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        print("There should be \(conversations.count) cells")
         return conversations.count
+        
     }
     
     // ==========================================
@@ -237,11 +270,41 @@ extension ChatListViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChatListCell", for: indexPath) as! ConversationCell
         
         formatConversationCell(cell: cell)
+        print("+1 cell")
         
         // Update the sender, newest message, and timestamp from this conversation
         cell.nameLabel.text = conversations[indexPath.row].otherUsername
         cell.recentMessageLabel.text = conversations[indexPath.row].newestMessage
         cell.recentMessageTimeStampLabel.text = conversations[indexPath.row].newestMessageTimestamp
+        
+        
+        // TODO: Refactor Conversation class to hold the uid of the other user
+        // This way, don't need to lookup uid and can access storage reference right away
+        
+        rootDatabaseRef.observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
+            
+            if let uid = snapshot.childSnapshot(forPath: "registeredUsernames/\(self.conversations[indexPath.row].otherUsername)").value as? String {
+                if let _ = snapshot.childSnapshot(forPath: "userInformation/\(uid)/displayPicture").value as? String {
+                    
+                    DatabaseController.downloadImage(from: self.userDisplayPictureRef.child("\(uid)/\(uid).JPG") , completion: { (error, image) in
+                        
+                        if let downloadError = error {
+                            print("At.ME:: An error has occurred, but image data was detected. \(downloadError)")
+                            return
+                        }
+                        
+                        if let unwrappedImage = image {
+                            
+                            print("At.ME:: Image data was downloded and converted successfully")
+                            cell.userDisplayImageView.image = unwrappedImage
+                            
+                        } else { print("AT.ME:: Could not convert database image data to UIImage") }
+                    })
+                    
+                } else { print("AT.ME:: This user does not have a display picture") }
+            }
+            
+        })
         
         return cell
     }
