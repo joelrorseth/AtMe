@@ -12,13 +12,19 @@ import Firebase
 class ChatListViewController: UITableViewController {
     
     // Firebase references are used for read/write at referenced location
-    private lazy var userConversationListRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userConversationList")
-    private lazy var conversationsRef: FIRDatabaseReference = FIRDatabase.database().reference().child("conversations")
+    lazy var userConversationListRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userConversationList")
+    lazy var conversationsRef: FIRDatabaseReference = FIRDatabase.database().reference().child("conversations")
     
     // Firebase handles
     private var messageHandles: [FIRDatabaseHandle] = []
     
-    private var conversations: [Conversation] = []
+    // Local Conversation cache
+    var conversations: [Conversation] = []
+    
+    // TODO: Sort conversations newest at the top
+    // TODO: Store timestamp with more precision (NSDate?)
+    
+    
     
     // MARK: View
     // ==========================================
@@ -26,11 +32,12 @@ class ChatListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationController?.navigationBar.barTintColor = Constants.Colors.primaryLight
+        // Set translucent navigation bar with color
+        let image = UIImage.imageFromColor(color: Constants.Colors.primaryColor)
+        self.navigationController?.navigationBar.setBackgroundImage(image, for: UIBarMetrics.default)
+        self.navigationController?.navigationBar.barStyle = .default
         
-        // Set table view properties
-//        tableView.tintColor = Constants.Colors.primaryColor
-//        tableView.backgroundColor = Constants.Colors.primaryLight
+        //self.navigationController?.hidesBarsOnSwipe = true
         
         self.tableView.backgroundColor = UIColor.groupTableViewBackground
         
@@ -50,16 +57,6 @@ class ChatListViewController: UITableViewController {
                 self.tableView.reloadData()
             })
         }
-        
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-//        // Add footer view to fill space underneath open convos
-//        let footerView = UIView(frame: view.frame)
-//        footerView.backgroundColor = UIColor.groupTableViewBackground
-//        self.tableView.tableFooterView = footerView
     }
     
     // ==========================================
@@ -72,113 +69,32 @@ class ChatListViewController: UITableViewController {
     }
     
     
-    // MARK: Table View
+
+    // MARK: Loading and formatting
     // ==========================================
     // ==========================================
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    // ==========================================
-    // ==========================================
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return CGFloat(116)
-    }
-    
-    // ==========================================
-    // ==========================================
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return conversations.count
-    }
-    
-    // ==========================================
-    // ==========================================
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ChatListCell", for: indexPath) as! ConversationCell
+    func formatConversationCell(cell: ConversationCell) {
         
-//        cell.nameLabel.textColor = Constants.Colors.primaryText
-//        cell.recentMessageLabel.textColor = Constants.Colors.primaryText
-//        cell.recentMessageTimeStampLabel.textColor = Constants.Colors.primaryText
-        
+        // Draw shadow behind nested view to give cells some depth
         let shadowSize : CGFloat = 3.0
-        let shadowPath = UIBezierPath(rect: CGRect(x: -shadowSize / 2,
-                                                   y: -shadowSize / 2,
-                                                   width: cell.cellBackgroundView.frame.size.width + shadowSize,
-                                                   height: cell.cellBackgroundView.frame.size.height + shadowSize))
+        let shadowPath = UIBezierPath(
+            rect: CGRect(x: -shadowSize / 2,
+                         y: -shadowSize / 2,
+                         width: cell.cellBackgroundView.frame.size.width + shadowSize,
+                         height: cell.cellBackgroundView.frame.size.height + shadowSize))
+        
         cell.cellBackgroundView.layer.masksToBounds = false
-        //self.avatarImageView.layer.shadowColor = UIColor.black.cgColor
-        //self.avatarImageView.layer.shadowOffset = CGSize(width: 0.0, height: 0.0)
-        //self.avatarImageView.layer.shadowOpacity = 0.5
-        
-        
-        
         cell.cellBackgroundView.layer.shadowOffset = CGSize(width: 0, height: 1.4)
         cell.cellBackgroundView.layer.shadowColor = UIColor.lightGray.cgColor
         cell.cellBackgroundView.layer.shadowOpacity = 0.7
         cell.cellBackgroundView.layer.shadowRadius = 0.0
         cell.cellBackgroundView.layer.shadowPath = shadowPath.cgPath
         
-        // Extract details from conversations retrieved
-        cell.nameLabel.text = conversations[indexPath.row].otherUsername
-        cell.recentMessageLabel.text = conversations[indexPath.row].newestMessage
-        cell.recentMessageTimeStampLabel.text = conversations[indexPath.row].newestMessageTimestamp
-        
-        //cell.userDisplayImageView.image =
-        
-        return cell
+        // Give display picture a circular mask
+        cell.userDisplayImageView.layer.masksToBounds = true;
+        cell.userDisplayImageView.layer.cornerRadius = cell.userDisplayImageView.frame.width / 2
     }
     
-    // ==========================================
-    // ==========================================
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    
-    // ==========================================
-    // ==========================================
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        
-        // Handle the user deleting a conversation
-        // In Firebase, delete only the current users record of being in this conversation
-        
-        if (editingStyle == UITableViewCellEditingStyle.delete) {
-            
-            // Update records in Firebase
-            // Delete current user's reference to convo, then decrement number of members in convo
-            
-            userConversationListRef.child(UserState.currentUser.uid!).child(conversations[indexPath.row].otherUsername).removeValue()
-            
-            // Extract conversation unique id and Firebase ref to activeMembers record
-            let convoId = conversations[indexPath.row].convoId
-            let activeMembersRef = conversationsRef.child("\(convoId)/activeMembers")
-            
-            activeMembersRef.observeSingleEvent(of: .value, with: { snapshot in
-                
-                // Decrement value since current user is leaving convo
-                let membersCount = (snapshot.value as? Int)! - 1
-                
-                // If no members left in convo, delete the conversation entirely!
-                if (membersCount == 0) {
-                    
-                    // Delete conversation
-                    self.conversationsRef.child(convoId).removeValue()
-                    
-                } else {
-                    
-                    // Otherwise, just decrement number of convo members
-                    activeMembersRef.setValue(membersCount)
-                }
-            })
-            
-            
-            // Also remove records from local table view data source
-            conversations.remove(at: indexPath.row)
-            
-            // Delete row in tableView
-            tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.right)
-            tableView.reloadData()
-        }
-    }
     
     // ==========================================
     // ==========================================
@@ -288,6 +204,97 @@ class ChatListViewController: UITableViewController {
         for handle in messageHandles {
             conversationsRef.removeObserver(withHandle: handle)
             print("AT.ME:: Removed observer with handle \(handle) in ChatListViewController")
+        }
+    }
+}
+
+
+// MARK: Table View
+extension ChatListViewController {
+    
+    // MARK: Table View
+    // ==========================================
+    // ==========================================
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    // ==========================================
+    // ==========================================
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return CGFloat(116)
+    }
+    
+    // ==========================================
+    // ==========================================
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return conversations.count
+    }
+    
+    // ==========================================
+    // ==========================================
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ChatListCell", for: indexPath) as! ConversationCell
+        
+        formatConversationCell(cell: cell)
+        
+        // Update the sender, newest message, and timestamp from this conversation
+        cell.nameLabel.text = conversations[indexPath.row].otherUsername
+        cell.recentMessageLabel.text = conversations[indexPath.row].newestMessage
+        cell.recentMessageTimeStampLabel.text = conversations[indexPath.row].newestMessageTimestamp
+        
+        return cell
+    }
+    
+    // ==========================================
+    // ==========================================
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    // ==========================================
+    // ==========================================
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        
+        // Handle the user deleting a conversation
+        // In Firebase, delete only the current users record of being in this conversation
+        
+        if (editingStyle == UITableViewCellEditingStyle.delete) {
+            
+            // Update records in Firebase
+            // Delete current user's reference to convo, then decrement number of members in convo
+            
+            userConversationListRef.child(UserState.currentUser.uid!).child(conversations[indexPath.row].otherUsername).removeValue()
+            
+            // Extract conversation unique id and Firebase ref to activeMembers record
+            let convoId = conversations[indexPath.row].convoId
+            let activeMembersRef = conversationsRef.child("\(convoId)/activeMembers")
+            
+            activeMembersRef.observeSingleEvent(of: .value, with: { snapshot in
+                
+                // Decrement value since current user is leaving convo
+                let membersCount = (snapshot.value as? Int)! - 1
+                
+                // If no members left in convo, delete the conversation entirely!
+                if (membersCount == 0) {
+                    
+                    // Delete conversation
+                    self.conversationsRef.child(convoId).removeValue()
+                    
+                } else {
+                    
+                    // Otherwise, just decrement number of convo members
+                    activeMembersRef.setValue(membersCount)
+                }
+            })
+            
+            
+            // Also remove records from local table view data source
+            conversations.remove(at: indexPath.row)
+            
+            // Delete row in tableView
+            tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.right)
+            tableView.reloadData()
         }
     }
 }

@@ -25,8 +25,8 @@ struct Constants {
     
     // MARK: In progress
     struct Colors {
-        static let primaryColor = UIColor.init(red: 185, green: 24, blue: 19, alpha: 1)
-        
+        static let primaryColor = UIColor(red: 115/255, green: 22/255, blue: 231/255, alpha: 1)
+
         // Theme 0
 //        static let primaryLight = UIColor(red: 115/255, green: 22/255, blue: 244/255, alpha: 1.0)
 //        static let primaryDark = UIColor(red: 119/255, green: 61/255, blue: 115/255, alpha: 1.0)

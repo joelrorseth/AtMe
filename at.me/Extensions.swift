@@ -47,43 +47,43 @@ extension AlertController where Self:UIViewController {
     }
 }
 
-extension UIViewController {
+extension UIImage {
     
-    func renderGradientLayer() -> CAGradientLayer {
-        let gradient = CAGradientLayer()
-        gradient.frame = UIScreen.main.bounds
-        //gradient.frame = CGRect(x: 0, y: -300, width: self.view.frame.width, height: self.view.frame.height + 400)
-        gradient.colors = [Constants.Colors.primaryDark.cgColor, Constants.Colors.primaryLight.cgColor]
-        return gradient
+    // ==========================================
+    // ==========================================
+    static func imageFromColor(color: UIColor) -> UIImage {
+        let rect = CGRect(x: 0, y: 0, width: 1, height: 1)
+        
+        // Create 1 by 1 pixel context
+        UIGraphicsBeginImageContextWithOptions(rect.size, false, 0)
+        color.setFill()
+        UIRectFill(rect)
+        
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image!
+        
     }
 }
 
 extension UIImagePickerControllerDelegate {
     
-//    // ==========================================
-//    // ==========================================
-//    func extractLibraryImage(from url: String) -> URL? {
-//        
-//        let imageURL = URL(fileURLWithPath: url)
-//        var fullSizeURL: URL?
-//        
-//        // Use PHAsset class to manage stored images in device Photo Library
-//        let assets = PHAsset.fetchAssets(withALAssetURLs: [imageURL], options: nil)
-//        
-//        if let asset = assets.firstObject {
-//            asset.requestContentEditingInput(with: nil, completionHandler: { (contentEditingInput, info) in
-//                if let url = contentEditingInput?.fullSizeImageURL {
-//                    fullSizeURL = url
-//                }
-//            })
-//        }
-//        
-//        return fullSizeURL
-//    }
-    
     // ==========================================
     // ==========================================
     func convertImageToData(image: UIImage) -> Data? {
         return UIImageJPEGRepresentation(image, 0.8)
+    }
+}
+
+
+extension UIViewController {
+    
+    // ==========================================
+    // ==========================================
+    func renderGradientLayer() -> CAGradientLayer {
+        let gradient = CAGradientLayer()
+        gradient.frame = UIScreen.main.bounds
+        gradient.colors = [Constants.Colors.primaryDark.cgColor, Constants.Colors.primaryLight.cgColor]
+        return gradient
     }
 }

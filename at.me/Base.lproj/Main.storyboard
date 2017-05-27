@@ -586,7 +586,7 @@
                                                     <color key="backgroundColor" red="0.45098039220000002" green="0.084757633509999999" blue="0.90426400380000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a9Q-E9-dqz">
-                                                    <rect key="frame" x="96" y="30" width="240" height="56"/>
+                                                    <rect key="frame" x="96" y="35" width="240" height="51"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <string key="text">This is an example message containing example test, as an example. And here is so more text for the purpose of making the message long.</string>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -645,6 +645,7 @@
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="fn2-8d-v2d">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="OIZ-S0-Ffo">
                                     <size key="itemSize" width="50" height="50"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -742,5 +743,5 @@
     <inferredMetricsTieBreakers>
         <segue reference="ngE-24-Ro9"/>
     </inferredMetricsTieBreakers>
-    <color key="tintColor" red="0.45098039220000002" green="0.084757633509999999" blue="0.90426400380000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+    <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
 </document>
