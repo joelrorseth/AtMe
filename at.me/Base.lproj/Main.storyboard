@@ -6,7 +6,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -550,70 +549,59 @@
         <scene sceneID="Qpj-BD-wvM">
             <objects>
                 <tableViewController id="AW7-DM-mNt" customClass="ChatListViewController" customModule="at_me" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="80" sectionHeaderHeight="28" sectionFooterHeight="28" id="TM1-qq-Y2h">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="89" sectionHeaderHeight="28" sectionFooterHeight="28" id="TM1-qq-Y2h">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <color key="sectionIndexBackgroundColor" red="0.45253223180770874" green="0.08475763350725174" blue="0.95668333768844604" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="sectionIndexBackgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ChatListCell" rowHeight="80" id="RQK-Tm-HT6" customClass="ConversationCell" customModule="at_me" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="28" width="375" height="80"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ChatListCell" rowHeight="116" id="RQK-Tm-HT6" customClass="ConversationCell" customModule="at_me" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="28" width="375" height="116"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="RQK-Tm-HT6" id="VB3-B0-OEO">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="79.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="116"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="John Smith" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bqg-Sv-x3B">
-                                            <rect key="frame" x="88" y="8" width="182" height="28"/>
-                                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="12:45 PM" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t6Y-lr-onH">
-                                            <rect key="frame" x="278" y="8" width="74" height="28"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" constant="74" id="XHc-Wn-23t"/>
-                                            </constraints>
-                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="lJk-Ac-HDo">
-                                            <rect key="frame" x="18" y="11" width="56" height="56"/>
-                                            <color key="backgroundColor" red="0.45098039220000002" green="0.084757633509999999" blue="0.90426400380000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" constant="56" id="Lss-tu-Wzo"/>
-                                                <constraint firstAttribute="width" secondItem="lJk-Ac-HDo" secondAttribute="height" multiplier="1:1" id="obR-6R-oY4"/>
-                                            </constraints>
-                                        </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a9Q-E9-dqz">
-                                            <rect key="frame" x="88" y="27" width="264" height="44"/>
-                                            <string key="text">This is an example message containing example test, as an example. And here is so more text for the purpose of making the message long.</string>
-                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                            <color key="textColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
+                                        <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dJp-j9-5Al">
+                                            <rect key="frame" x="12" y="10" width="350" height="102"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="12:45 PM" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t6Y-lr-onH">
+                                                    <rect key="frame" x="262" y="10" width="74" height="28"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="John Smith" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bqg-Sv-x3B">
+                                                    <rect key="frame" x="96" y="14" width="156" height="20"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lJk-Ac-HDo">
+                                                    <rect key="frame" x="13" y="14" width="72" height="72"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <color key="backgroundColor" red="0.45098039220000002" green="0.084757633509999999" blue="0.90426400380000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a9Q-E9-dqz">
+                                                    <rect key="frame" x="96" y="30" width="240" height="56"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <string key="text">This is an example message containing example test, as an example. And here is so more text for the purpose of making the message long.</string>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <color key="backgroundColor" red="0.99588870303668364" green="1" blue="0.99353876618939896" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        </view>
                                     </subviews>
-                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                    <constraints>
-                                        <constraint firstItem="t6Y-lr-onH" firstAttribute="trailing" secondItem="a9Q-E9-dqz" secondAttribute="trailing" id="0XC-h8-5bt"/>
-                                        <constraint firstItem="Bqg-Sv-x3B" firstAttribute="leading" secondItem="lJk-Ac-HDo" secondAttribute="trailing" constant="14" id="6gt-hU-1Ec"/>
-                                        <constraint firstItem="lJk-Ac-HDo" firstAttribute="top" secondItem="VB3-B0-OEO" secondAttribute="topMargin" constant="3" id="JOz-sC-u8e"/>
-                                        <constraint firstItem="lJk-Ac-HDo" firstAttribute="top" secondItem="Bqg-Sv-x3B" secondAttribute="top" constant="3" id="SX6-KV-GLp"/>
-                                        <constraint firstItem="a9Q-E9-dqz" firstAttribute="top" secondItem="VB3-B0-OEO" secondAttribute="topMargin" constant="18" id="UXI-qV-kKW"/>
-                                        <constraint firstItem="Bqg-Sv-x3B" firstAttribute="baseline" secondItem="t6Y-lr-onH" secondAttribute="baseline" id="XhH-9G-hCe"/>
-                                        <constraint firstAttribute="trailingMargin" secondItem="t6Y-lr-onH" secondAttribute="trailing" constant="15" id="eWl-3l-cP0"/>
-                                        <constraint firstItem="lJk-Ac-HDo" firstAttribute="bottom" secondItem="a9Q-E9-dqz" secondAttribute="bottom" constant="-3" id="fNI-A8-kUf"/>
-                                        <constraint firstItem="lJk-Ac-HDo" firstAttribute="leading" secondItem="VB3-B0-OEO" secondAttribute="leadingMargin" constant="10" id="fNp-Rx-Crl"/>
-                                        <constraint firstAttribute="bottomMargin" secondItem="Bqg-Sv-x3B" secondAttribute="bottom" constant="35" id="jeh-uH-1jv"/>
-                                        <constraint firstItem="Bqg-Sv-x3B" firstAttribute="leading" secondItem="a9Q-E9-dqz" secondAttribute="leading" id="l3G-gt-K5I"/>
-                                        <constraint firstItem="Bqg-Sv-x3B" firstAttribute="top" secondItem="t6Y-lr-onH" secondAttribute="top" id="vai-LP-M3j"/>
-                                        <constraint firstItem="lJk-Ac-HDo" firstAttribute="centerY" secondItem="VB3-B0-OEO" secondAttribute="centerY" id="wMc-ft-Vdm"/>
-                                        <constraint firstItem="t6Y-lr-onH" firstAttribute="leading" secondItem="Bqg-Sv-x3B" secondAttribute="trailing" constant="8" symbolic="YES" id="ybj-S3-RiT"/>
-                                    </constraints>
+                                    <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <connections>
+                                    <outlet property="cellBackgroundView" destination="dJp-j9-5Al" id="2a1-il-jBb"/>
                                     <outlet property="nameLabel" destination="Bqg-Sv-x3B" id="vzb-Qr-lCB"/>
                                     <outlet property="recentMessageLabel" destination="a9Q-E9-dqz" id="eye-nB-GBH"/>
                                     <outlet property="recentMessageTimeStampLabel" destination="t6Y-lr-onH" id="N7Y-Pz-fdH"/>

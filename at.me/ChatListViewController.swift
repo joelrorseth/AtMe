@@ -29,8 +29,11 @@ class ChatListViewController: UITableViewController {
         self.navigationController?.navigationBar.barTintColor = Constants.Colors.primaryLight
         
         // Set table view properties
-        tableView.tintColor = Constants.Colors.primaryColor
-        tableView.backgroundColor = Constants.Colors.primaryLight
+//        tableView.tintColor = Constants.Colors.primaryColor
+//        tableView.backgroundColor = Constants.Colors.primaryLight
+        
+        self.tableView.backgroundColor = UIColor.groupTableViewBackground
+        
         
         // Establish bar button items in conversations view
         let settingsIcon = UIImage(named: "settings")
@@ -48,6 +51,15 @@ class ChatListViewController: UITableViewController {
             })
         }
         
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+//        // Add footer view to fill space underneath open convos
+//        let footerView = UIView(frame: view.frame)
+//        footerView.backgroundColor = UIColor.groupTableViewBackground
+//        self.tableView.tableFooterView = footerView
     }
     
     // ==========================================
@@ -70,7 +82,7 @@ class ChatListViewController: UITableViewController {
     // ==========================================
     // ==========================================
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return CGFloat(80)
+        return CGFloat(116)
     }
     
     // ==========================================
@@ -84,9 +96,27 @@ class ChatListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChatListCell", for: indexPath) as! ConversationCell
         
-        cell.nameLabel.textColor = Constants.Colors.primaryText
-        cell.recentMessageLabel.textColor = Constants.Colors.primaryText
-        cell.recentMessageTimeStampLabel.textColor = Constants.Colors.primaryText
+//        cell.nameLabel.textColor = Constants.Colors.primaryText
+//        cell.recentMessageLabel.textColor = Constants.Colors.primaryText
+//        cell.recentMessageTimeStampLabel.textColor = Constants.Colors.primaryText
+        
+        let shadowSize : CGFloat = 3.0
+        let shadowPath = UIBezierPath(rect: CGRect(x: -shadowSize / 2,
+                                                   y: -shadowSize / 2,
+                                                   width: cell.cellBackgroundView.frame.size.width + shadowSize,
+                                                   height: cell.cellBackgroundView.frame.size.height + shadowSize))
+        cell.cellBackgroundView.layer.masksToBounds = false
+        //self.avatarImageView.layer.shadowColor = UIColor.black.cgColor
+        //self.avatarImageView.layer.shadowOffset = CGSize(width: 0.0, height: 0.0)
+        //self.avatarImageView.layer.shadowOpacity = 0.5
+        
+        
+        
+        cell.cellBackgroundView.layer.shadowOffset = CGSize(width: 0, height: 1.4)
+        cell.cellBackgroundView.layer.shadowColor = UIColor.lightGray.cgColor
+        cell.cellBackgroundView.layer.shadowOpacity = 0.7
+        cell.cellBackgroundView.layer.shadowRadius = 0.0
+        cell.cellBackgroundView.layer.shadowPath = shadowPath.cgPath
         
         // Extract details from conversations retrieved
         cell.nameLabel.text = conversations[indexPath.row].otherUsername

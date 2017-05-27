@@ -177,6 +177,9 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         // Using userInformation record, lookup using 'uid' as key
         userInformationRef.child(uid).observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
             
+            // TODO: Bug causing crash (displayName)
+            // Can't force unwrap snapshot
+            
             let user = User(
                 displayName: snapshot.childSnapshot(forPath: "displayName").value as! String,
                 uid: uid,
