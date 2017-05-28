@@ -83,7 +83,7 @@ class ConvoViewController: UIViewController, AlertController {
     // ==========================================
     override func viewDidLoad() {
         
-        self.messageCollectionView.backgroundColor = Constants.Colors.primaryLight
+        self.messageCollectionView.backgroundColor = UIColor.groupTableViewBackground
         
         // Establish a flow layout with spacing for collection view of messages
         let layout = UICollectionViewFlowLayout()
@@ -276,6 +276,7 @@ extension ConvoViewController: UIImagePickerControllerDelegate, UINavigationCont
     }
 }
 
+
 // MARK: Collection View Delegate
 extension ConvoViewController: UICollectionViewDelegate {
     
@@ -407,5 +408,4 @@ extension ConvoViewController: UICollectionViewDataSource, UICollectionViewDeleg
             return CGSize(width: view.frame.width, height: 300)
         }
     }
-    
 }

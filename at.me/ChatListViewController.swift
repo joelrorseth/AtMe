@@ -34,43 +34,10 @@ class ChatListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Set translucent navigation bar with color
-        let image = UIImage.imageFromColor(color: Constants.Colors.primaryColor)
-        self.navigationController?.navigationBar.setBackgroundImage(image, for: UIBarMetrics.default)
-        self.navigationController?.navigationBar.barStyle = .default
+        setupView()
         
-        //self.navigationController?.hidesBarsOnSwipe = true
-        
-        self.tableView.backgroundColor = UIColor.groupTableViewBackground
-        
-        
-        // Establish bar button items in conversations view
-        let settingsIcon = UIImage(named: "settings")
-        let settingsButton = UIBarButtonItem(image: settingsIcon, style: .plain, target: self, action: #selector(didTapSettings))
-        
-        self.navigationItem.leftBarButtonItem = settingsButton
-        self.navigationItem.title = "@Me"
-        
-//        self.loadActiveConvoIds(completion: {
-//            //self.loadDetailForConvos()
-//            print("Reloading now that details have been loaded")
-//            self.tableView.reloadData()
-//        })
-        
-        
-        
+        // Start the observers
         observeConversations()
-        
-        
-        // On a background thread, dispatch a queue to handle populating list of conversations
-//        DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
-//            
-//            self.loadActiveConvoIds(completion: {
-//                //self.loadDetailForConvos()
-//                print("Reloading now that details have been loaded")
-//                self.tableView.reloadData()
-//            })
-//        }
     }
     
     // ==========================================
@@ -80,6 +47,30 @@ class ChatListViewController: UITableViewController {
         
         // Set the back button in the vc being pushed to have no text
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+    }
+    
+    // ==========================================
+    // ==========================================
+    private func setupView() {
+        
+        // Set translucent navigation bar with color
+        let image = UIImage.imageFromColor(color: Constants.Colors.primaryColor)
+        self.navigationController?.navigationBar.setBackgroundImage(image, for: UIBarMetrics.default)
+        self.navigationController?.navigationBar.barStyle = .default
+        
+        // Allow navigation bar to be hidden
+        self.navigationController?.hidesBarsOnSwipe = true
+        
+        // Set background color appearing behind the cells
+        self.tableView.backgroundColor = UIColor.groupTableViewBackground
+        
+        
+        // Establish bar button items in conversations view
+        let settingsIcon = UIImage(named: "settings")
+        let settingsButton = UIBarButtonItem(image: settingsIcon, style: .plain, target: self, action: #selector(didTapSettings))
+        
+        self.navigationItem.leftBarButtonItem = settingsButton
+        self.navigationItem.title = "@Me"
     }
     
     
@@ -270,7 +261,7 @@ extension ChatListViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChatListCell", for: indexPath) as! ConversationCell
         
         formatConversationCell(cell: cell)
-        print("+1 cell")
+        print("CellForRowAt() called")
         
         // Update the sender, newest message, and timestamp from this conversation
         cell.nameLabel.text = conversations[indexPath.row].otherUsername

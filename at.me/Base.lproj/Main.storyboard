@@ -412,6 +412,7 @@
                         </connections>
                     </tableView>
                     <connections>
+                        <outlet property="logoutCell" destination="FaJ-ZU-kI6" id="33o-kH-rF5"/>
                         <outlet property="userDisplayNameLabel" destination="ynd-17-MAP" id="rii-3x-NTU"/>
                         <outlet property="userPictureImageView" destination="nfq-RV-Ba3" id="PDj-n3-CDy"/>
                         <outlet property="usernameLabel" destination="P0O-xx-Sbx" id="UHg-2s-2BI"/>

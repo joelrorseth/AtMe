@@ -21,6 +21,7 @@ class SettingsViewController: UITableViewController, AlertController {
     @IBOutlet weak var userPictureImageView: UIImageView!
     @IBOutlet weak var userDisplayNameLabel: UILabel!
     @IBOutlet weak var usernameLabel: UILabel!
+    @IBOutlet weak var logoutCell: UITableViewCell!
     
     
     // ==========================================
@@ -40,6 +41,10 @@ class SettingsViewController: UITableViewController, AlertController {
     override func viewWillAppear(_ animated: Bool) {
         print("at.me:: Settings screen appeared, loading user information...")
         loadCurrentUserInformation()
+        
+        logoutCell.backgroundColor = Constants.Colors.primaryColor
+        userPictureImageView.layer.masksToBounds = true
+        userPictureImageView.layer.cornerRadius = userPictureImageView.frame.width / 2
     }
     
     
