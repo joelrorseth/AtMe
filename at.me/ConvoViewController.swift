@@ -336,6 +336,9 @@ extension ConvoViewController: UICollectionViewDataSource, UICollectionViewDeleg
         }
         
         
+        
+        
+        
         // CASE 1: OUTGOING
         if (message.sender == UserState.currentUser.username!) {
 
@@ -377,7 +380,7 @@ extension ConvoViewController: UICollectionViewDataSource, UICollectionViewDeleg
             cell.messageTextView.textColor = UIColor.white
         }
 
-        cell.bubbleView.alpha = 0.45
+        //cell.bubbleView.alpha = 0.45
         //cell.messageTextView.in = 0.45
         return cell
     }

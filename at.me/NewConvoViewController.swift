@@ -19,6 +19,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     
     @IBOutlet weak var usersSearchBar: UISearchBar!
     @IBOutlet weak var usersTableView: UITableView!
+    @IBOutlet weak var newConvoNavBar: UINavigationBar!
     
     var searchResults: [User] = []
     
@@ -34,8 +35,14 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     // ==========================================
     override func viewDidLoad() {
         
+        // Set up search bar, ask keyboard to appear when view is loaded
         self.usersSearchBar.delegate = self
-        //self.usersSearchBar.becomeFirstResponder()
+        self.usersSearchBar.becomeFirstResponder()
+        
+        // Set translucent navigation bar with color
+        let image = UIImage.imageFromColor(color: Constants.Colors.primaryColor)
+        self.newConvoNavBar.setBackgroundImage(image, for: UIBarMetrics.default)
+        self.newConvoNavBar.barStyle = .default
         
         // Little trick to hide empty cells from table view
         // TODO: Add suggestions to start a convo instead of a blank screen

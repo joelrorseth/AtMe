@@ -538,6 +538,7 @@
                         <color key="backgroundColor" red="0.97636479139328003" green="0.97653168439865112" blue="0.97635418176651001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
                     <connections>
+                        <outlet property="newConvoNavBar" destination="bxt-7t-3Lk" id="2ZV-6M-S2v"/>
                         <outlet property="usersSearchBar" destination="YDB-sm-im2" id="vwh-ev-hWu"/>
                         <outlet property="usersTableView" destination="RZ2-U7-1Zc" id="nOu-DB-UZJ"/>
                     </connections>

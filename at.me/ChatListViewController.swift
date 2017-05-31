@@ -74,7 +74,7 @@ class ChatListViewController: UITableViewController {
     }
     
     
-
+    
     // MARK: Formatting
     // ==========================================
     // ==========================================
@@ -129,13 +129,14 @@ class ChatListViewController: UITableViewController {
                 // Convo has no messages
                 
                 // Insert placeholder to prompt user to start the conversation
-                self.conversations.append(
-                    Conversation(convoId: convoId, otherUsername: username,
-                                 newestMessage: "This is the beginning of your conversation with \(username)", newestMessageTimestamp: ""))
+                self.insertConversationCell(conversation:
+                    Conversation(convoId: convoId,
+                                 otherUsername: username,
+                                 newestMessage: "This is the beginning of your conversation with \(username)",
+                                 newestMessageTimestamp: ""))
                 
-                self.tableView.reloadData()
-                
-            } else { // Convo has messages
+            } else {
+                // Convo has messages
                 
                 // TODO: Possibly switch design to store a most recent message in the convo record
                 // This would avoid querying every time, but would take more space and work require
@@ -168,18 +169,17 @@ class ChatListViewController: UITableViewController {
                             }
                         }
                         
-                        // Otherwise, need to make a new conversation cell
-                        self.conversations.append(
-                            Conversation(convoId: convoId, otherUsername: username,
-                                         newestMessage: message, newestMessageTimestamp: timestamp))
+                        self.insertConversationCell(conversation:
+                            Conversation(convoId: convoId,
+                                         otherUsername: username,
+                                         newestMessage: message,
+                                         newestMessageTimestamp: timestamp))
                         
-                        // TODO: Possibly refactor to avoid reloading every time?
-                        self.tableView.reloadData()
                     })
             }
         })
     }
-
+    
     
     // MARK: Segue
     // ==========================================
@@ -219,7 +219,7 @@ class ChatListViewController: UITableViewController {
     // ==========================================
     // ==========================================
     deinit {
-
+        
         // For each handle, remove observer for incoming messages
         // TODO: Refactor for neat method of removing all observers added
         
@@ -234,7 +234,19 @@ class ChatListViewController: UITableViewController {
 // MARK: Table View
 extension ChatListViewController {
     
-    // MARK: Table View
+    // ==========================================
+    // ==========================================
+    func insertConversationCell(conversation: Conversation) {
+        
+        // Insert the object into the data source
+        self.conversations.append(conversation)
+        
+        // Efficiently update by updating / inserting only the cells that need to be
+        self.tableView.beginUpdates()
+        self.tableView.insertRows(at: [IndexPath(row: self.conversations.count - 1, section: 0)], with: .left)
+        self.tableView.endUpdates()
+    }
+    
     // ==========================================
     // ==========================================
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -250,9 +262,7 @@ extension ChatListViewController {
     // ==========================================
     // ==========================================
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print("There should be \(conversations.count) cells")
         return conversations.count
-        
     }
     
     // ==========================================
@@ -261,7 +271,6 @@ extension ChatListViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChatListCell", for: indexPath) as! ConversationCell
         
         formatConversationCell(cell: cell)
-        print("CellForRowAt() called")
         
         // Update the sender, newest message, and timestamp from this conversation
         cell.nameLabel.text = conversations[indexPath.row].otherUsername
@@ -294,7 +303,6 @@ extension ChatListViewController {
                     
                 } else { print("AT.ME:: This user does not have a display picture") }
             }
-            
         })
         
         return cell
