@@ -306,12 +306,13 @@ extension ConvoViewController: UICollectionViewDataSource, UICollectionViewDeleg
     // ==========================================
     // ==========================================
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
+
         // Dequeue a custom cell for collection view
         let cell = messageCollectionView.dequeueReusableCell(withReuseIdentifier: Constants.Storyboard.messageId, for: indexPath) as! MessageCell
         let message = messages[indexPath.row]
         
-        var messageFrame: CGRect
+        var messageFrame: CGRect = CGRect(x: 0, y: 0, width: 0, height: 0)
+        
         
         // Message for this cell is a text message
         if let text = message.text {
@@ -328,11 +329,21 @@ extension ConvoViewController: UICollectionViewDataSource, UICollectionViewDeleg
             )
         }
         
-        // Otherwise, this cell should be a picture message
-        else {
             
-            // TODO: Implement proper frame calculation logic
-            messageFrame = CGRect(x: 0, y: 0, width: 200, height: 300)
+        // Otherwise, this cell should be a picture message
+        if let imageURL = message.imageURL {
+            
+            messageFrame = CGRect(x: 0, y: 0, width: 200, height: 200)
+            DatabaseController.downloadImage(from: FIRStorage.storage().reference().child(imageURL), completion: { (error, image) in
+                if let localError = error {
+                    print("At.ME Error:: Did not recieve downloaded UIImage. \(localError)")
+                    return
+                }
+                
+                if let localImage = image {
+                    cell.messageImageView.image = localImage
+                }
+            })
         }
         
         
@@ -343,17 +354,10 @@ extension ConvoViewController: UICollectionViewDataSource, UICollectionViewDeleg
         if (message.sender == UserState.currentUser.username!) {
 
             // Set bubble and text frames
-            cell.messageTextView.frame = CGRect(
-                x: ((view.frame.width - (messageFrame.width + 31))), y: 1,
-                width: messageFrame.width + 11,
-                height: messageFrame.height + 20
-            )
-            
-            cell.bubbleView.frame = CGRect(
-                x: (view.frame.width - 15) - (messageFrame.width + 31) + 10, y: -4,
-                width: messageFrame.width + 21,
-                height: messageFrame.height + 26
-            )
+            cell.messageTextView.frame = CGRect(x: ((view.frame.width - (messageFrame.width + 31))), y: 1, width: messageFrame.width + 11, height: messageFrame.height + 20)
+            //cell.messageImageView.frame = CGRect(x: view.frame.width - 30, y: 1, width: messageFrame.width - 60 , height: messageFrame.height + 20)
+            cell.bubbleView.frame = CGRect(x: (view.frame.width - 15) - (messageFrame.width + 31) + 10, y: -4, width: messageFrame.width + 21, height: messageFrame.height + 26)
+            cell.messageImageView.frame = cell.bubbleView.frame
             
             // Set bubble attributes
             cell.bubbleView.backgroundColor = UIColor.white
@@ -364,24 +368,16 @@ extension ConvoViewController: UICollectionViewDataSource, UICollectionViewDeleg
         else {
             
             // Set bubble and text frames
-            cell.messageTextView.frame = CGRect(
-                x: 20, y: 1,
-                width: messageFrame.width + 11,
-                height: messageFrame.height + 20
-            )
-            cell.bubbleView.frame = CGRect(
-                x: 15, y: -4,
-                width: messageFrame.width + 21,
-                height: messageFrame.height + 26
-            )
+            cell.messageTextView.frame = CGRect(x: 20, y: 1, width: messageFrame.width + 11, height: messageFrame.height + 20)
+            //cell.messageImageView.frame = CGRect(x: 15, y: 0, width: messageFrame.width , height: messageFrame.height + 30)
+            cell.bubbleView.frame = CGRect(x: 15, y: -4, width: messageFrame.width + 21, height: messageFrame.height + 26)
+            cell.messageImageView.frame = cell.bubbleView.frame
             
             // Set bubble attributes
             cell.bubbleView.backgroundColor = UIColor.darkGray
             cell.messageTextView.textColor = UIColor.white
         }
 
-        //cell.bubbleView.alpha = 0.45
-        //cell.messageTextView.in = 0.45
         return cell
     }
     

@@ -31,6 +31,15 @@ class MessageCell: UICollectionViewCell {
         return textView
     }()
     
+    // TODO: Figure out a better way to clip to a mask (bubbleView)
+    let messageImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = UIViewContentMode.scaleAspectFit
+        imageView.layer.cornerRadius = 12
+        imageView.layer.masksToBounds = true
+        return imageView
+    }()
+    
     
     // MARK: Initializers
     // ==========================================
@@ -58,5 +67,6 @@ class MessageCell: UICollectionViewCell {
         // The message and bubble view are subviews of cell
         self.addSubview(bubbleView)
         self.addSubview(messageTextView)
+        self.addSubview(messageImageView)
     }
 }
