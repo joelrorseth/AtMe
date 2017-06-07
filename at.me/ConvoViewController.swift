@@ -283,25 +283,9 @@ extension ConvoViewController: UICollectionViewDelegate {
     
     // ==========================================
     // ==========================================
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 8
-    }
-    
-    // ==========================================
-    // ==========================================
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return messages.count
-    }
-    
-//    // ==========================================
-//    // ==========================================
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-//        return UIEdgeInsetsMake(0, 8, 0, 0)
-//    }
+    func numberOfSections(in collectionView: UICollectionView) -> Int { return 1 }
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int { return messages.count }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat { return 10 }
 }
 
 
@@ -316,29 +300,59 @@ extension ConvoViewController: UICollectionViewDataSource, UICollectionViewDeleg
         let cell = messageCollectionView.dequeueReusableCell(withReuseIdentifier: Constants.Storyboard.messageId, for: indexPath) as! MessageCell
         let message = messages[indexPath.row]
         
-        var messageFrame: CGRect = CGRect(x: 0, y: 0, width: 0, height: 0)
+        
+        // Set the background color of the message
+        if (message.sender == UserState.currentUser.username!) {
+            cell.bubbleView.backgroundColor = UIColor.white
+            cell.messageTextView.textColor = UIColor.black
+        } else {
+            cell.bubbleView.backgroundColor = Constants.Colors.primaryColor
+            cell.messageTextView.textColor = UIColor.white
+        }
         
         
-        // Message for this cell is a text message
+        // CASE 1/2: Normal Text Message
+        // ----------------------------------------------------
         if let text = message.text {
             
             // Set text field embedded in cell to show message
             cell.messageTextView.text = message.text
             
             // Calculate how large the bubble will need to be to house the message
-            messageFrame = NSString(string: text).boundingRect(
+            let messageFrame = NSString(string: text).boundingRect(
                 with: CGSize(width: (view.bounds.size.width * 0.72), height: 1000),
                 options: NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin),
-                attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)],
+                attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: CGFloat(Constants.Text.defaultTextSize))],
                 context: nil
             )
+            
+            if (message.sender == UserState.currentUser.username!) {    // CASE 1: OUTGOING
+                
+                cell.messageTextView.frame = CGRect(x: view.frame.width - (messageFrame.width + 31),
+                                                    y: 0,
+                                                    width: messageFrame.width + 11,
+                                                    height: messageFrame.height + 20)
+                cell.bubbleView.frame = CGRect(x: (view.frame.width - 15) - (messageFrame.width + 31) + 10,
+                                               y: 0,
+                                               width: messageFrame.width + 21,
+                                               height: messageFrame.height + 18)
+
+            } else {    // CASE 2: INCOMING
+                
+                // Set bubble and text frames
+                cell.messageTextView.frame = CGRect(x: 20, y: 0, width: messageFrame.width + 11, height: messageFrame.height + 20)
+                cell.bubbleView.frame = CGRect(x: 15, y: 0, width: messageFrame.width + 21, height: messageFrame.height + 18)
+            }
+            
+            return cell
         }
         
         
-        // Otherwise, this cell should be a picture message
+        // CASE 2/2: Picture Message
+        // ----------------------------------------------------
         if let imageURL = message.imageURL {
             
-            messageFrame = CGRect(x: 0, y: 0, width: 200, height: 200)
+            let messageFrame = CGRect(x: 0, y: 0, width: 200, height: 200)
             DatabaseController.downloadImage(from: FIRStorage.storage().reference().child(imageURL), completion: { (error, image) in
                 if let localError = error {
                     print("At.ME Error:: Did not recieve downloaded UIImage. \(localError)")
@@ -346,43 +360,22 @@ extension ConvoViewController: UICollectionViewDataSource, UICollectionViewDeleg
                 }
                 
                 if let localImage = image {
-                    //cell.messageImageView.image = localImage
+                    cell.messageImageView.image = localImage
                 }
             })
+            
+            if (message.sender == UserState.currentUser.username!) {    // CASE 1: OUTGOING
+                cell.bubbleView.frame = CGRect(x: view.frame.width - 300, y: 0, width: 200, height: 200)
+                cell.messageImageView.frame = cell.bubbleView.frame
+            
+            }   else {  // CASE 2: INCOMING
+                cell.bubbleView.frame = messageFrame
+                cell.messageImageView.frame = messageFrame
+            }
+
+            return cell
         }
-        
-        
-        
-        
-        
-        // CASE 1: OUTGOING
-        if (message.sender == UserState.currentUser.username!) {
-            
-            // Set bubble and text frames
-            cell.messageTextView.frame = CGRect(x: ((view.frame.width - (messageFrame.width + 31))), y: 1, width: messageFrame.width + 11, height: messageFrame.height + 20)
-            //cell.messageImageView.frame = CGRect(x: view.frame.width - 30, y: 1, width: messageFrame.width - 60 , height: messageFrame.height + 20)
-            cell.bubbleView.frame = CGRect(x: (view.frame.width - 15) - (messageFrame.width + 31) + 10, y: -4, width: messageFrame.width + 21, height: messageFrame.height + 26)
-            cell.messageImageView.frame = CGRect(x: view.frame.width - (messageFrame.width + 31), y: 1, width: 200, height: 200)
-            
-            // Set bubble attributes
-            cell.bubbleView.backgroundColor = UIColor.white
-            cell.messageTextView.textColor = UIColor.black
-        }
-            
-            // CASE 2: INCOMING
-        else {
-            
-            // Set bubble and text frames
-            cell.messageTextView.frame = CGRect(x: 20, y: 1, width: messageFrame.width + 11, height: messageFrame.height + 20)
-            //cell.messageImageView.frame = CGRect(x: 15, y: 0, width: messageFrame.width , height: messageFrame.height + 30)
-            cell.bubbleView.frame = CGRect(x: 15, y: -4, width: messageFrame.width + 21, height: messageFrame.height + 26)
-            cell.messageImageView.frame = cell.bubbleView.frame
-            
-            // Set bubble attributes
-            cell.bubbleView.backgroundColor = UIColor.darkGray
-            cell.messageTextView.textColor = UIColor.white
-        }
-        
+
         return cell
     }
     
@@ -395,14 +388,14 @@ extension ConvoViewController: UICollectionViewDataSource, UICollectionViewDeleg
             
             // Use text size to determine message bubble frame
             let messageFrame = NSString(string: text).boundingRect(
-                with: CGSize(width: 250, height: 1000),
+                with: CGSize(width: (view.bounds.size.width * 0.72), height: 1000),
                 options: NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin),
-                attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)],
+                attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: CGFloat(Constants.Text.defaultTextSize))],
                 context: nil
             )
             
             // Return size intended to house entire cell / message bubble
-            return CGSize(width: view.frame.width, height: messageFrame.height + 20)
+            return CGSize(width: view.frame.width, height: messageFrame.height + 12)
         }
             
             // Message at this location is a picture message
