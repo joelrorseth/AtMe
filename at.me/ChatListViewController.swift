@@ -57,9 +57,10 @@ class ChatListViewController: UITableViewController {
         let image = UIImage.imageFromColor(color: Constants.Colors.primaryColor)
         self.navigationController?.navigationBar.setBackgroundImage(image, for: UIBarMetrics.default)
         self.navigationController?.navigationBar.barStyle = .default
+        self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName : UIColor.white]
         
         // Allow navigation bar to be hidden
-        self.navigationController?.hidesBarsOnSwipe = true
+        //self.navigationController?.hidesBarsOnSwipe = true
         
         // Set background color appearing behind the cells
         self.tableView.backgroundColor = UIColor.groupTableViewBackground
@@ -68,6 +69,7 @@ class ChatListViewController: UITableViewController {
         // Establish bar button items in conversations view
         let settingsIcon = UIImage(named: "settings")
         let settingsButton = UIBarButtonItem(image: settingsIcon, style: .plain, target: self, action: #selector(didTapSettings))
+        settingsButton.tintColor = UIColor.white
         
         self.navigationItem.leftBarButtonItem = settingsButton
         self.navigationItem.title = "@Me"

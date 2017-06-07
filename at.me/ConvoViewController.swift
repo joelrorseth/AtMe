@@ -138,6 +138,7 @@ class ConvoViewController: UIViewController, AlertController {
         // Add text from textfield to temp array, insert row into collection view
         messages.append(message)
         messageCollectionView.insertItems(at: [IndexPath(row: messages.count - 1, section: 0)] )
+        //messageCollectionView.scrollToItem(at: IndexPath(row: messages.count - 1, section: 0) , at: UICollectionViewScrollPosition.bottom, animated: false)
     }
     
     // ==========================================
@@ -286,17 +287,21 @@ extension ConvoViewController: UICollectionViewDelegate {
         return 1
     }
     
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 8
+    }
+    
     // ==========================================
     // ==========================================
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return messages.count
     }
     
-    // ==========================================
-    // ==========================================
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsetsMake(8, 0, 0, 0)
-    }
+//    // ==========================================
+//    // ==========================================
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+//        return UIEdgeInsetsMake(0, 8, 0, 0)
+//    }
 }
 
 
@@ -306,7 +311,7 @@ extension ConvoViewController: UICollectionViewDataSource, UICollectionViewDeleg
     // ==========================================
     // ==========================================
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
+        
         // Dequeue a custom cell for collection view
         let cell = messageCollectionView.dequeueReusableCell(withReuseIdentifier: Constants.Storyboard.messageId, for: indexPath) as! MessageCell
         let message = messages[indexPath.row]
@@ -329,7 +334,7 @@ extension ConvoViewController: UICollectionViewDataSource, UICollectionViewDeleg
             )
         }
         
-            
+        
         // Otherwise, this cell should be a picture message
         if let imageURL = message.imageURL {
             
@@ -341,7 +346,7 @@ extension ConvoViewController: UICollectionViewDataSource, UICollectionViewDeleg
                 }
                 
                 if let localImage = image {
-                    cell.messageImageView.image = localImage
+                    //cell.messageImageView.image = localImage
                 }
             })
         }
@@ -352,19 +357,19 @@ extension ConvoViewController: UICollectionViewDataSource, UICollectionViewDeleg
         
         // CASE 1: OUTGOING
         if (message.sender == UserState.currentUser.username!) {
-
+            
             // Set bubble and text frames
             cell.messageTextView.frame = CGRect(x: ((view.frame.width - (messageFrame.width + 31))), y: 1, width: messageFrame.width + 11, height: messageFrame.height + 20)
             //cell.messageImageView.frame = CGRect(x: view.frame.width - 30, y: 1, width: messageFrame.width - 60 , height: messageFrame.height + 20)
             cell.bubbleView.frame = CGRect(x: (view.frame.width - 15) - (messageFrame.width + 31) + 10, y: -4, width: messageFrame.width + 21, height: messageFrame.height + 26)
-            cell.messageImageView.frame = cell.bubbleView.frame
+            cell.messageImageView.frame = CGRect(x: view.frame.width - (messageFrame.width + 31), y: 1, width: 200, height: 200)
             
             // Set bubble attributes
             cell.bubbleView.backgroundColor = UIColor.white
             cell.messageTextView.textColor = UIColor.black
         }
-        
-        // CASE 2: INCOMING
+            
+            // CASE 2: INCOMING
         else {
             
             // Set bubble and text frames
@@ -377,7 +382,7 @@ extension ConvoViewController: UICollectionViewDataSource, UICollectionViewDeleg
             cell.bubbleView.backgroundColor = UIColor.darkGray
             cell.messageTextView.textColor = UIColor.white
         }
-
+        
         return cell
     }
     
@@ -399,12 +404,12 @@ extension ConvoViewController: UICollectionViewDataSource, UICollectionViewDeleg
             // Return size intended to house entire cell / message bubble
             return CGSize(width: view.frame.width, height: messageFrame.height + 20)
         }
-        
-        // Message at this location is a picture message
+            
+            // Message at this location is a picture message
         else {
             
             // TODO: Calculate size for image
-            return CGSize(width: view.frame.width, height: 300)
+            return CGSize(width: 200, height: 200)
         }
     }
 }

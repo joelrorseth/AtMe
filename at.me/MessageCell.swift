@@ -10,6 +10,8 @@ import UIKit
 
 class MessageCell: UICollectionViewCell {
     
+    public static let horizontalBubblePadding: CGFloat = 8
+    public static let verticalBubblePadding: CGFloat = 8
     
     // MARK: Lazy properties for UI message elements
     // ==========================================
@@ -17,10 +19,12 @@ class MessageCell: UICollectionViewCell {
     // UIView for outside chat bubble
     let bubbleView: UIView = {
         let view = UIView()
+        view.clipsToBounds = true
         view.layer.cornerRadius = 12
         view.layer.masksToBounds = true
         return view
     }()
+    
     
     // Text view for message content
     let messageTextView: UITextView = {
@@ -65,6 +69,7 @@ class MessageCell: UICollectionViewCell {
     func setupViews() {
         
         // The message and bubble view are subviews of cell
+        //self.layer.masksToBounds = true
         self.addSubview(bubbleView)
         self.addSubview(messageTextView)
         self.addSubview(messageImageView)
