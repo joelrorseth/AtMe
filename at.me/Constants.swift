@@ -38,9 +38,14 @@ struct Constants {
 //        static let primaryBackground = UIColor(red: 232/255, green: 219/255, blue: 212/255, alpha: 1.0)
 
         // Theme 2
-        static let primaryLight = UIColor(red: 131/255, green: 145/255, blue: 150/255, alpha: 1.0)
-        static let primaryDark = UIColor(red: 41/255, green: 48/255, blue: 74/255, alpha: 1.0)
-        static let primaryAccent = UIColor(red: 218/255, green: 177/255, blue: 161/255, alpha: 1.0)
+        //static let primaryLight = UIColor(red: 131/255, green: 145/255, blue: 150/255, alpha: 1.0)
+        //static let primaryDark = UIColor(red: 41/255, green: 48/255, blue: 74/255, alpha: 1.0)
+        //static let primaryAccent = UIColor(red: 218/255, green: 177/255, blue: 161/255, alpha: 1.0)
+
+        
+        static let primaryLight = UIColor.white
+        static let primaryDark = UIColor(red: 115/255, green: 22/255, blue: 231/255, alpha: 1)
+        static let primaryAccent = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)
         static let primaryText = UIColor.white
         static let primaryBackground = UIColor(red: 216/255, green: 230/255, blue: 240/255, alpha: 1.0)
     }

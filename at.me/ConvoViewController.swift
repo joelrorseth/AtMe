@@ -292,6 +292,8 @@ extension ConvoViewController: UICollectionViewDelegate {
 // MARK: Collection View Data Source
 extension ConvoViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
+    
+    // TODO: Major refactoring!!!
     // ==========================================
     // ==========================================
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -352,7 +354,7 @@ extension ConvoViewController: UICollectionViewDataSource, UICollectionViewDeleg
         // ----------------------------------------------------
         if let imageURL = message.imageURL {
             
-            let messageFrame = CGRect(x: 0, y: 0, width: 200, height: 200)
+            let messageFrame = CGRect(x: -71, y: 0, width: 200, height: 200)
             DatabaseController.downloadImage(from: FIRStorage.storage().reference().child(imageURL), completion: { (error, image) in
                 if let localError = error {
                     print("At.ME Error:: Did not recieve downloaded UIImage. \(localError)")

@@ -61,7 +61,7 @@
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="15"/>
                                 <state key="normal" title="New to @Me? Create an account!">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleColor" red="0.45098039220000002" green="0.084757633509999999" blue="0.90426400380000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
                                     <segue destination="cE4-CE-511" kind="show" identifier="CreateAccountSegue" animates="NO" id="zz5-2g-IHJ"/>
@@ -173,7 +173,7 @@
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="15"/>
                                 <state key="normal" title="Already have an account? Sign In!">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleColor" red="0.45098039220000002" green="0.084757633509999999" blue="0.90426400380000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
                                     <action selector="transitionToSignIn:" destination="cE4-CE-511" eventType="touchUpInside" id="6bQ-hy-nAC"/>
