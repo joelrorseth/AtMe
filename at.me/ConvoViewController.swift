@@ -23,7 +23,7 @@ class ConvoViewController: UIViewController, AlertController {
     @IBOutlet weak var messageTextField: UITextField!
     @IBOutlet weak var messageToolbar: UIToolbar!
     @IBOutlet weak var messageToolbarBottomConstraint: NSLayoutConstraint!
-    @IBOutlet weak var messageCollectionView: UICollectionView!
+    @IBOutlet weak var messagesTableView: UITableView!
     
     var messages: [Message] = []
     var convoId: String = ""
@@ -83,17 +83,11 @@ class ConvoViewController: UIViewController, AlertController {
     // ==========================================
     override func viewDidLoad() {
         
-        self.messageCollectionView.backgroundColor = UIColor.groupTableViewBackground
-        
-        // Establish a flow layout with spacing for collection view of messages
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 14
-        messageCollectionView.setCollectionViewLayout(layout, animated: true)
+        self.messagesTableView.backgroundColor = UIColor.groupTableViewBackground
         
         // Set some properties of UI elements
         messageTextField.borderStyle = .none
-        messageCollectionView?.register(MessageCell.self, forCellWithReuseIdentifier: Constants.Storyboard.messageId)
+        //messagesTableView?.register(MessageCell.self, forCellWithReuseIdentifier: Constants.Storyboard.messageId)
         
         addKeyboardObservers()
 
@@ -135,10 +129,14 @@ class ConvoViewController: UIViewController, AlertController {
     // ==========================================
     private func addMessage(message: Message) {
         
-        // Add text from textfield to temp array, insert row into collection view
+        // Update data source
         messages.append(message)
-        messageCollectionView.insertItems(at: [IndexPath(row: messages.count - 1, section: 0)] )
-        //messageCollectionView.scrollToItem(at: IndexPath(row: messages.count - 1, section: 0) , at: UICollectionViewScrollPosition.bottom, animated: false)
+    
+        
+        // Efficiently update by updating / inserting only the cells that need to be
+        self.messagesTableView.beginUpdates()
+        self.messagesTableView.insertRows(at: [IndexPath(row: messages.count - 1, section: 0)], with: .left)
+        self.messagesTableView.endUpdates()
     }
     
     // ==========================================
@@ -278,28 +276,19 @@ extension ConvoViewController: UIImagePickerControllerDelegate, UINavigationCont
 }
 
 
-// MARK: Collection View Delegate
-extension ConvoViewController: UICollectionViewDelegate {
+// MARK: Table View Delegate
+extension ConvoViewController: UITableViewDelegate, UITableViewDataSource {
     
-    // ==========================================
-    // ==========================================
-    func numberOfSections(in collectionView: UICollectionView) -> Int { return 1 }
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int { return messages.count }
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat { return 10 }
-}
+    func numberOfSections(in tableView: UITableView) -> Int { return 1 }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { return messages.count }
 
-
-// MARK: Collection View Data Source
-extension ConvoViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
-    
-    // TODO: Major refactoring!!!
     // ==========================================
     // ==========================================
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         // Dequeue a custom cell for collection view
-        let cell = messageCollectionView.dequeueReusableCell(withReuseIdentifier: Constants.Storyboard.messageId, for: indexPath) as! MessageCell
+        let cell = messagesTableView.dequeueReusableCell(withIdentifier: Constants.Storyboard.messageId, for: indexPath) as! MessageCell
         let message = messages[indexPath.row]
         
         
@@ -319,34 +308,30 @@ extension ConvoViewController: UICollectionViewDataSource, UICollectionViewDeleg
             
             // Set text field embedded in cell to show message
             cell.messageTextView.text = message.text
+            let size = sizeForString(text, maxWidth: tableView.bounds.width * 0.7, font: Constants.Fonts.regularFont)
             
-            // Calculate how large the bubble will need to be to house the message
-            let messageFrame = NSString(string: text).boundingRect(
-                with: CGSize(width: (view.bounds.size.width * 0.72), height: 1000),
-                options: NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin),
-                attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: CGFloat(Constants.Text.defaultTextSize))],
-                context: nil
-            )
-            
-            if (message.sender == UserState.currentUser.username!) {    // CASE 1: OUTGOING
+            if (message.sender == UserState.currentUser.username!) { // Outgoing
+                cell.messageTextView.frame = CGRect(x: tableView.bounds.width - size.width - (MessageCell.horizontalInsetPadding + MessageCell.horizontalBubbleSpacing),
+                                                    y: MessageCell.verticalInsetPadding + MessageCell.verticalBubbleSpacing,
+                                                    width: size.width,
+                                                    height: size.height)
                 
-                cell.messageTextView.frame = CGRect(x: view.frame.width - (messageFrame.width + 31),
-                                                    y: 0,
-                                                    width: messageFrame.width + 11,
-                                                    height: messageFrame.height + 20)
-                cell.bubbleView.frame = CGRect(x: (view.frame.width - 15) - (messageFrame.width + 31) + 10,
-                                               y: 0,
-                                               width: messageFrame.width + 21,
-                                               height: messageFrame.height + 18)
+                cell.bubbleView.frame = CGRect(x: tableView.bounds.width - size.width - (MessageCell.horizontalInsetPadding + (2 * MessageCell.horizontalBubbleSpacing)),
+                                               y: MessageCell.verticalInsetPadding,
+                                               width: size.width + (2 * MessageCell.horizontalBubbleSpacing),
+                                               height: size.height + (2 * MessageCell.verticalBubbleSpacing))
 
-            } else {    // CASE 2: INCOMING
+            } else { // Incoming
+                cell.messageTextView.frame = CGRect(x: MessageCell.horizontalInsetPadding + MessageCell.horizontalBubbleSpacing,
+                                                    y: MessageCell.verticalInsetPadding + MessageCell.verticalBubbleSpacing,
+                                                    width: size.width,
+                                                    height: size.height)
                 
-                // Set bubble and text frames
-                cell.messageTextView.frame = CGRect(x: 20, y: 0, width: messageFrame.width + 11, height: messageFrame.height + 20)
-                cell.bubbleView.frame = CGRect(x: 15, y: 0, width: messageFrame.width + 21, height: messageFrame.height + 18)
+                cell.bubbleView.frame = CGRect(x: MessageCell.horizontalInsetPadding,
+                                               y: MessageCell.verticalInsetPadding,
+                                               width: size.width + (2 * MessageCell.horizontalBubbleSpacing),
+                                               height: size.height + (2 * MessageCell.verticalBubbleSpacing))
             }
-            
-            return cell
         }
         
         
@@ -354,57 +339,66 @@ extension ConvoViewController: UICollectionViewDataSource, UICollectionViewDeleg
         // ----------------------------------------------------
         if let imageURL = message.imageURL {
             
-            let messageFrame = CGRect(x: -71, y: 0, width: 200, height: 200)
             DatabaseController.downloadImage(from: FIRStorage.storage().reference().child(imageURL), completion: { (error, image) in
-                if let localError = error {
-                    print("At.ME Error:: Did not recieve downloaded UIImage. \(localError)")
-                    return
-                }
                 
-                if let localImage = image {
-                    cell.messageImageView.image = localImage
-                }
+                if let localError = error { print("At.ME Error:: Did not recieve downloaded UIImage. \(localError)"); return }
+                if let localImage = image { cell.messageImageView.image = localImage }
             })
             
-            if (message.sender == UserState.currentUser.username!) {    // CASE 1: OUTGOING
-                cell.bubbleView.frame = CGRect(x: view.frame.width - 300, y: 0, width: 200, height: 200)
-                cell.messageImageView.frame = cell.bubbleView.frame
-            
-            }   else {  // CASE 2: INCOMING
-                cell.bubbleView.frame = messageFrame
-                cell.messageImageView.frame = messageFrame
+            if (message.sender == UserState.currentUser.username!) { // Outgoing
+                cell.messageImageView.frame = CGRect(x: tableView.bounds.width - 200 - (MessageCell.horizontalInsetPadding + MessageCell.horizontalBubbleSpacing),
+                                                     y: MessageCell.verticalInsetPadding + MessageCell.verticalBubbleSpacing, width: 200, height: 200)
+                
+                cell.bubbleView.frame = CGRect(x: tableView.bounds.width - 200 - (MessageCell.horizontalInsetPadding + (2 * MessageCell.horizontalBubbleSpacing)),
+                                               y: MessageCell.verticalInsetPadding, width: 200 + (2 * MessageCell.horizontalBubbleSpacing),
+                                               height: 200 + (2 * MessageCell.verticalBubbleSpacing))
+                
+            } else {  // CASE 2: INCOMING
+                cell.messageImageView.frame = CGRect(x: MessageCell.horizontalInsetPadding + MessageCell.horizontalBubbleSpacing,
+                                                     y: MessageCell.verticalInsetPadding + MessageCell.verticalBubbleSpacing, width: 200, height: 200)
+                
+                cell.bubbleView.frame = CGRect(x: MessageCell.horizontalInsetPadding, y: MessageCell.verticalInsetPadding,
+                                               width: 200 + (2 * MessageCell.horizontalBubbleSpacing), height: 200 + (2 * MessageCell.verticalBubbleSpacing))
             }
-
-            return cell
         }
-
+        
         return cell
     }
     
     // ==========================================
     // ==========================================
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    func sizeForString(_ string: String, maxWidth: CGFloat, font: UIFont) -> CGSize {
         
-        // Message at this location is a text message
+        let storage = NSTextStorage(string: string)
+        let container = NSTextContainer(size: CGSize(width: maxWidth, height: 10000))
+        let manager = NSLayoutManager()
+        
+        manager.addTextContainer(container)
+        storage.addLayoutManager(manager)
+        
+        storage.addAttribute(NSFontAttributeName, value: font, range: NSMakeRange(0, storage.length))
+        container.lineFragmentPadding = 0.0
+        
+        manager.glyphRange(for: container)
+        let size = manager.usedRect(for: container).size
+        
+        print("Size = \(size) > \t\t\"\(string)\"")
+        return size
+    }
+    
+    // ==========================================
+    // ==========================================
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        
         if let text = messages[indexPath.row].text {
-            
-            // Use text size to determine message bubble frame
-            let messageFrame = NSString(string: text).boundingRect(
-                with: CGSize(width: (view.bounds.size.width * 0.72), height: 1000),
-                options: NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin),
-                attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: CGFloat(Constants.Text.defaultTextSize))],
-                context: nil
-            )
-            
-            // Return size intended to house entire cell / message bubble
-            return CGSize(width: view.frame.width, height: messageFrame.height + 12)
+            return sizeForString(text, maxWidth: tableView.bounds.width * 0.7, font: Constants.Fonts.regularFont).height + (2 * MessageCell.verticalBubbleSpacing) + (2 * MessageCell.verticalInsetPadding)
         }
-            
-            // Message at this location is a picture message
-        else {
-            
-            // TODO: Calculate size for image
-            return CGSize(width: 200, height: 200)
+        
+        if let _ = messages[indexPath.row].imageURL {
+            return 200 + (2 * MessageCell.verticalBubbleSpacing) + (2 * MessageCell.verticalInsetPadding)
+
         }
+        
+        return 0
     }
 }

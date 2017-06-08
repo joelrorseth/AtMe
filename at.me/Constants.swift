@@ -9,6 +9,10 @@
 import UIKit
 struct Constants {
     
+    struct Fonts {
+        static let regularFont = UIFont.systemFont(ofSize: CGFloat(14))
+    }
+    
     struct Text {
         static let defaultTextSize = 14
     }

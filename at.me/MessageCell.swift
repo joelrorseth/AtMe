@@ -8,10 +8,13 @@
 
 import UIKit
 
-class MessageCell: UICollectionViewCell {
+class MessageCell: UITableViewCell {
     
-    public static let horizontalBubblePadding: CGFloat = 8
-    public static let verticalBubblePadding: CGFloat = 8
+    public static let horizontalInsetPadding: CGFloat = 14
+    public static let verticalInsetPadding: CGFloat = 6
+    
+    public static let horizontalBubbleSpacing: CGFloat = 8
+    public static let verticalBubbleSpacing: CGFloat = 8
     
     // MARK: Lazy properties for UI message elements
     // ==========================================
@@ -29,9 +32,13 @@ class MessageCell: UICollectionViewCell {
     // Text view for message content
     let messageTextView: UITextView = {
         let textView = UITextView()
-        textView.font = UIFont.systemFont(ofSize: CGFloat(Constants.Text.defaultTextSize))
+        textView.layer.cornerRadius = 12
+        textView.font = Constants.Fonts.regularFont
         textView.isEditable = false
-        textView.backgroundColor = UIColor.clear
+        textView.isScrollEnabled = false
+        textView.backgroundColor = UIColor.green        // Change back to clear
+        textView.textContainer.lineFragmentPadding = 0
+        textView.textContainerInset = UIEdgeInsets.zero
         return textView
     }()
     
@@ -41,6 +48,7 @@ class MessageCell: UICollectionViewCell {
         imageView.contentMode = UIViewContentMode.scaleAspectFit
         imageView.layer.cornerRadius = 12
         imageView.layer.masksToBounds = true
+        imageView.backgroundColor = UIColor.blue    // Remove later
         return imageView
     }()
     
@@ -49,8 +57,8 @@ class MessageCell: UICollectionViewCell {
     // ==========================================
     // Seems to be called after view is loaded
     // ==========================================
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         setupViews()
     }
