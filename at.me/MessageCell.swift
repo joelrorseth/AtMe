@@ -32,11 +32,10 @@ class MessageCell: UITableViewCell {
     // Text view for message content
     let messageTextView: UITextView = {
         let textView = UITextView()
-        textView.layer.cornerRadius = 12
         textView.font = Constants.Fonts.regularFont
         textView.isEditable = false
         textView.isScrollEnabled = false
-        textView.backgroundColor = UIColor.green        // Change back to clear
+        textView.backgroundColor = UIColor.clear       // Change back to clear
         textView.textContainer.lineFragmentPadding = 0
         textView.textContainerInset = UIEdgeInsets.zero
         return textView
@@ -48,7 +47,7 @@ class MessageCell: UITableViewCell {
         imageView.contentMode = UIViewContentMode.scaleAspectFit
         imageView.layer.cornerRadius = 12
         imageView.layer.masksToBounds = true
-        imageView.backgroundColor = UIColor.blue    // Remove later
+        //imageView.backgroundColor = UIColor.blue    // Remove later
         return imageView
     }()
     

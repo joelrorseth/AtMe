@@ -47,7 +47,7 @@ struct Constants {
         //static let primaryAccent = UIColor(red: 218/255, green: 177/255, blue: 161/255, alpha: 1.0)
 
         
-        static let primaryLight = UIColor.white
+        static let primaryLight = UIColor(red: 180/255, green: 93/255, blue: 231/255, alpha: 1)
         static let primaryDark = UIColor(red: 115/255, green: 22/255, blue: 231/255, alpha: 1)
         static let primaryAccent = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)
         static let primaryText = UIColor.white
