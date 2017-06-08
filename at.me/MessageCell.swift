@@ -10,8 +10,8 @@ import UIKit
 
 class MessageCell: UITableViewCell {
     
-    public static let horizontalInsetPadding: CGFloat = 14
-    public static let verticalInsetPadding: CGFloat = 6
+    public static let horizontalInsetPadding: CGFloat = 16
+    public static let verticalInsetPadding: CGFloat = 3
     
     public static let horizontalBubbleSpacing: CGFloat = 8
     public static let verticalBubbleSpacing: CGFloat = 8
