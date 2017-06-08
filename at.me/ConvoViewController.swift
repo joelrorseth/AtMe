@@ -291,79 +291,64 @@ extension ConvoViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = messagesTableView.dequeueReusableCell(withIdentifier: Constants.Storyboard.messageId, for: indexPath) as! MessageCell
         let message = messages[indexPath.row]
         
-        
-        // Set the background color of the message
-        if (message.sender == UserState.currentUser.username!) {
-            cell.bubbleView.backgroundColor = UIColor.white
-            cell.messageTextView.textColor = UIColor.black
-        } else {
-            cell.bubbleView.backgroundColor = Constants.Colors.primaryColor
-            cell.messageTextView.textColor = UIColor.white
-        }
-        
+        // Clear message fields
         cell.messageImageView.image = nil
         cell.messageTextView.text = ""
         
-        // CASE 1/2: Normal Text Message
-        // ----------------------------------------------------
+        var messageSize = CGSize(width: 0, height: 0)
+        var messageContentReference: UIView? = nil
+        
+        // Normal Text Message
         if let text = message.text {
+            messageSize = sizeForString(text, maxWidth: tableView.bounds.width * 0.7, font: Constants.Fonts.regularFont)
+            messageContentReference = cell.messageTextView
             
-            
-            // Set text field embedded in cell to show message
             cell.messageTextView.text = message.text
-            let size = sizeForString(text, maxWidth: tableView.bounds.width * 0.7, font: Constants.Fonts.regularFont)
-            
-            if (message.sender == UserState.currentUser.username!) { // Outgoing
-                
-                cell.messageTextView.frame = CGRect(x: tableView.bounds.width - size.width - (MessageCell.horizontalInsetPadding + MessageCell.horizontalBubbleSpacing),
-                                                    y: MessageCell.verticalInsetPadding + MessageCell.verticalBubbleSpacing,
-                                                    width: size.width,
-                                                    height: size.height)
-                
-                cell.bubbleView.frame = CGRect(x: tableView.bounds.width - size.width - (MessageCell.horizontalInsetPadding + (2 * MessageCell.horizontalBubbleSpacing)),
-                                               y: MessageCell.verticalInsetPadding,
-                                               width: size.width + (2 * MessageCell.horizontalBubbleSpacing),
-                                               height: size.height + (2 * MessageCell.verticalBubbleSpacing))
-
-            } else { // Incoming
-                cell.messageTextView.frame = CGRect(x: MessageCell.horizontalInsetPadding + MessageCell.horizontalBubbleSpacing,
-                                                    y: MessageCell.verticalInsetPadding + MessageCell.verticalBubbleSpacing,
-                                                    width: size.width,
-                                                    height: size.height)
-                
-                cell.bubbleView.frame = CGRect(x: MessageCell.horizontalInsetPadding,
-                                               y: MessageCell.verticalInsetPadding,
-                                               width: size.width + (2 * MessageCell.horizontalBubbleSpacing),
-                                               height: size.height + (2 * MessageCell.verticalBubbleSpacing))
-            }
         }
         
-        
-        // CASE 2/2: Picture Message
-        // ----------------------------------------------------
+        // Picture Message
         if let imageURL = message.imageURL {
+            
+            messageSize = CGSize(width: 200, height: 200)
+            messageContentReference = cell.messageImageView
             
             DatabaseController.downloadImage(from: FIRStorage.storage().reference().child(imageURL), completion: { (error, image) in
                 
                 if let localError = error { print("At.ME Error:: Did not recieve downloaded UIImage. \(localError)"); return }
                 if let localImage = image { cell.messageImageView.image = localImage }
             })
+        }
+        
+        
+        if (message.sender == UserState.currentUser.username! && messageContentReference != nil) { // Outgoing
             
-            if (message.sender == UserState.currentUser.username!) { // Outgoing
-                cell.messageImageView.frame = CGRect(x: tableView.bounds.width - 200 - (MessageCell.horizontalInsetPadding + MessageCell.horizontalBubbleSpacing),
-                                                     y: MessageCell.verticalInsetPadding + MessageCell.verticalBubbleSpacing, width: 200, height: 200)
-                
-                cell.bubbleView.frame = CGRect(x: tableView.bounds.width - 200 - (MessageCell.horizontalInsetPadding + (2 * MessageCell.horizontalBubbleSpacing)),
-                                               y: MessageCell.verticalInsetPadding, width: 200 + (2 * MessageCell.horizontalBubbleSpacing),
-                                               height: 200 + (2 * MessageCell.verticalBubbleSpacing))
-                
-            } else {  // CASE 2: INCOMING
-                cell.messageImageView.frame = CGRect(x: MessageCell.horizontalInsetPadding + MessageCell.horizontalBubbleSpacing,
-                                                     y: MessageCell.verticalInsetPadding + MessageCell.verticalBubbleSpacing, width: 200, height: 200)
-                
-                cell.bubbleView.frame = CGRect(x: MessageCell.horizontalInsetPadding, y: MessageCell.verticalInsetPadding,
-                                               width: 200 + (2 * MessageCell.horizontalBubbleSpacing), height: 200 + (2 * MessageCell.verticalBubbleSpacing))
-            }
+            cell.bubbleView.backgroundColor = UIColor.white
+            cell.messageTextView.textColor = UIColor.black
+            
+            messageContentReference?.frame = CGRect(x: tableView.bounds.width - messageSize.width - (MessageCell.horizontalInsetPadding + MessageCell.horizontalBubbleSpacing),
+                                                y: MessageCell.verticalInsetPadding + MessageCell.verticalBubbleSpacing,
+                                                width: messageSize.width,
+                                                height: messageSize.height)
+            
+            cell.bubbleView.frame = CGRect(x: tableView.bounds.width - messageSize.width - (MessageCell.horizontalInsetPadding + (2 * MessageCell.horizontalBubbleSpacing)),
+                                           y: MessageCell.verticalInsetPadding,
+                                           width: messageSize.width + (2 * MessageCell.horizontalBubbleSpacing),
+                                           height: messageSize.height + (2 * MessageCell.verticalBubbleSpacing))
+            
+        } else { // Incoming
+            
+            cell.bubbleView.backgroundColor = Constants.Colors.primaryColor
+            cell.messageTextView.textColor = UIColor.white
+            
+            messageContentReference?.frame = CGRect(x: MessageCell.horizontalInsetPadding + MessageCell.horizontalBubbleSpacing,
+                                                y: MessageCell.verticalInsetPadding + MessageCell.verticalBubbleSpacing,
+                                                width: messageSize.width,
+                                                height: messageSize.height)
+            
+            cell.bubbleView.frame = CGRect(x: MessageCell.horizontalInsetPadding,
+                                           y: MessageCell.verticalInsetPadding,
+                                           width: messageSize.width + (2 * MessageCell.horizontalBubbleSpacing),
+                                           height: messageSize.height + (2 * MessageCell.verticalBubbleSpacing))
         }
         
         return cell
@@ -386,7 +371,7 @@ extension ConvoViewController: UITableViewDelegate, UITableViewDataSource {
         manager.glyphRange(for: container)
         let size = manager.usedRect(for: container).size
         
-        print("Size = \(size) > \t\t\"\(string)\"")
+        //print("Size = \(size) > \t\t\"\(string)\"")
         return size
     }
     
