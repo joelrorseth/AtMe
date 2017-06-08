@@ -642,6 +642,25 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="GcX-v7-cKB">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="623"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="messageId" id="QG2-8N-TpN" customClass="MessageCell" customModule="at_me" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="QG2-8N-TpN" id="nJv-gQ-4Eu">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="UWH-2D-z4o" id="dKg-So-rCo"/>
+                                    <outlet property="delegate" destination="UWH-2D-z4o" id="LXm-Do-R49"/>
+                                </connections>
+                            </tableView>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="O6k-eG-a3g">
                                 <rect key="frame" x="0.0" y="623" width="375" height="44"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -688,32 +707,16 @@
                                     </barButtonItem>
                                 </items>
                             </toolbar>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="GcX-v7-cKB">
-                                <rect key="frame" x="0.0" y="64" width="375" height="559"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="messageId" id="QG2-8N-TpN" customClass="MessageCell" customModule="at_me" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="44"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="QG2-8N-TpN" id="nJv-gQ-4Eu">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                </prototypes>
-                                <connections>
-                                    <outlet property="dataSource" destination="UWH-2D-z4o" id="dKg-So-rCo"/>
-                                    <outlet property="delegate" destination="UWH-2D-z4o" id="LXm-Do-R49"/>
-                                </connections>
-                            </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="GcX-v7-cKB" firstAttribute="leading" secondItem="O6k-eG-a3g" secondAttribute="leading" id="0ax-c7-smX"/>
                             <constraint firstItem="Rov-aT-7vd" firstAttribute="top" secondItem="O6k-eG-a3g" secondAttribute="bottom" id="0h4-lf-Scl"/>
+                            <constraint firstItem="GcX-v7-cKB" firstAttribute="trailing" secondItem="O6k-eG-a3g" secondAttribute="trailing" id="2QZ-t8-z7N"/>
+                            <constraint firstItem="GcX-v7-cKB" firstAttribute="top" secondItem="lxh-II-Vh1" secondAttribute="top" id="8ut-kL-d0D"/>
                             <constraint firstItem="O6k-eG-a3g" firstAttribute="leading" secondItem="lxh-II-Vh1" secondAttribute="leading" id="Dgc-aY-51M"/>
                             <constraint firstAttribute="trailing" secondItem="O6k-eG-a3g" secondAttribute="trailing" id="XZe-Ef-yby"/>
+                            <constraint firstItem="GcX-v7-cKB" firstAttribute="bottom" secondItem="O6k-eG-a3g" secondAttribute="top" id="jkZ-qz-iEc"/>
                         </constraints>
                     </view>
                     <connections>
@@ -721,6 +724,7 @@
                         <outlet property="messageToolbar" destination="O6k-eG-a3g" id="23m-cX-yWS"/>
                         <outlet property="messageToolbarBottomConstraint" destination="0h4-lf-Scl" id="d2V-yk-Z0e"/>
                         <outlet property="messagesTableView" destination="GcX-v7-cKB" id="cRL-bh-wtj"/>
+                        <outlet property="messagesTableViewBottomConstraint" destination="jkZ-qz-iEc" id="4ap-Jg-HXE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="F5n-hA-rg3" userLabel="First Responder" sceneMemberID="firstResponder"/>

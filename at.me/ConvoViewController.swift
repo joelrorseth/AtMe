@@ -23,6 +23,7 @@ class ConvoViewController: UIViewController, AlertController {
     @IBOutlet weak var messageTextField: UITextField!
     @IBOutlet weak var messageToolbar: UIToolbar!
     @IBOutlet weak var messageToolbarBottomConstraint: NSLayoutConstraint!
+    @IBOutlet weak var messagesTableViewBottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var messagesTableView: UITableView!
     
     var messages: [Message] = []
@@ -131,12 +132,14 @@ class ConvoViewController: UIViewController, AlertController {
         
         // Update data source
         messages.append(message)
-    
         
         // Efficiently update by updating / inserting only the cells that need to be
         self.messagesTableView.beginUpdates()
         self.messagesTableView.insertRows(at: [IndexPath(row: messages.count - 1, section: 0)], with: .left)
         self.messagesTableView.endUpdates()
+        
+        // TODO: Fix animation for initial message loading. Animation is kinda choppy
+        self.messagesTableView.scrollToRow(at: IndexPath.init(row: messages.count - 1, section: 0) , at: .bottom, animated: true)
     }
     
     // ==========================================
@@ -196,7 +199,10 @@ class ConvoViewController: UIViewController, AlertController {
         
         // Set toolbar bottom constraint to match keyboard height
         self.messageToolbarBottomConstraint.constant = keyboardFrame.size.height
+        self.messagesTableViewBottomConstraint.constant = 0
+        
         self.view.layoutIfNeeded()
+        self.messagesTableView.scrollToRow(at: IndexPath.init(row: messages.count - 1, section: 0) , at: .bottom, animated: true)
     }
     
     // ==========================================
