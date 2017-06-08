@@ -301,16 +301,20 @@ extension ConvoViewController: UITableViewDelegate, UITableViewDataSource {
             cell.messageTextView.textColor = UIColor.white
         }
         
+        cell.messageImageView.image = nil
+        cell.messageTextView.text = ""
         
         // CASE 1/2: Normal Text Message
         // ----------------------------------------------------
         if let text = message.text {
+            
             
             // Set text field embedded in cell to show message
             cell.messageTextView.text = message.text
             let size = sizeForString(text, maxWidth: tableView.bounds.width * 0.7, font: Constants.Fonts.regularFont)
             
             if (message.sender == UserState.currentUser.username!) { // Outgoing
+                
                 cell.messageTextView.frame = CGRect(x: tableView.bounds.width - size.width - (MessageCell.horizontalInsetPadding + MessageCell.horizontalBubbleSpacing),
                                                     y: MessageCell.verticalInsetPadding + MessageCell.verticalBubbleSpacing,
                                                     width: size.width,
