@@ -37,6 +37,10 @@ class SignUpViewController: UIViewController, AlertController {
         createAccountButton.backgroundColor = Constants.Colors.primaryAccent
     }
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
     // MARK: Button Handling
     // ==========================================
     // ==========================================

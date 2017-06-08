@@ -65,6 +65,10 @@ class SignInViewController: UIViewController, AlertController {
         }
     }
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
     // MARK: Segue
     // ==========================================
     // ==========================================

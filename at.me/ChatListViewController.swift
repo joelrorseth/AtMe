@@ -35,6 +35,7 @@ class ChatListViewController: UITableViewController {
         super.viewDidLoad()
         
         setupView()
+        self.setNeedsStatusBarAppearanceUpdate()
         
         // Start the observers
         observeConversations()
@@ -56,7 +57,7 @@ class ChatListViewController: UITableViewController {
         // Set translucent navigation bar with color
         let image = UIImage.imageFromColor(color: Constants.Colors.primaryColor)
         self.navigationController?.navigationBar.setBackgroundImage(image, for: UIBarMetrics.default)
-        self.navigationController?.navigationBar.barStyle = .default
+        //self.navigationController?.navigationBar.barStyle = .default
         self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName : UIColor.white]
         
         // Allow navigation bar to be hidden
@@ -73,6 +74,12 @@ class ChatListViewController: UITableViewController {
         
         self.navigationItem.leftBarButtonItem = settingsButton
         self.navigationItem.title = "@Me"
+    }
+    
+    // ==========================================
+    // ==========================================
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
     }
     
     
