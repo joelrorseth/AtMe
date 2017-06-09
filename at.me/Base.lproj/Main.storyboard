@@ -634,102 +634,88 @@
         <scene sceneID="0b3-eW-LCc">
             <objects>
                 <viewController id="UWH-2D-z4o" customClass="ConvoViewController" customModule="at_me" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="hum-hq-jbk"/>
-                        <viewControllerLayoutGuide type="bottom" id="Rov-aT-7vd"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="lxh-II-Vh1">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="GcX-v7-cKB">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="623"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="messageId" id="QG2-8N-TpN" customClass="MessageCell" customModule="at_me" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="44"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="QG2-8N-TpN" id="nJv-gQ-4Eu">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                </prototypes>
-                                <connections>
-                                    <outlet property="dataSource" destination="UWH-2D-z4o" id="dKg-So-rCo"/>
-                                    <outlet property="delegate" destination="UWH-2D-z4o" id="LXm-Do-R49"/>
-                                </connections>
-                            </tableView>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="O6k-eG-a3g">
-                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <items>
-                                    <barButtonItem image="camera" style="plain" id="Nl9-Wt-677">
-                                        <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="ygf-nI-5ar">
-                                            <rect key="frame" x="16" y="11" width="22" height="22"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <color key="tintColor" red="0.45098039220000002" green="0.084757633509999999" blue="0.90426400380000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                            <state key="normal" image="camera">
-                                                <color key="titleColor" red="0.45098039220000002" green="0.084757633509999999" blue="0.90426400380000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                            </state>
-                                            <connections>
-                                                <action selector="didPressCameraIcon:" destination="UWH-2D-z4o" eventType="touchUpInside" id="E9G-qB-9tk"/>
-                                            </connections>
-                                        </button>
-                                        <color key="tintColor" red="0.45098039220000002" green="0.084757633509999999" blue="0.90426400380000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    </barButtonItem>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="VZe-ra-dkI"/>
-                                    <barButtonItem style="plain" id="4pk-ej-AT9">
-                                        <textField key="customView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter a message" textAlignment="natural" minimumFontSize="17" id="YnG-YJ-ucF">
-                                            <rect key="frame" x="54" y="7" width="235" height="30"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <nil key="textColor"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                            <textInputTraits key="textInputTraits"/>
-                                        </textField>
-                                    </barButtonItem>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="Nhg-sI-Dj0"/>
-                                    <barButtonItem style="plain" id="Hcz-gq-yL1">
-                                        <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="ac5-yO-a8N">
-                                            <rect key="frame" x="305" y="7" width="54" height="30"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="17"/>
-                                            <color key="tintColor" red="0.43529412150000002" green="0.4431372583" blue="0.47450980539999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                            <state key="normal" title="Send">
-                                                <color key="titleColor" red="0.45098039220000002" green="0.084757633509999999" blue="0.90426400380000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                            </state>
-                                            <connections>
-                                                <action selector="didPressSend:" destination="UWH-2D-z4o" eventType="touchUpInside" id="6JL-5l-ZNX"/>
-                                            </connections>
-                                        </button>
-                                        <color key="tintColor" red="0.45098039220000002" green="0.084757633509999999" blue="0.90426400380000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    </barButtonItem>
-                                </items>
-                            </toolbar>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="GcX-v7-cKB" firstAttribute="leading" secondItem="O6k-eG-a3g" secondAttribute="leading" id="0ax-c7-smX"/>
-                            <constraint firstItem="Rov-aT-7vd" firstAttribute="top" secondItem="O6k-eG-a3g" secondAttribute="bottom" id="0h4-lf-Scl"/>
-                            <constraint firstItem="GcX-v7-cKB" firstAttribute="trailing" secondItem="O6k-eG-a3g" secondAttribute="trailing" id="2QZ-t8-z7N"/>
-                            <constraint firstItem="GcX-v7-cKB" firstAttribute="top" secondItem="lxh-II-Vh1" secondAttribute="top" id="8ut-kL-d0D"/>
-                            <constraint firstItem="O6k-eG-a3g" firstAttribute="leading" secondItem="lxh-II-Vh1" secondAttribute="leading" id="Dgc-aY-51M"/>
-                            <constraint firstAttribute="trailing" secondItem="O6k-eG-a3g" secondAttribute="trailing" id="XZe-Ef-yby"/>
-                            <constraint firstItem="GcX-v7-cKB" firstAttribute="bottom" secondItem="O6k-eG-a3g" secondAttribute="top" id="jkZ-qz-iEc"/>
-                        </constraints>
-                    </view>
                     <connections>
-                        <outlet property="messageTextField" destination="YnG-YJ-ucF" id="1Zc-nh-bKy"/>
-                        <outlet property="messageToolbar" destination="O6k-eG-a3g" id="23m-cX-yWS"/>
-                        <outlet property="messageToolbarBottomConstraint" destination="0h4-lf-Scl" id="d2V-yk-Z0e"/>
-                        <outlet property="messagesTableView" destination="GcX-v7-cKB" id="cRL-bh-wtj"/>
-                        <outlet property="messagesTableViewBottomConstraint" destination="jkZ-qz-iEc" id="4ap-Jg-HXE"/>
+                        <outlet property="chatInputAccessoryView" destination="JUJ-kh-fr0" id="idE-pY-0wS"/>
+                        <outlet property="view" destination="GcX-v7-cKB" id="pnY-0F-gyZ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="F5n-hA-rg3" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="GcX-v7-cKB">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <prototypes>
+                        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="messageId" id="QG2-8N-TpN" customClass="MessageCell" customModule="at_me" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="QG2-8N-TpN" id="nJv-gQ-4Eu">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                            </tableViewCellContentView>
+                        </tableViewCell>
+                    </prototypes>
+                    <connections>
+                        <outlet property="dataSource" destination="UWH-2D-z4o" id="dKg-So-rCo"/>
+                        <outlet property="delegate" destination="UWH-2D-z4o" id="LXm-Do-R49"/>
+                    </connections>
+                </tableView>
+                <view contentMode="scaleToFill" id="JUJ-kh-fr0" customClass="ChatInputAccessoryView" customModule="at_me" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KgE-7i-Vlt">
+                            <rect key="frame" x="0.0" y="0.0" width="240" height="1"/>
+                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="0.5" id="GDF-Iw-w8t"/>
+                            </constraints>
+                        </view>
+                        <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="999" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="z78-vk-zrg">
+                            <rect key="frame" x="10" y="53" width="22" height="22"/>
+                            <color key="tintColor" red="0.45098039220000002" green="0.086274509799999996" blue="0.90588235289999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <state key="normal" image="camera">
+                                <color key="titleColor" red="0.45098039220000002" green="0.086274509799999996" blue="0.90588235289999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </state>
+                        </button>
+                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" horizontalHuggingPriority="249" verticalHuggingPriority="750" scrollEnabled="NO" text="Text" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="VbW-0L-Mxo">
+                            <rect key="frame" x="42" y="5" width="137" height="118"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                        </textView>
+                        <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="999" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="53i-jd-eCg">
+                            <rect key="frame" x="189" y="46" width="41" height="36"/>
+                            <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="17"/>
+                            <color key="tintColor" red="0.43529412150000002" green="0.4431372583" blue="0.47450980539999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <state key="normal" title="Send">
+                                <color key="titleColor" red="0.45098039220000002" green="0.084757633509999999" blue="0.90426400380000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </state>
+                            <connections>
+                                <action selector="didPressSend:" destination="UWH-2D-z4o" eventType="touchUpInside" id="YyO-KU-Tro"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="VbW-0L-Mxo" firstAttribute="leading" secondItem="z78-vk-zrg" secondAttribute="trailing" constant="10" id="7Cm-TA-JQF"/>
+                        <constraint firstAttribute="trailing" secondItem="53i-jd-eCg" secondAttribute="trailing" constant="10" id="KHA-Fx-pPO"/>
+                        <constraint firstAttribute="bottom" secondItem="VbW-0L-Mxo" secondAttribute="bottom" constant="5" id="KaS-xV-jOD"/>
+                        <constraint firstItem="KgE-7i-Vlt" firstAttribute="top" secondItem="JUJ-kh-fr0" secondAttribute="top" id="SeU-F2-DUm"/>
+                        <constraint firstAttribute="trailing" secondItem="KgE-7i-Vlt" secondAttribute="trailing" id="g15-Xj-U2D"/>
+                        <constraint firstItem="z78-vk-zrg" firstAttribute="centerY" secondItem="JUJ-kh-fr0" secondAttribute="centerY" id="htY-sh-Lul"/>
+                        <constraint firstItem="53i-jd-eCg" firstAttribute="leading" secondItem="VbW-0L-Mxo" secondAttribute="trailing" constant="10" id="jsQ-qo-acf"/>
+                        <constraint firstItem="z78-vk-zrg" firstAttribute="leading" secondItem="JUJ-kh-fr0" secondAttribute="leading" constant="10" id="olR-Sv-Yss"/>
+                        <constraint firstItem="53i-jd-eCg" firstAttribute="centerY" secondItem="JUJ-kh-fr0" secondAttribute="centerY" id="tMg-9c-SLT"/>
+                        <constraint firstItem="KgE-7i-Vlt" firstAttribute="leading" secondItem="JUJ-kh-fr0" secondAttribute="leading" id="tp0-tM-3cj"/>
+                        <constraint firstItem="VbW-0L-Mxo" firstAttribute="top" secondItem="JUJ-kh-fr0" secondAttribute="top" constant="5" id="w7D-1x-S1E"/>
+                    </constraints>
+                    <connections>
+                        <outlet property="expandingTextView" destination="VbW-0L-Mxo" id="oF6-JY-9pv"/>
+                    </connections>
+                </view>
             </objects>
-            <point key="canvasLocation" x="2541.5999999999999" y="36.431784107946029"/>
+            <point key="canvasLocation" x="2921" y="68"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="wAg-Xh-ya9">

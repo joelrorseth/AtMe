@@ -89,20 +89,22 @@ class ChatListViewController: UITableViewController {
     // ==========================================
     func formatConversationCell(cell: ConversationCell) {
         
-        // Draw shadow behind nested view to give cells some depth
-        let shadowSize : CGFloat = 3.0
-        let shadowPath = UIBezierPath(
-            rect: CGRect(x: -shadowSize / 2,
-                         y: -shadowSize / 2,
-                         width: cell.cellBackgroundView.frame.size.width + shadowSize,
-                         height: cell.cellBackgroundView.frame.size.height + shadowSize))
+        // TODO: Refactor shadown code to use shadowPath (more efficient)
+//        // Draw shadow behind nested view to give cells some depth
+//        let shadowSize : CGFloat = 3.0
+//        let shadowPath = UIBezierPath(
+//            rect: CGRect(x: -shadowSize / 2,
+//                         y: -shadowSize / 2,
+//                         width: cell.cellBackgroundView.frame.size.width + shadowSize,
+//                         height: cell.cellBackgroundView.frame.size.height + shadowSize))
+//        
+//        cell.cellBackgroundView.layer.shadowPath = shadowPath.cgPath
         
         cell.cellBackgroundView.layer.masksToBounds = false
         cell.cellBackgroundView.layer.shadowOffset = CGSize(width: 0, height: 1.4)
         cell.cellBackgroundView.layer.shadowColor = UIColor.lightGray.cgColor
         cell.cellBackgroundView.layer.shadowOpacity = 0.7
         cell.cellBackgroundView.layer.shadowRadius = 2.4
-        //cell.cellBackgroundView.layer.shadowPath = shadowPath.cgPath
         cell.cellBackgroundView.layer.cornerRadius = Constants.Radius.regularRadius
         
         // Give display picture a circular mask

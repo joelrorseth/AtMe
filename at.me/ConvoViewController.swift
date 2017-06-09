@@ -9,7 +9,29 @@
 import UIKit
 import Firebase
 
-class ConvoViewController: UIViewController, AlertController {
+class ChatInputAccessoryView: UIInputView {
+    private static let preferredHeight: CGFloat = 24.0
+    
+    @IBOutlet weak var expandingTextView: UITextView!
+    
+    override func sizeThatFits(_ size: CGSize) -> CGSize {
+        return CGSize(width: size.width, height: ChatInputAccessoryView.preferredHeight)
+    }
+    
+    override var intrinsicContentSize: CGSize {
+        var newSize = bounds.size
+        if expandingTextView.bounds.size.height > 0.0 {
+            newSize.height = expandingTextView.bounds.size.height + 20.0
+        }
+        if newSize.height < ChatInputAccessoryView.preferredHeight || newSize.height > 120.0 {
+            newSize.height = ChatInputAccessoryView.preferredHeight
+        }
+        return newSize
+    }
+}
+
+
+class ConvoViewController: UITableViewController, AlertController {
     
     // Firebase references
     var messagesRef: FIRDatabaseReference?
@@ -20,11 +42,7 @@ class ConvoViewController: UIViewController, AlertController {
     private var newMessageRefHandle: FIRDatabaseHandle?
     
     // MARK: Storyboard
-    @IBOutlet weak var messageTextField: UITextField!
-    @IBOutlet weak var messageToolbar: UIToolbar!
-    @IBOutlet weak var messageToolbarBottomConstraint: NSLayoutConstraint!
-    @IBOutlet weak var messagesTableViewBottomConstraint: NSLayoutConstraint!
-    @IBOutlet weak var messagesTableView: UITableView!
+    @IBOutlet var chatInputAccessoryView: ChatInputAccessoryView!
     
     var messages: [Message] = []
     var convoId: String = ""
@@ -38,10 +56,38 @@ class ConvoViewController: UIViewController, AlertController {
     }()
     
     
+    // Wrapper view controller for the custom input accessory view
+    private let chatInputAccessoryViewController = UIInputViewController()
+    
+    override var inputAccessoryViewController: UIInputViewController? {
+        // Ensure our input accessory view controller has it's input view set
+        chatInputAccessoryView.translatesAutoresizingMaskIntoConstraints = false
+        chatInputAccessoryViewController.inputView = chatInputAccessoryView
+        
+        // Return our custom input accessory view controller. You could also just return a UIView with
+        // override func inputAccessoryView()
+        return chatInputAccessoryViewController
+    }
+    
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
+    
+    override func becomeFirstResponder() -> Bool {
+        let didBecome = super.becomeFirstResponder()
+        
+        //if conversation != nil {
+            // We want the input accessory view to become focused when the view controller is pushed/displayed
+            chatInputAccessoryView.expandingTextView.becomeFirstResponder()
+        //}
+        
+        return didBecome
+    }
+    
     // MARK: IBAction methods
     // ==========================================
     // ==========================================
-    @IBAction func didPressSend(_ sender: Any) {
+    /*@IBAction func didPressSend(_ sender: Any) {
         
         if (messageTextField.text == "" || messageTextField.text == nil) { return }
         
@@ -59,6 +105,7 @@ class ConvoViewController: UIViewController, AlertController {
         messageTextField.text = ""
         messageTextField.resignFirstResponder()
     }
+    */
 
     // ==========================================
     // ==========================================
@@ -84,14 +131,20 @@ class ConvoViewController: UIViewController, AlertController {
     // ==========================================
     override func viewDidLoad() {
         
-        self.messagesTableView.backgroundColor = UIColor.groupTableViewBackground
+        self.tableView.backgroundColor = UIColor.groupTableViewBackground
         
         // Set some properties of UI elements
-        messageTextField.borderStyle = .none
-        //messagesTableView?.register(MessageCell.self, forCellWithReuseIdentifier: Constants.Storyboard.messageId)
+        //messageTextField.borderStyle = .none
+        //tableView?.register(MessageCell.self, forCellWithReuseIdentifier: Constants.Storyboard.messageId)
         
         addKeyboardObservers()
 
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
         // Start observing changes in the Firebase database
         observeReceivedMessages()
     }
@@ -134,12 +187,12 @@ class ConvoViewController: UIViewController, AlertController {
         messages.append(message)
         
         // Efficiently update by updating / inserting only the cells that need to be
-        self.messagesTableView.beginUpdates()
-        self.messagesTableView.insertRows(at: [IndexPath(row: messages.count - 1, section: 0)], with: .left)
-        self.messagesTableView.endUpdates()
+        self.tableView.beginUpdates()
+        self.tableView.insertRows(at: [IndexPath(row: messages.count - 1, section: 0)], with: .left)
+        self.tableView.endUpdates()
         
         // TODO: Fix animation for initial message loading. Animation is kinda choppy
-        self.messagesTableView.scrollToRow(at: IndexPath.init(row: messages.count - 1, section: 0) , at: .bottom, animated: true)
+        self.tableView.scrollToRow(at: IndexPath.init(row: messages.count - 1, section: 0) , at: .bottom, animated: true)
     }
     
     // ==========================================
@@ -177,42 +230,13 @@ class ConvoViewController: UIViewController, AlertController {
     // ==========================================
     // ==========================================
     private func addKeyboardObservers() {
-        
-        // Add observers for when the keyboard appears and disappears
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)),
-                                               name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)),
-                                               name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+    
         
         // Add gesture recognizer to handle tapping outside of keyboard
         let dismissKeyboardTap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         self.view.addGestureRecognizer(dismissKeyboardTap)
     }
-    
-    // ==========================================
-    // ==========================================
-    func keyboardWillShow(notification: NSNotification) {
-        
-        // Extract frame size of the keyboard
-        let info = notification.userInfo!
-        let keyboardFrame: CGRect = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
-        
-        // Set toolbar bottom constraint to match keyboard height
-        self.messageToolbarBottomConstraint.constant = keyboardFrame.size.height
-        self.messagesTableViewBottomConstraint.constant = 0
-        
-        self.view.layoutIfNeeded()
-        self.messagesTableView.scrollToRow(at: IndexPath.init(row: messages.count - 1, section: 0) , at: .bottom, animated: true)
-    }
-    
-    // ==========================================
-    // ==========================================
-    func keyboardWillHide(notification: NSNotification) {
-        
-        // Put the message toolbar back at the bottom
-        self.messageToolbarBottomConstraint.constant = 0.0
-        self.view.layoutIfNeeded()
-    }
+
     
     // ==========================================
     // ==========================================
@@ -283,18 +307,18 @@ extension ConvoViewController: UIImagePickerControllerDelegate, UINavigationCont
 
 
 // MARK: Table View Delegate
-extension ConvoViewController: UITableViewDelegate, UITableViewDataSource {
+extension ConvoViewController {
     
-    func numberOfSections(in tableView: UITableView) -> Int { return 1 }
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { return messages.count }
+    override func numberOfSections(in tableView: UITableView) -> Int { return 1 }
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { return messages.count }
 
     
     // ==========================================
     // ==========================================
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         // Dequeue a custom cell for collection view
-        let cell = messagesTableView.dequeueReusableCell(withIdentifier: Constants.Storyboard.messageId, for: indexPath) as! MessageCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: Constants.Storyboard.messageId, for: indexPath) as! MessageCell
         let message = messages[indexPath.row]
         
         // Clear message fields
@@ -383,7 +407,7 @@ extension ConvoViewController: UITableViewDelegate, UITableViewDataSource {
     
     // ==========================================
     // ==========================================
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
         if let text = messages[indexPath.row].text {
             return sizeForString(text, maxWidth: tableView.bounds.width * 0.7, font: Constants.Fonts.regularFont).height + (2 * MessageCell.verticalBubbleSpacing) + (2 * MessageCell.verticalInsetPadding)
