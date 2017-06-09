@@ -101,8 +101,9 @@ class ChatListViewController: UITableViewController {
         cell.cellBackgroundView.layer.shadowOffset = CGSize(width: 0, height: 1.4)
         cell.cellBackgroundView.layer.shadowColor = UIColor.lightGray.cgColor
         cell.cellBackgroundView.layer.shadowOpacity = 0.7
-        cell.cellBackgroundView.layer.shadowRadius = 0.0
-        cell.cellBackgroundView.layer.shadowPath = shadowPath.cgPath
+        cell.cellBackgroundView.layer.shadowRadius = 2.4
+        //cell.cellBackgroundView.layer.shadowPath = shadowPath.cgPath
+        cell.cellBackgroundView.layer.cornerRadius = Constants.Radius.regularRadius
         
         // Give display picture a circular mask
         cell.userDisplayImageView.layer.masksToBounds = true;

@@ -17,6 +17,10 @@ struct Constants {
         static let defaultTextSize = 14
     }
     
+    struct Radius {
+        static let regularRadius = CGFloat(12)
+    }
+    
     struct Segues {
         static let signInSuccessSegue = "SignInSuccessSegue"
         static let signUpSuccessSegue = "SignUpSuccessSegue"

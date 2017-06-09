@@ -23,8 +23,12 @@ class MessageCell: UITableViewCell {
     let bubbleView: UIView = {
         let view = UIView()
         view.clipsToBounds = true
-        view.layer.cornerRadius = 12
-        view.layer.masksToBounds = true
+        view.layer.shadowOffset = CGSize(width: 0, height: 1.4)
+        view.layer.shadowColor = UIColor.lightGray.cgColor
+        view.layer.shadowOpacity = 0.5
+        view.layer.shadowRadius = 2.0
+        view.layer.cornerRadius = Constants.Radius.regularRadius
+        view.layer.masksToBounds = false
         return view
     }()
     

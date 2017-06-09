@@ -33,7 +33,7 @@ class SignUpViewController: UIViewController, AlertController {
         self.view.layer.insertSublayer(self.renderGradientLayer(), at: 0)
         
         // Set button rounded edges amd color
-        createAccountButton.layer.cornerRadius = 12
+        createAccountButton.layer.cornerRadius = Constants.Radius.regularRadius
         createAccountButton.backgroundColor = Constants.Colors.primaryAccent
     }
     

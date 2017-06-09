@@ -52,7 +52,7 @@ class SignInViewController: UIViewController, AlertController {
         self.view.layer.insertSublayer(self.renderGradientLayer(), at: 0)
         
         // Set button rounded edges amd color
-        signInButton.layer.cornerRadius = 12
+        signInButton.layer.cornerRadius = Constants.Radius.regularRadius
         signInButton.backgroundColor = Constants.Colors.primaryAccent
     }
     
