@@ -9,20 +9,29 @@
 import UIKit
 import Firebase
 
+
+// MARK: Input View for message bar
 class ChatInputAccessoryView: UIInputView {
     private static let preferredHeight: CGFloat = 24.0
     
     @IBOutlet weak var expandingTextView: UITextView!
     
+    // ==========================================
+    // ==========================================
     override func sizeThatFits(_ size: CGSize) -> CGSize {
         return CGSize(width: size.width, height: ChatInputAccessoryView.preferredHeight)
     }
     
+    // ==========================================
+    // Set the natural size to contain all contents in this view
+    // ==========================================
     override var intrinsicContentSize: CGSize {
         var newSize = bounds.size
+        
         if expandingTextView.bounds.size.height > 0.0 {
             newSize.height = expandingTextView.bounds.size.height + 20.0
         }
+        
         if newSize.height < ChatInputAccessoryView.preferredHeight || newSize.height > 120.0 {
             newSize.height = ChatInputAccessoryView.preferredHeight
         }
@@ -69,10 +78,14 @@ class ConvoViewController: UITableViewController, AlertController {
         return chatInputAccessoryViewController
     }
     
+    // ==========================================
+    // ==========================================
     override var canBecomeFirstResponder: Bool {
         return true
     }
     
+    // ==========================================
+    // ==========================================
     override func becomeFirstResponder() -> Bool {
         let didBecome = super.becomeFirstResponder()
         
@@ -87,14 +100,15 @@ class ConvoViewController: UITableViewController, AlertController {
     // MARK: IBAction methods
     // ==========================================
     // ==========================================
-    /*@IBAction func didPressSend(_ sender: Any) {
+    @IBAction func didPressSend(_ sender: Any) {
         
-        if (messageTextField.text == "" || messageTextField.text == nil) { return }
+        if (chatInputAccessoryView.expandingTextView.text == "" ||
+            chatInputAccessoryView.expandingTextView.text == nil) { return }
         
         let message = Message(
             imageURL: nil,
             sender: UserState.currentUser.username!,
-            text: messageTextField.text!,
+            text: chatInputAccessoryView.expandingTextView.text!,
             timestamp: getCurrentTimestamp()
         )
         
@@ -102,10 +116,9 @@ class ConvoViewController: UITableViewController, AlertController {
         send(message: message)
         
         // Clear message text field and dismiss keyboard
-        messageTextField.text = ""
-        messageTextField.resignFirstResponder()
+        chatInputAccessoryView.expandingTextView.text = ""
+        chatInputAccessoryView.expandingTextView.resignFirstResponder()
     }
-    */
 
     // ==========================================
     // ==========================================
@@ -142,6 +155,8 @@ class ConvoViewController: UITableViewController, AlertController {
         
     }
     
+    // ==========================================
+    // ==========================================
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
