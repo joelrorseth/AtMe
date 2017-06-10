@@ -51,6 +51,7 @@
 		5D2B62611EC909CC00B8363E /* PromptView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromptView.swift; sourceTree = "<group>"; };
 		5D3DDA371E62469000B6FBB7 /* UserInfoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoCell.swift; sourceTree = "<group>"; };
 		5D3DDA391E6248DA00B6FBB7 /* NewConvoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewConvoViewController.swift; sourceTree = "<group>"; };
+		5D43855F1EEC4D8F0005D7CD /* at.me.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = at.me.entitlements; sourceTree = "<group>"; };
 		5D5D67751ED1E90200FF8F2A /* DatabaseController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseController.swift; sourceTree = "<group>"; };
 		5D5EDF841EC3D14C00F7FC44 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		5D9027221EB2A3E60021AEE9 /* Conversation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Conversation.swift; sourceTree = "<group>"; };
@@ -106,6 +107,7 @@
 		5D1C703A1E58C64A00FEDEC3 /* at.me */ = {
 			isa = PBXGroup;
 			children = (
+				5D43855F1EEC4D8F0005D7CD /* at.me.entitlements */,
 				5D5EDF831EC3D01900F7FC44 /* Customization */,
 				5D1C704F1E58C69C00FEDEC3 /* Views */,
 				5D1C704E1E58C68A00FEDEC3 /* Controllers */,
@@ -211,6 +213,11 @@
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = TGHSJ2W3HB;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -439,6 +446,7 @@
 			baseConfigurationReference = 9EE8D20090D5CD1754DCC1E5 /* Pods-at.me.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = at.me/at.me.entitlements;
 				DEVELOPMENT_TEAM = TGHSJ2W3HB;
 				INFOPLIST_FILE = at.me/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -453,6 +461,7 @@
 			baseConfigurationReference = 35C46A6FC6AE91CBE6FB594D /* Pods-at.me.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = at.me/at.me.entitlements;
 				DEVELOPMENT_TEAM = TGHSJ2W3HB;
 				INFOPLIST_FILE = at.me/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
