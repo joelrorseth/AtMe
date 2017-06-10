@@ -606,7 +606,7 @@
                                     <outlet property="recentMessageLabel" destination="a9Q-E9-dqz" id="eye-nB-GBH"/>
                                     <outlet property="recentMessageTimeStampLabel" destination="t6Y-lr-onH" id="N7Y-Pz-fdH"/>
                                     <outlet property="userDisplayImageView" destination="lJk-Ac-HDo" id="iUu-vq-tgm"/>
-                                    <segue destination="UWH-2D-z4o" kind="show" identifier="LoadConvoSegue" id="YHQ-rr-B2W"/>
+                                    <segue destination="UWH-2D-z4o" kind="show" identifier="LoadConvoSegue" id="DOx-hM-H5R"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -675,6 +675,9 @@
                             <rect key="frame" x="10" y="53" width="22" height="22"/>
                             <color key="tintColor" red="0.45098039220000002" green="0.086274509799999996" blue="0.90588235289999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <state key="normal" image="camera"/>
+                            <connections>
+                                <action selector="didPressCameraIcon:" destination="UWH-2D-z4o" eventType="touchUpInside" id="wq5-CD-w3F"/>
+                            </connections>
                         </button>
                         <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" horizontalHuggingPriority="249" verticalHuggingPriority="750" scrollEnabled="NO" text="Text" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="VbW-0L-Mxo">
                             <rect key="frame" x="42" y="5" width="137" height="118"/>

@@ -12,8 +12,8 @@ import Firebase
 
 // MARK: Input View for message bar
 class ChatInputAccessoryView: UIInputView {
-    private static let preferredHeight: CGFloat = 24.0
     
+    private static let preferredHeight: CGFloat = 24.0
     @IBOutlet weak var expandingTextView: UITextView!
     
     // ==========================================
@@ -43,7 +43,6 @@ class ChatInputAccessoryView: UIInputView {
 class ConvoViewController: UITableViewController, AlertController {
     
     // Firebase references
-    var messagesRef: FIRDatabaseReference?
     lazy var conversationsRef: FIRDatabaseReference = FIRDatabase.database().reference().child("conversations")
     lazy var pictureMessagesRef: FIRStorageReference = FIRStorage.storage().reference().child("pictureMessages")
     
@@ -63,6 +62,11 @@ class ConvoViewController: UITableViewController, AlertController {
         
         return formatter
     }()
+    
+    var observingMessages = false
+    var messagesRef: FIRDatabaseReference? = nil {
+        didSet { if (!observingMessages) { observeReceivedMessages(); observingMessages = true } }
+    }
     
     
     // Wrapper view controller for the custom input accessory view
@@ -90,8 +94,8 @@ class ConvoViewController: UITableViewController, AlertController {
         let didBecome = super.becomeFirstResponder()
         
         //if conversation != nil {
-            // We want the input accessory view to become focused when the view controller is pushed/displayed
-            chatInputAccessoryView.expandingTextView.becomeFirstResponder()
+        // We want the input accessory view to become focused when the view controller is pushed/displayed
+        chatInputAccessoryView.expandingTextView.becomeFirstResponder()
         //}
         
         return didBecome
@@ -119,7 +123,7 @@ class ConvoViewController: UITableViewController, AlertController {
         chatInputAccessoryView.expandingTextView.text = ""
         chatInputAccessoryView.expandingTextView.resignFirstResponder()
     }
-
+    
     // ==========================================
     // ==========================================
     @IBAction func didPressCameraIcon(_ sender: Any) {
@@ -144,6 +148,7 @@ class ConvoViewController: UITableViewController, AlertController {
     // ==========================================
     override func viewDidLoad() {
         
+        print("AT.ME:: ConvoViewController viewDidLoad() called")
         self.tableView.backgroundColor = UIColor.groupTableViewBackground
         
         // Set some properties of UI elements
@@ -151,17 +156,7 @@ class ConvoViewController: UITableViewController, AlertController {
         //tableView?.register(MessageCell.self, forCellWithReuseIdentifier: Constants.Storyboard.messageId)
         
         addKeyboardObservers()
-
-        
-    }
-    
-    // ==========================================
-    // ==========================================
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        // Start observing changes in the Firebase database
-        observeReceivedMessages()
+        //observeReceivedMessages()
     }
     
     
@@ -174,7 +169,7 @@ class ConvoViewController: UITableViewController, AlertController {
         let randomMessageId = messagesRef!.childByAutoId().key
         
         // TODO: Refactor convoId to be an optional
-
+        
         // Increment message count by 1
         // TODO: Look into better method of doing this. Look up Firebase Transcation
         
@@ -183,13 +178,14 @@ class ConvoViewController: UITableViewController, AlertController {
             let incrementedValue = (snapshot.childSnapshot(forPath: "messagesCount").value as! Int) + 1
             FIRDatabase.database().reference(withPath: "conversations/\(self.convoId)/messagesCount").setValue(incrementedValue)
         })
-
+        
         
         // Each message record (uniquely identified) will record sender and message text
         messagesRef?.child(randomMessageId).setValue(
             ["imageURL": message.imageURL, "sender" : message.sender, "text" : message.text, "timestamp" : message.timestamp]
         )
         
+        print("AT.ME:: Message sent!")
         // TODO: Possibly cache messages for certain amount of time / 3 messages
         // Look into solution to avoid loading sent messages from server (no point in that?)
     }
@@ -213,11 +209,13 @@ class ConvoViewController: UITableViewController, AlertController {
     // ==========================================
     // ==========================================
     private func observeReceivedMessages() {
-
+        
         let messagesQuery = messagesRef!.queryLimited(toLast: 25)
         
         // This closure is triggered once for every existing record found, and for each record added here
         newMessageRefHandle = messagesQuery.observe(FIRDataEventType.childAdded, with: { (snapshot) in
+            
+            print("AT.ME:: Incoming message! observeReceivedMessages() called!")
             
             var imageURL: String?
             var text: String?
@@ -233,25 +231,25 @@ class ConvoViewController: UITableViewController, AlertController {
             
             let sender = snapshot.childSnapshot(forPath: "sender").value as! String
             let timestamp = snapshot.childSnapshot(forPath: "timestamp").value as! String
-
+            
             // Add message to local messages cache
             self.addMessage(message: Message(imageURL: imageURL, sender: sender, text: text, timestamp: timestamp))
         })
     }
     
-
+    
     
     // MARK: Keyboard Handling
     // ==========================================
     // ==========================================
     private func addKeyboardObservers() {
-    
+        
         
         // Add gesture recognizer to handle tapping outside of keyboard
         let dismissKeyboardTap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         self.view.addGestureRecognizer(dismissKeyboardTap)
     }
-
+    
     
     // ==========================================
     // ==========================================
@@ -326,7 +324,7 @@ extension ConvoViewController {
     
     override func numberOfSections(in tableView: UITableView) -> Int { return 1 }
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { return messages.count }
-
+    
     
     // ==========================================
     // ==========================================
@@ -371,9 +369,9 @@ extension ConvoViewController {
             cell.messageTextView.textColor = UIColor.black
             
             messageContentReference?.frame = CGRect(x: tableView.bounds.width - messageSize.width - (MessageCell.horizontalInsetPadding + MessageCell.horizontalBubbleSpacing),
-                                                y: MessageCell.verticalInsetPadding + MessageCell.verticalBubbleSpacing,
-                                                width: messageSize.width,
-                                                height: messageSize.height)
+                                                    y: MessageCell.verticalInsetPadding + MessageCell.verticalBubbleSpacing,
+                                                    width: messageSize.width,
+                                                    height: messageSize.height)
             
             cell.bubbleView.frame = CGRect(x: tableView.bounds.width - messageSize.width - (MessageCell.horizontalInsetPadding + (2 * MessageCell.horizontalBubbleSpacing)),
                                            y: MessageCell.verticalInsetPadding,
@@ -386,9 +384,9 @@ extension ConvoViewController {
             cell.messageTextView.textColor = UIColor.white
             
             messageContentReference?.frame = CGRect(x: MessageCell.horizontalInsetPadding + MessageCell.horizontalBubbleSpacing,
-                                                y: MessageCell.verticalInsetPadding + MessageCell.verticalBubbleSpacing,
-                                                width: messageSize.width,
-                                                height: messageSize.height)
+                                                    y: MessageCell.verticalInsetPadding + MessageCell.verticalBubbleSpacing,
+                                                    width: messageSize.width,
+                                                    height: messageSize.height)
             
             cell.bubbleView.frame = CGRect(x: MessageCell.horizontalInsetPadding,
                                            y: MessageCell.verticalInsetPadding,
@@ -430,7 +428,7 @@ extension ConvoViewController {
         
         if let _ = messages[indexPath.row].imageURL {
             return 200 + (2 * MessageCell.verticalBubbleSpacing) + (2 * MessageCell.verticalInsetPadding)
-
+            
         }
         
         return 0

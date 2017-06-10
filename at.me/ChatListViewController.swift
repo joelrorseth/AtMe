@@ -57,11 +57,7 @@ class ChatListViewController: UITableViewController {
         // Set translucent navigation bar with color
         let image = UIImage.imageFromColor(color: Constants.Colors.primaryColor)
         self.navigationController?.navigationBar.setBackgroundImage(image, for: UIBarMetrics.default)
-        //self.navigationController?.navigationBar.barStyle = .default
         self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName : UIColor.white]
-        
-        // Allow navigation bar to be hidden
-        //self.navigationController?.hidesBarsOnSwipe = true
         
         // Set background color appearing behind the cells
         self.tableView.backgroundColor = UIColor.groupTableViewBackground
@@ -209,6 +205,7 @@ class ChatListViewController: UITableViewController {
             if let indexPath = tableView.indexPathForSelectedRow {
                 let selectedConvoId = conversations[indexPath.row].convoId
                 
+                print("AT.ME:: Setting messagesRef from ChatListViewController!")
                 cvc.messagesRef = conversationsRef.child("\(selectedConvoId)/messages")
                 cvc.convoId = selectedConvoId
                 
