@@ -88,11 +88,6 @@ class ConvoViewController: UITableViewController, AlertController {
         return true
     }
     
-    // ==========================================
-    // ==========================================
-    override func becomeFirstResponder() -> Bool {
-        return super.becomeFirstResponder()
-    }
     
     // MARK: IBAction methods
     // ==========================================
@@ -308,6 +303,31 @@ extension ConvoViewController: UIImagePickerControllerDelegate, UINavigationCont
     // ==========================================
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         dismiss(animated: true)
+    }
+}
+
+extension ConvoViewController: UITextViewDelegate {
+    
+    // ==========================================
+    // ==========================================
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        
+        self.chatInputAccessoryView.expandingTextView.textColor = UIColor.darkGray
+        self.tableView.scrollToRow(at: IndexPath.init(row: messages.count - 1, section: 0) , at: .bottom, animated: true)
+        
+        if (self.chatInputAccessoryView.expandingTextView.text == "Enter a message") {
+            self.chatInputAccessoryView.expandingTextView.text = ""
+        }
+    }
+    
+    // ==========================================
+    // ==========================================
+    func textViewDidEndEditing(_ textView: UITextView) {
+        self.chatInputAccessoryView.expandingTextView.textColor = UIColor.gray
+        
+        if (self.chatInputAccessoryView.expandingTextView.text == "") {
+            self.chatInputAccessoryView.expandingTextView.text = "Enter a message"
+        }
     }
 }
 

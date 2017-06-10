@@ -617,6 +617,7 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="Root View Controller" id="VuT-ur-Cj0">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="FGq-LO-JNy">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
                                 <segue destination="W22-SC-qbt" kind="presentation" id="i8h-i9-nDT"/>
                             </connections>
@@ -679,12 +680,15 @@
                                 <action selector="didPressCameraIcon:" destination="UWH-2D-z4o" eventType="touchUpInside" id="wq5-CD-w3F"/>
                             </connections>
                         </button>
-                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" horizontalHuggingPriority="249" verticalHuggingPriority="750" scrollEnabled="NO" text="Text" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="VbW-0L-Mxo">
+                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" horizontalHuggingPriority="249" verticalHuggingPriority="750" scrollEnabled="NO" text="Enter a message" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="VbW-0L-Mxo">
                             <rect key="frame" x="42" y="5" width="137" height="118"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            <connections>
+                                <outlet property="delegate" destination="UWH-2D-z4o" id="bIJ-f5-bTE"/>
+                            </connections>
                         </textView>
                         <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="999" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="53i-jd-eCg">
                             <rect key="frame" x="189" y="46" width="41" height="36"/>
