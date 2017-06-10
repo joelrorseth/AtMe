@@ -91,14 +91,7 @@ class ConvoViewController: UITableViewController, AlertController {
     // ==========================================
     // ==========================================
     override func becomeFirstResponder() -> Bool {
-        let didBecome = super.becomeFirstResponder()
-        
-        //if conversation != nil {
-        // We want the input accessory view to become focused when the view controller is pushed/displayed
-        chatInputAccessoryView.expandingTextView.becomeFirstResponder()
-        //}
-        
-        return didBecome
+        return super.becomeFirstResponder()
     }
     
     // MARK: IBAction methods
@@ -148,15 +141,14 @@ class ConvoViewController: UITableViewController, AlertController {
     // ==========================================
     override func viewDidLoad() {
         
-        print("AT.ME:: ConvoViewController viewDidLoad() called")
         self.tableView.backgroundColor = UIColor.groupTableViewBackground
+        self.tableView.allowsSelection = false
         
         // Set some properties of UI elements
         //messageTextField.borderStyle = .none
         //tableView?.register(MessageCell.self, forCellWithReuseIdentifier: Constants.Storyboard.messageId)
         
         addKeyboardObservers()
-        //observeReceivedMessages()
     }
     
     
@@ -185,9 +177,10 @@ class ConvoViewController: UITableViewController, AlertController {
             ["imageURL": message.imageURL, "sender" : message.sender, "text" : message.text, "timestamp" : message.timestamp]
         )
         
-        print("AT.ME:: Message sent!")
         // TODO: Possibly cache messages for certain amount of time / 3 messages
         // Look into solution to avoid loading sent messages from server (no point in that?)
+        // Potentially keep boolean for each user in chat saying if chat has changed since, or
+        // even most recent cached message
     }
     
     // ==========================================
@@ -215,7 +208,7 @@ class ConvoViewController: UITableViewController, AlertController {
         // This closure is triggered once for every existing record found, and for each record added here
         newMessageRefHandle = messagesQuery.observe(FIRDataEventType.childAdded, with: { (snapshot) in
             
-            print("AT.ME:: Incoming message! observeReceivedMessages() called!")
+            //print("AT.ME:: Incoming message! observeReceivedMessages() called!")
             
             var imageURL: String?
             var text: String?
@@ -247,14 +240,14 @@ class ConvoViewController: UITableViewController, AlertController {
         
         // Add gesture recognizer to handle tapping outside of keyboard
         let dismissKeyboardTap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        self.view.addGestureRecognizer(dismissKeyboardTap)
+        self.tableView.addGestureRecognizer(dismissKeyboardTap)
     }
     
     
     // ==========================================
     // ==========================================
     func dismissKeyboard() {
-        self.view.endEditing(true)
+        chatInputAccessoryView.expandingTextView.resignFirstResponder()
     }
     
     
@@ -329,6 +322,8 @@ extension ConvoViewController {
     // ==========================================
     // ==========================================
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        //print("AT.ME:: cellForRow(\(indexPath.row)) called")
         
         // Dequeue a custom cell for collection view
         let cell = tableView.dequeueReusableCell(withIdentifier: Constants.Storyboard.messageId, for: indexPath) as! MessageCell

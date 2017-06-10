@@ -205,7 +205,7 @@ class ChatListViewController: UITableViewController {
             if let indexPath = tableView.indexPathForSelectedRow {
                 let selectedConvoId = conversations[indexPath.row].convoId
                 
-                print("AT.ME:: Setting messagesRef from ChatListViewController!")
+                //print("AT.ME:: Setting messagesRef from ChatListViewController!")
                 cvc.messagesRef = conversationsRef.child("\(selectedConvoId)/messages")
                 cvc.convoId = selectedConvoId
                 
