@@ -265,7 +265,7 @@ extension ChatListViewController {
     // ==========================================
     // ==========================================
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return CGFloat(116)
+        return CGFloat(94)
     }
     
     // ==========================================
