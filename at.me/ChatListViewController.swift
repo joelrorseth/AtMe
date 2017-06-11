@@ -117,6 +117,7 @@ class ChatListViewController: UITableViewController {
         if let uid = UserState.currentUser.uid {
             
             // Call this closure once for every conversation record, and any time a record is added
+            userConversationListRef.child(uid).keepSynced(true)
             userConversationListRef.child(uid).observe(FIRDataEventType.childAdded, with: { snapshot in
                 
                 let otherUsername = snapshot.key

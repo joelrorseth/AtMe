@@ -198,6 +198,7 @@ class ConvoViewController: UITableViewController, AlertController {
     // ==========================================
     private func observeReceivedMessages() {
         
+        messagesRef?.keepSynced(true)
         let messagesQuery = messagesRef!.queryLimited(toLast: 25)
         
         // This closure is triggered once for every existing record found, and for each record added here
