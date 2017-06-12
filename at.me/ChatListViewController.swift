@@ -114,6 +114,7 @@ class ChatListViewController: UITableViewController {
     private func observeConversations() {
         
         // TODO: Refactor UserState to make everything non-optional
+        // TODO: Exiting chat to this screen does not update newest message
         if let uid = UserState.currentUser.uid {
             
             // Call this closure once for every conversation record, and any time a record is added

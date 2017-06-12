@@ -44,7 +44,8 @@ class ConvoViewController: UITableViewController, AlertController {
     
     // Firebase references
     lazy var conversationsRef: FIRDatabaseReference = FIRDatabase.database().reference().child("conversations")
-    lazy var pictureMessagesRef: FIRStorageReference = FIRStorage.storage().reference().child("pictureMessages")
+    var messagesRef: FIRDatabaseReference? = nil
+    var pictureMessagesRef: FIRStorageReference? = nil
     
     // Firebase handles
     private var newMessageRefHandle: FIRDatabaseHandle?
@@ -52,8 +53,16 @@ class ConvoViewController: UITableViewController, AlertController {
     // MARK: Storyboard
     @IBOutlet var chatInputAccessoryView: ChatInputAccessoryView!
     
+    var observingMessages = false
     var messages: [Message] = []
-    var convoId: String = ""
+    
+    var convoId: String = "" {
+        didSet {
+            messagesRef = FIRDatabase.database().reference().child("conversations/\(convoId)/messages/")
+            pictureMessagesRef = FIRStorage.storage().reference().child("conversations/\(convoId)/images/")
+            if (!observingMessages) { observeReceivedMessages(); observingMessages = true }
+        }
+    }
     
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -63,10 +72,6 @@ class ConvoViewController: UITableViewController, AlertController {
         return formatter
     }()
     
-    var observingMessages = false
-    var messagesRef: FIRDatabaseReference? = nil {
-        didSet { if (!observingMessages) { observeReceivedMessages(); observingMessages = true } }
-    }
     
     
     // Wrapper view controller for the custom input accessory view
@@ -272,23 +277,25 @@ extension ConvoViewController: UIImagePickerControllerDelegate, UINavigationCont
     // ==========================================
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
-        guard let uid = UserState.currentUser.uid else { return }
-        let path = uid + "/\(Int(Date.timeIntervalSinceReferenceDate * 1000)).jpg"
+        // TODO: Sending picture message bug, tapping message bar after makes it disapear
+        
+        guard let pictureRef = pictureMessagesRef else { return }
+        let path = "\(Int(Date.timeIntervalSinceReferenceDate * 1000)).jpg"
         
         // Extract the image after editing, upload to database as Data object
         if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
             if let data = convertImageToData(image: image) {
                 
-                DatabaseController.uploadImage(data: data, to: pictureMessagesRef.child(path), completion: { (error) in
+                DatabaseController.uploadImage(data: data, to: pictureRef.child(path), completion: { (error) in
                     if let error = error {
                         print("AT.ME:: Error uploading picture message to Firebase. \(error.localizedDescription)")
                         return
                     }
                     
                     // Now that image has uploaded, officially send the message record to the database with storage URL
-                    print("AT.ME:: Image uploaded successfully to \(self.pictureMessagesRef.child(path).fullPath)")
+                    print("AT.ME:: Image uploaded successfully to \(pictureRef.child(path).fullPath)")
                     self.send(message: Message(
-                        imageURL: self.pictureMessagesRef.child(path).fullPath,
+                        imageURL: pictureRef.child(path).fullPath,
                         sender: UserState.currentUser.username!,
                         text: nil,
                         timestamp: self.getCurrentTimestamp()))
@@ -314,8 +321,12 @@ extension ConvoViewController: UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {
         
         self.chatInputAccessoryView.expandingTextView.textColor = UIColor.darkGray
-        self.tableView.scrollToRow(at: IndexPath.init(row: messages.count - 1, section: 0) , at: .bottom, animated: true)
         
+        // TODO: Test and refactor scrolling to clean up animation, avoid scrolling to inexistent rows
+        if (messages.count != 0) {
+            self.tableView.scrollToRow(at: IndexPath.init(row: messages.count - 1, section: 0) , at: .bottom, animated: true)
+        }
+            
         if (self.chatInputAccessoryView.expandingTextView.text == "Enter a message") {
             self.chatInputAccessoryView.expandingTextView.text = ""
         }
