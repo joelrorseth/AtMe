@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import Kingfisher
 
 class ChatListViewController: UITableViewController {
     
@@ -33,6 +34,11 @@ class ChatListViewController: UITableViewController {
     // ==========================================
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // TODO: Refactor cache clearing into Settings menu option
+        // Add code to intelligently delete from cache (come up with nested naming convention?)
+        //ImageCache.default.clearDiskCache()
+        ImageCache.default.calculateDiskCacheSize { (size) in print("Used disk size by bytes: \(size)") }
         
         setupView()
         self.setNeedsStatusBarAppearanceUpdate()
@@ -297,19 +303,15 @@ extension ChatListViewController {
             if let uid = snapshot.childSnapshot(forPath: "registeredUsernames/\(self.conversations[indexPath.row].otherUsername)").value as? String {
                 if let _ = snapshot.childSnapshot(forPath: "userInformation/\(uid)/displayPicture").value as? String {
                     
-                    DatabaseController.downloadImage(from: self.userDisplayPictureRef.child("\(uid)/\(uid).JPG") , completion: { (error, image) in
+                    DatabaseController.downloadImage(into: cell.userDisplayImageView, from: self.userDisplayPictureRef.child("\(uid)/\(uid).JPG") , completion: { (error) in
                         
                         if let downloadError = error {
                             print("At.ME:: An error has occurred, but image data was detected. \(downloadError)")
                             return
                         }
                         
-                        if let unwrappedImage = image {
-                            
-                            print("At.ME:: Image data was downloded and converted successfully")
-                            cell.userDisplayImageView.image = unwrappedImage
-                            
-                        } else { print("AT.ME:: Could not convert database image data to UIImage") }
+                        print("At.ME:: Image data was downloded and converted successfully")                            
+                        
                     })
                     
                 } else { print("AT.ME:: This user does not have a display picture") }

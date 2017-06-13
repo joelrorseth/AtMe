@@ -8,7 +8,7 @@
 
 import UIKit
 import Firebase
-
+import Kingfisher
 
 // MARK: Input View for message bar
 class ChatInputAccessoryView: UIInputView {
@@ -382,10 +382,10 @@ extension ConvoViewController {
             messageSize = CGSize(width: 200, height: 200)
             messageContentReference = cell.messageImageView
             
-            DatabaseController.downloadImage(from: FIRStorage.storage().reference().child(imageURL), completion: { (error, image) in
+            DatabaseController.downloadImage(into: cell.messageImageView, from: FIRStorage.storage().reference().child(imageURL), completion: { (error) in
                 
-                if let localError = error { print("At.ME Error:: Did not recieve downloaded UIImage. \(localError)"); return }
-                if let localImage = image { cell.messageImageView.image = localImage }
+                if let localError = error { print("AT.ME Error:: Did not recieve downloaded UIImage. \(localError)"); return }
+                print("AT.ME:: Successfully loaded picture into message")
             })
         }
         

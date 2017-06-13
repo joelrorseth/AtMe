@@ -7,23 +7,40 @@
 //
 
 import Firebase
+import Kingfisher
 
 class DatabaseController {
     
     // ==========================================
     // ==========================================
-    public static func downloadImage(from location: FIRStorageReference, completion: @escaping (Error?, UIImage?)->()){
+    public static func downloadImage(into destination: UIImageView, from location: FIRStorageReference, completion: @escaping (Error?)->()){
 
-        // Asynchronously download the file data stored at 'path' (display picture)
-        location.data(withMaxSize: INT64_MAX, completion: { (data, error) in
+        if (ImageCache.default.isImageCached(forKey: location.fullPath).cached) {
             
-            if let imageData = data {
+            // Check for image saved in cache, load image from disk if possible
+            ImageCache.default.retrieveImage(forKey: location.fullPath, options: nil) { (image, cacheType) in
+                if let image = image {
+                    print("AT.ME:: Image was retrieved from cache at: \(location.fullPath)")
+                    destination.image = image
+                }
                 
-                // Send callback with UIImage, which may return nil 
-                completion(error, UIImage(data: imageData))
+                completion(nil)
+            }
+            
+        } else {
+            
+            // Otherwise, asynchronously download the file data stored at location and store it for later
+            location.downloadURL(completion: { (url, error) in
+                guard let url = url else { return }
                 
-            } else { print("AT.ME:: Could not extract image data from Database") }
-        })
+                print("AT.ME:: Image was not found in cache, downloading and caching now...")
+                destination.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: { _ in
+                    ImageCache.default.store(destination.image!, forKey: location.fullPath)
+                })
+                
+                completion(error)
+            })
+        }
     }
     
     // ==========================================
