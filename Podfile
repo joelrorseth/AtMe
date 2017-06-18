@@ -7,6 +7,7 @@ target 'at.me' do
 
   # Pods for at.me
   pod 'Firebase/Core'
+  pod 'Firebase/Messaging'
   pod 'Firebase/Auth'
   pod 'Firebase/Database'
   pod 'Firebase/Storage'
