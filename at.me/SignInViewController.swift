@@ -12,8 +12,8 @@ import Firebase
 class SignInViewController: UIViewController, AlertController {
     
     // Firebase references
-    private lazy var userInformationRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userInformation")
-    private lazy var userDisplayPictureRef: FIRStorageReference = FIRStorage.storage().reference().child("displayPictures")
+    private lazy var userInformationRef: DatabaseReference = Database.database().reference().child("userInformation")
+    private lazy var userDisplayPictureRef: StorageReference = Storage.storage().reference().child("displayPictures")
     
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
@@ -28,7 +28,7 @@ class SignInViewController: UIViewController, AlertController {
         guard let email = emailField.text, let password = passwordField.text else { return }
         
         // Let the auth object sign in the user with given credentials
-        FIRAuth.auth()?.signIn(withEmail: email, password: password) { (user, error) in
+        Auth.auth().signIn(withEmail: email, password: password) { (user, error) in
             
             // In the case of invalid login, handle gracefully
             if let error = error {
@@ -60,7 +60,7 @@ class SignInViewController: UIViewController, AlertController {
     // ==========================================
     override func viewDidAppear(_ animated: Bool) {
         
-        if let currentUser = FIRAuth.auth()?.currentUser {
+        if let currentUser = Auth.auth().currentUser {
             self.processSignIn(forUser: currentUser)
         }
     }
@@ -78,13 +78,13 @@ class SignInViewController: UIViewController, AlertController {
     // MARK: Additional Functions
     // ==========================================
     // ==========================================
-    private func processSignIn(forUser user: FIRUser?) {
+    private func processSignIn(forUser user: User?) {
 
         // If any of the user details are nil, report error and break
         if let uid = user?.uid, let email = user?.email {
 
             // TODO: Implement error handling in case of failed read for 'username' record
-            userInformationRef.observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
+            userInformationRef.observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
                 
                 UserState.currentUser.username = snapshot.childSnapshot(forPath: "\(uid)/username").value as? String
                 UserState.currentUser.displayName = snapshot.childSnapshot(forPath: "\(uid)/displayName").value as? String
@@ -101,8 +101,8 @@ class SignInViewController: UIViewController, AlertController {
                 
                 if let relativeURL = snapshot.childSnapshot(forPath: "\(uid)/displayPicture").value as? String {
                     
-                    // Asynchronously download the file data stored at 'path' (display picture)
-                    self.userDisplayPictureRef.child(relativeURL).data(withMaxSize: INT64_MAX, completion: { (data, error) in
+                    // Asynchronously download the file data stored at 'path' (display picture)                    
+                    self.userDisplayPictureRef.child(relativeURL).getData(maxSize: INT64_MAX, completion: { (data, error) in
                         
                         if let image = data {
                             UserState.currentUser.displayPicture = UIImage(data: image)

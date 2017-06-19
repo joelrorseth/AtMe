@@ -12,7 +12,7 @@ import Firebase
 class PromptViewController: UIViewController, AlertController {
     
     // Firebase references
-    lazy var userInformationRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userInformation")
+    lazy var userInformationRef: DatabaseReference = Database.database().reference().child("userInformation")
     
     var promptDelegate: PromptViewDelegate?
     var changingAttribute: Constants.UserAttribute = .none
@@ -37,7 +37,7 @@ class PromptViewController: UIViewController, AlertController {
     // ==========================================
     func changeEmail(email: String, callback: ((Void) -> ())?) {
         
-        FIRAuth.auth()?.currentUser?.updateEmail(email, completion: { (error) in
+        Auth.auth().currentUser?.updateEmail(to: email, completion: { (error) in
             if let error = error {
                 
                 print("at.me:: Error changing email: \(error.localizedDescription)")
@@ -55,7 +55,7 @@ class PromptViewController: UIViewController, AlertController {
     // ==========================================
     func changePassword(password: String, callback: ((Void) -> ())?) {
         
-        FIRAuth.auth()?.currentUser?.updatePassword(password, completion: { (error) in
+        Auth.auth().currentUser?.updatePassword(to: password, completion: { (error) in
             if let error = error {
                 
                 // TODO: Not working
@@ -94,7 +94,7 @@ extension PromptViewController: PromptViewDelegate {
         // TODO: Implement checking to enforce rules on certain attributes
         // TODO: Save attribute into UserState.currentUser
         
-        if let user = FIRAuth.auth()?.currentUser {
+        if let user = Auth.auth().currentUser {
             userInformationRef.child(String(user.uid)).child("\(changingAttribute)").setValue(value)
         }
         

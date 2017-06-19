@@ -13,13 +13,13 @@ import Kingfisher
 class ChatListViewController: UITableViewController {
     
     // Firebase references are used for read/write at referenced location
-    lazy var userConversationListRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userConversationList")
-    lazy var conversationsRef: FIRDatabaseReference = FIRDatabase.database().reference().child("conversations")
-    lazy var rootDatabaseRef: FIRDatabaseReference = FIRDatabase.database().reference()
-    lazy var userDisplayPictureRef: FIRStorageReference = FIRStorage.storage().reference().child("displayPictures")
+    lazy var userConversationListRef: DatabaseReference = Database.database().reference().child("userConversationList")
+    lazy var conversationsRef: DatabaseReference = Database.database().reference().child("conversations")
+    lazy var rootDatabaseRef: DatabaseReference = Database.database().reference()
+    lazy var userDisplayPictureRef: StorageReference = Storage.storage().reference().child("displayPictures")
     
     // Firebase handles
-    private var messageHandles: [FIRDatabaseHandle] = []
+    private var messageHandles: [DatabaseHandle] = []
     
     // Local Conversation cache
     var conversations: [Conversation] = []
@@ -125,7 +125,7 @@ class ChatListViewController: UITableViewController {
             
             // Call this closure once for every conversation record, and any time a record is added
             userConversationListRef.child(uid).keepSynced(true)
-            userConversationListRef.child(uid).observe(FIRDataEventType.childAdded, with: { snapshot in
+            userConversationListRef.child(uid).observe(DataEventType.childAdded, with: { snapshot in
                 
                 let otherUsername = snapshot.key
                 if let convoId = snapshot.value as? String {
@@ -160,7 +160,7 @@ class ChatListViewController: UITableViewController {
                 
                 // Retrieve a snapshot for the most recent message record in this conversation
                 self.conversationsRef.child("\(convoId)/messages").queryLimited(toLast: 1)
-                    .observe(FIRDataEventType.childAdded, with: { (snapshot) in
+                    .observe(DataEventType.childAdded, with: { (snapshot) in
                         
                         let timestamp = snapshot.childSnapshot(forPath: "timestamp").value as! String
                         var message = "This is the beginning of your conversation with \(username)"
@@ -298,7 +298,7 @@ extension ChatListViewController {
         // TODO: Refactor Conversation class to hold the uid of the other user
         // This way, don't need to lookup uid and can access storage reference right away
         
-        rootDatabaseRef.observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
+        rootDatabaseRef.observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
             
             if let uid = snapshot.childSnapshot(forPath: "registeredUsernames/\(self.conversations[indexPath.row].otherUsername)").value as? String {
                 if let _ = snapshot.childSnapshot(forPath: "userInformation/\(uid)/displayPicture").value as? String {

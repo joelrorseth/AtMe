@@ -13,7 +13,7 @@ class DatabaseController {
     
     // ==========================================
     // ==========================================
-    public static func downloadImage(into destination: UIImageView, from location: FIRStorageReference, completion: @escaping (Error?)->()){
+    public static func downloadImage(into destination: UIImageView, from location: StorageReference, completion: @escaping (Error?)->()){
 
         if (ImageCache.default.isImageCached(forKey: location.fullPath).cached) {
             
@@ -45,11 +45,11 @@ class DatabaseController {
     
     // ==========================================
     // ==========================================
-    public static func uploadImage(data: Data, to location: FIRStorageReference, completion: @escaping (Error?)->()) {
+    public static func uploadImage(data: Data, to location: StorageReference, completion: @escaping (Error?)->()) {
         var localError: Error?
         
         // Use put() to upload photo using a Data object
-        location.put(data, metadata: nil) { (metadata, error) in
+        location.putData(data, metadata: nil) { (metadata, error) in
             
             if let error = error { localError = error }
             completion(localError)

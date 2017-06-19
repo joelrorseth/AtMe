@@ -12,8 +12,8 @@ import Firebase
 class SignUpViewController: UIViewController, AlertController {
     
     // Firebase References
-    private lazy var userInformationRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userInformation")
-    private lazy var registeredUsernamesRef: FIRDatabaseReference = FIRDatabase.database().reference().child("registeredUsernames")
+    private lazy var userInformationRef: DatabaseReference = Database.database().reference().child("userInformation")
+    private lazy var registeredUsernamesRef: DatabaseReference = Database.database().reference().child("registeredUsernames")
 
     @IBOutlet weak var createAccountButton: UIButton!
     @IBOutlet weak var emailTextField: UITextField!
@@ -85,14 +85,14 @@ class SignUpViewController: UIViewController, AlertController {
         
         
         // Take snapshot of databse to check for existing username
-        registeredUsernamesRef.observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
+        registeredUsernamesRef.observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
             
             // If username is not found, we are OK to create account
             if (!snapshot.hasChild(username)) {
                 
                 
                 // Let the auth object create a user with given fields
-                FIRAuth.auth()?.createUser(withEmail: email, password: password) { (user, error) in
+                Auth.auth().createUser(withEmail: email, password: password) { (user, error) in
                     
                     
                     // ERROR CASE 2: Any other error (Email taken)
@@ -114,7 +114,7 @@ class SignUpViewController: UIViewController, AlertController {
                     self.userInformationRef.child((user?.uid)!).setValue(userEntry)
                     
                     // Update any <FIRUser> properties maintained internally by Firebase
-                    let changeRequest = user?.profileChangeRequest()
+                    let changeRequest = user?.createProfileChangeRequest()
                     changeRequest?.displayName = username
                     
                     // First time use, set up user name then log into app
@@ -141,7 +141,7 @@ class SignUpViewController: UIViewController, AlertController {
     private func attemptLogin(withEmail email: String, andPassword password: String) {
         
         // Let the auth object sign in the user with given credentials
-        FIRAuth.auth()?.signIn(withEmail: email, password: password) { (user, error) in
+        Auth.auth().signIn(withEmail: email, password: password) { (user, error) in
             
             // In the case of invalid login, handle gracefully
             if let error = error {
@@ -161,13 +161,13 @@ class SignUpViewController: UIViewController, AlertController {
     
     // ==========================================
     // ==========================================
-    private func processSignIn(forUser user: FIRUser?) {
+    private func processSignIn(forUser user: User?) {
         
         // If any of the user details are nil, report error and break
         if let uid = user?.uid, let email = user?.email {
             
             // TODO: Implement error handling in case of failed read for 'username' record
-            userInformationRef.observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
+            userInformationRef.observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
                 UserState.currentUser.username = snapshot.childSnapshot(forPath: "\(uid)/username").value as? String
             })
             
@@ -192,10 +192,10 @@ class SignUpViewController: UIViewController, AlertController {
     // MARK: Firebase Config
     // ==========================================
     // ==========================================
-    func setAccountDetails(_ user: FIRUser?, _ username: String, _ firstName: String, _ lastName: String) {
+    func setAccountDetails(_ user: User?, _ username: String, _ firstName: String, _ lastName: String) {
         
         // Obtain an object (change request) to change details of account
-        let changeRequest = user?.profileChangeRequest()
+        let changeRequest = user?.createProfileChangeRequest()
         
         // Change display name, then commit changes
         changeRequest?.displayName = user?.email!.components(separatedBy: "@")[0]

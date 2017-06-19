@@ -43,12 +43,12 @@ class ChatInputAccessoryView: UIInputView {
 class ConvoViewController: UITableViewController, AlertController {
     
     // Firebase references
-    lazy var conversationsRef: FIRDatabaseReference = FIRDatabase.database().reference().child("conversations")
-    var messagesRef: FIRDatabaseReference? = nil
-    var pictureMessagesRef: FIRStorageReference? = nil
+    lazy var conversationsRef: DatabaseReference = Database.database().reference().child("conversations")
+    var messagesRef: DatabaseReference? = nil
+    var pictureMessagesRef: StorageReference? = nil
     
     // Firebase handles
-    private var newMessageRefHandle: FIRDatabaseHandle?
+    private var newMessageRefHandle: DatabaseHandle?
     
     // MARK: Storyboard
     @IBOutlet var chatInputAccessoryView: ChatInputAccessoryView!
@@ -58,8 +58,8 @@ class ConvoViewController: UITableViewController, AlertController {
     
     var convoId: String = "" {
         didSet {
-            messagesRef = FIRDatabase.database().reference().child("conversations/\(convoId)/messages/")
-            pictureMessagesRef = FIRStorage.storage().reference().child("conversations/\(convoId)/images/")
+            messagesRef = Database.database().reference().child("conversations/\(convoId)/messages/")
+            pictureMessagesRef = Storage.storage().reference().child("conversations/\(convoId)/images/")
             if (!observingMessages) { observeReceivedMessages(); observingMessages = true }
         }
     }
@@ -168,7 +168,7 @@ class ConvoViewController: UITableViewController, AlertController {
         conversationsRef.child(convoId).observeSingleEvent(of: .value, with: { snapshot in
             
             let incrementedValue = (snapshot.childSnapshot(forPath: "messagesCount").value as! Int) + 1
-            FIRDatabase.database().reference(withPath: "conversations/\(self.convoId)/messagesCount").setValue(incrementedValue)
+            Database.database().reference(withPath: "conversations/\(self.convoId)/messagesCount").setValue(incrementedValue)
         })
         
         
@@ -207,7 +207,7 @@ class ConvoViewController: UITableViewController, AlertController {
         let messagesQuery = messagesRef!.queryLimited(toLast: 25)
         
         // This closure is triggered once for every existing record found, and for each record added here
-        newMessageRefHandle = messagesQuery.observe(FIRDataEventType.childAdded, with: { (snapshot) in
+        newMessageRefHandle = messagesQuery.observe(DataEventType.childAdded, with: { (snapshot) in
             
             //print("AT.ME:: Incoming message! observeReceivedMessages() called!")
             
@@ -382,7 +382,7 @@ extension ConvoViewController {
             messageSize = CGSize(width: 200, height: 200)
             messageContentReference = cell.messageImageView
             
-            DatabaseController.downloadImage(into: cell.messageImageView, from: FIRStorage.storage().reference().child(imageURL), completion: { (error) in
+            DatabaseController.downloadImage(into: cell.messageImageView, from: Storage.storage().reference().child(imageURL), completion: { (error) in
                 
                 if let localError = error { print("AT.ME Error:: Did not recieve downloaded UIImage. \(localError)"); return }
                 print("AT.ME:: Successfully loaded picture into message")

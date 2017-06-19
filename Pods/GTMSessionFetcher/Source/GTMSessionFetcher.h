@@ -21,7 +21,7 @@
 //   than delegate methods.
 // - Out-of-process uploads and downloads using NSURLSession, including
 //   management of fetches after relaunch.
-// - Integration with GTMOAuth2 for invisible management and refresh of
+// - Integration with GTMAppAuth for invisible management and refresh of
 //   authorization tokens.
 // - Pretty-printed http logging.
 // - Cookies handling that does not interfere with or get interfered with
@@ -264,6 +264,9 @@
 #if TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
 #endif
+#if TARGET_OS_WATCH
+#import <WatchKit/WatchKit.h>
+#endif
 
 // By default it is stripped from non DEBUG builds. Developers can override
 // this in their project settings.
@@ -339,17 +342,17 @@
   #endif  // __has_feature(nullability)
 #endif  // GTM_NULLABLE
 
-#if ((!TARGET_OS_IPHONE && defined(MAC_OS_X_VERSION_10_12) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_12) \
-      || (TARGET_OS_IPHONE && defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0))
+#if (TARGET_OS_TV \
+     || TARGET_OS_WATCH \
+     || (!TARGET_OS_IPHONE && defined(MAC_OS_X_VERSION_10_12) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_12) \
+     || (TARGET_OS_IPHONE && defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0))
 #define GTMSESSION_DEPRECATE_ON_2016_SDKS(_MSG) __attribute__((deprecated("" _MSG)))
 #else
 #define GTMSESSION_DEPRECATE_ON_2016_SDKS(_MSG)
 #endif
 
 #ifndef GTM_DECLARE_GENERICS
-  #if __has_feature(objc_generics) \
-    && ((!TARGET_OS_IPHONE && defined(MAC_OS_X_VERSION_10_11) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_11) \
-      || (TARGET_OS_IPHONE && defined(__IPHONE_9_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0))
+  #if __has_feature(objc_generics)
     #define GTM_DECLARE_GENERICS 1
   #else
     #define GTM_DECLARE_GENERICS 0
@@ -375,7 +378,7 @@
 // To disallow use of background tasks during fetches, the target should define
 // GTM_BACKGROUND_TASK_FETCHING to 0, or alternatively may set the
 // skipBackgroundTask property to YES.
-#if TARGET_OS_IPHONE && !defined(GTM_BACKGROUND_TASK_FETCHING)
+#if TARGET_OS_IPHONE && !TARGET_OS_WATCH && !defined(GTM_BACKGROUND_TASK_FETCHING)
   #define GTM_BACKGROUND_TASK_FETCHING 1
 #endif
 
@@ -383,13 +386,13 @@
 extern "C" {
 #endif
 
-#if (!TARGET_OS_IPHONE && defined(MAC_OS_X_VERSION_10_11) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_11) \
-  || (TARGET_OS_IPHONE && defined(__IPHONE_9_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0)
+#if (TARGET_OS_TV \
+     || TARGET_OS_WATCH \
+     || (!TARGET_OS_IPHONE && defined(MAC_OS_X_VERSION_10_11) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_11) \
+     || (TARGET_OS_IPHONE && defined(__IPHONE_9_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0))
   #ifndef GTM_USE_SESSION_FETCHER
     #define GTM_USE_SESSION_FETCHER 1
   #endif
-
-  #define GTMSESSION_DEPRECATE_OLD_ENUMS 1
 #endif
 
 #if !defined(GTMBridgeFetcher)
@@ -490,21 +493,6 @@ typedef NS_ENUM(NSInteger, GTMSessionFetcherStatus) {
   GTMSessionFetcherStatusPreconditionFailed = 412
 };
 
-#if !GTMSESSION_DEPRECATE_OLD_ENUMS
-#define kGTMSessionFetcherErrorDownloadFailed         GTMSessionFetcherErrorDownloadFailed
-#define kGTMSessionFetcherErrorUploadChunkUnavailable GTMSessionFetcherErrorUploadChunkUnavailable
-#define kGTMSessionFetcherErrorBackgroundExpiration   GTMSessionFetcherErrorBackgroundExpiration
-#define kGTMSessionFetcherErrorBackgroundFetchFailed  GTMSessionFetcherErrorBackgroundFetchFailed
-#define kGTMSessionFetcherErrorInsecureRequest        GTMSessionFetcherErrorInsecureRequest
-#define kGTMSessionFetcherErrorTaskCreationFailed     GTMSessionFetcherErrorTaskCreationFailed
-
-#define kGTMSessionFetcherStatusNotModified        GTMSessionFetcherStatusNotModified
-#define kGTMSessionFetcherStatusBadRequest         GTMSessionFetcherStatusBadRequest
-#define kGTMSessionFetcherStatusUnauthorized       GTMSessionFetcherStatusUnauthorized
-#define kGTMSessionFetcherStatusForbidden          GTMSessionFetcherStatusForbidden
-#define kGTMSessionFetcherStatusPreconditionFailed GTMSessionFetcherStatusPreconditionFailed
-#endif  // !GTMSESSION_DEPRECATE_OLD_ENUMS
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -534,6 +522,10 @@ typedef void (^GTMSessionFetcherWillRedirectBlock)(NSHTTPURLResponse *redirectRe
                                                    NSURLRequest *redirectRequest,
                                                    GTMSessionFetcherWillRedirectResponse response);
 typedef void (^GTMSessionFetcherAccumulateDataBlock)(NSData * GTM_NULLABLE_TYPE buffer);
+typedef void (^GTMSessionFetcherSimulateByteTransferBlock)(NSData * GTM_NULLABLE_TYPE buffer,
+                                                           int64_t bytesWritten,
+                                                           int64_t totalBytesWritten,
+                                                           int64_t totalBytesExpectedToWrite);
 typedef void (^GTMSessionFetcherReceivedProgressBlock)(int64_t bytesWritten,
                                                        int64_t totalBytesWritten);
 typedef void (^GTMSessionFetcherDownloadProgressBlock)(int64_t bytesWritten,
@@ -1147,6 +1139,12 @@ NSData * GTM_NULLABLE_TYPE GTMDataFromInputStream(NSInputStream *inputStream, NS
 @property(atomic, copy, GTM_NULLABLE) GTMSessionFetcherTestBlock testBlock;
 
 + (void)setGlobalTestBlock:(GTM_NULLABLE GTMSessionFetcherTestBlock)block;
+
+// When using the testBlock, |testBlockAccumulateDataChunkCount| is the desired number of chunks to
+// divide the response data into if the client has streaming enabled. The data will be divided up to
+// |testBlockAccumulateDataChunkCount| chunks; however, the exact amount may vary depending on the
+// size of the response data (e.g. a 1-byte response can only be divided into one chunk).
+@property(atomic, readwrite) NSUInteger testBlockAccumulateDataChunkCount;
 
 #if TARGET_OS_IPHONE
 // For testing or to override UIApplication invocations, apps may specify an alternative

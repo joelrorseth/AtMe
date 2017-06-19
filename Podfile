@@ -7,9 +7,13 @@ target 'at.me' do
 
   # Pods for at.me
   pod 'Firebase/Core'
-  pod 'Firebase/Messaging'
   pod 'Firebase/Auth'
   pod 'Firebase/Database'
   pod 'Firebase/Storage'
   pod 'Kingfisher', '~> 3.0'
+  pod 'OneSignal', '>= 2.5.2', '< 3.0'
+end
+
+target 'OneSignalNotificationServiceExtension' do
+    pod 'OneSignal', '>= 2.5.2', '< 3.0'
 end

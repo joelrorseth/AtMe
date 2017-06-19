@@ -12,16 +12,16 @@ import Firebase
 class NewConvoViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
 
     // Firebase references
-    private lazy var registeredUsernamesRef: FIRDatabaseReference = FIRDatabase.database().reference().child("registeredUsernames")
-    private lazy var userConversationListRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userConversationList")
-    private lazy var userInformationRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userInformation")
-    private lazy var conversationsRef: FIRDatabaseReference = FIRDatabase.database().reference().child("conversations")
+    private lazy var registeredUsernamesRef: DatabaseReference = Database.database().reference().child("registeredUsernames")
+    private lazy var userConversationListRef: DatabaseReference = Database.database().reference().child("userConversationList")
+    private lazy var userInformationRef: DatabaseReference = Database.database().reference().child("userInformation")
+    private lazy var conversationsRef: DatabaseReference = Database.database().reference().child("conversations")
     
     @IBOutlet weak var usersSearchBar: UISearchBar!
     @IBOutlet weak var usersTableView: UITableView!
     @IBOutlet weak var newConvoNavBar: UINavigationBar!
     
-    var searchResults: [User] = []
+    var searchResults: [UserProfile] = []
     
     // ==========================================
     // ==========================================
@@ -133,7 +133,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         // Look inside registeredUsernames, determine if username is registered or not
         // Extract the uid recorded here if found, then use it to find user details
         
-        self.registeredUsernamesRef.observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
+        self.registeredUsernamesRef.observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
             
             // If valid user is found in the search
             if (snapshot.hasChild(searchBar.text!)) {
@@ -144,7 +144,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
                 // Return a User object with details about user with id 'uidFound'
                 // Completion block will initiate update in table view (results)
                 
-                self.findUserDetail(forUID: uidFound, completion: { (user: User) in
+                self.findUserDetail(forUID: uidFound, completion: { (user: UserProfile) in
                     print("AT.ME:: Search found user: \(user.displayName) \(user.uid) \(user.username)")
         
                     // Update results to show all users in array (just one for now)
@@ -164,7 +164,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     
     // ==========================================
     // ==========================================
-    private func updateResults(users: [User]) {
+    private func updateResults(users: [UserProfile]) {
         
         // Begin updates to table view, delete the most recently found user if currently shown
         self.usersTableView.beginUpdates()
@@ -184,15 +184,15 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     // MARK: Database Retrieval Functions
     // ==========================================
     // ==========================================
-    private func findUserDetail(forUID uid: String, completion: @escaping (_ user: User) -> Void) {
+    private func findUserDetail(forUID uid: String, completion: @escaping (_ user: UserProfile) -> Void) {
         
         // Using userInformation record, lookup using 'uid' as key
-        userInformationRef.child(uid).observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
+        userInformationRef.child(uid).observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
             
             // TODO: Bug causing crash (displayName)
             // Can't force unwrap snapshot
             
-            let user = User(
+            let user = UserProfile(
                 displayName: snapshot.childSnapshot(forPath: "displayName").value as! String,
                 uid: uid,
                 username: snapshot.childSnapshot(forPath: "username").value as! String

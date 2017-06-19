@@ -12,8 +12,8 @@ import Firebase
 
 class SettingsViewController: UITableViewController, AlertController {
     
-    lazy var userInformationRef: FIRDatabaseReference = FIRDatabase.database().reference().child("userInformation")
-    lazy var userDisplayPictureRef: FIRStorageReference = FIRStorage.storage().reference().child("displayPictures")
+    lazy var userInformationRef: DatabaseReference = Database.database().reference().child("userInformation")
+    lazy var userDisplayPictureRef: StorageReference = Storage.storage().reference().child("displayPictures")
     
     var currentAttributeChanging: Constants.UserAttribute = Constants.UserAttribute.none
     var attributePrompt: String = ""
@@ -119,7 +119,7 @@ class SettingsViewController: UITableViewController, AlertController {
             
             do {
                 // Attempt to logout, may throw error
-                try FIRAuth.auth()?.signOut()
+                try Auth.auth().signOut()
                 
                 // At this point, signOut() succeeded by not throwing any errors
                 self.performSegue(withIdentifier: "unwindToSignIn", sender: self)
