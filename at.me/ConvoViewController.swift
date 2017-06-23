@@ -171,11 +171,14 @@ class ConvoViewController: UITableViewController, AlertController {
             Database.database().reference(withPath: "conversations/\(self.convoId)/messagesCount").setValue(incrementedValue)
         })
         
-        
         // Each message record (uniquely identified) will record sender and message text
         messagesRef?.child(randomMessageId).setValue(
             ["imageURL": message.imageURL, "sender" : message.sender, "text" : message.text, "timestamp" : message.timestamp]
         )
+        
+        // TODO: Look up receiver's OneSignal userID (to be stored in userInformation?)
+        // Send a notification to the receiver from the sender (sender's name and message are attached)
+        NotificationsController.send(to: "3a5e4f8c-3a1f-4044-989a-e0935615901a", title: message.sender, message: message.text ?? "Picture message")
         
         // TODO: Possibly cache messages for certain amount of time / 3 messages
         // Look into solution to avoid loading sent messages from server (no point in that?)

@@ -141,6 +141,8 @@ class ChatListViewController: UITableViewController {
     private func addConversation(convoId: String, with username: String) {
         
         self.conversationsRef.child("\(convoId)/").observeSingleEvent(of: .value, with: { (snapshot) in
+            print("\t==> Attempting to load convo with id: \(convoId)")
+            print(snapshot)
             if ((snapshot.childSnapshot(forPath: "messagesCount").value as! Int) == 0) {
                 // Convo has no messages
                 

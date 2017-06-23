@@ -46,6 +46,8 @@ class SignUpViewController: UIViewController, AlertController {
     // ==========================================
     @IBAction func didTapCreateAccount(_ sender: Any) {
         
+        print("CHECK 1")
+        
         if (emailTextField.text == "" || usernameTextField.text! == "" || firstNameTextField.text == ""
             || lastNameTextField.text == "" || passwordTextField.text == "") {
             
@@ -54,6 +56,8 @@ class SignUpViewController: UIViewController, AlertController {
             return
         }
         
+        print("CHECK 2")
+        
         // Make sure all important info is provided, then store
         guard let email = emailTextField.text, let password = passwordTextField.text,
             let firstName = firstNameTextField.text, let lastName = lastNameTextField.text
@@ -61,6 +65,7 @@ class SignUpViewController: UIViewController, AlertController {
         
         let username = (self.usernameTextField.text == nil) ? email.components(separatedBy: "@")[0] : self.usernameTextField.text!
         
+        print("CHECK 3")
         
         // ERROR CASE 1: Weak password
         if (password.characters.count < 6) {
@@ -71,6 +76,8 @@ class SignUpViewController: UIViewController, AlertController {
             
             return
         }
+        
+        print("CHECK 4")
         
         // ERROR CASE 2: Improper username specified at signup
         // TODO: Look into restrictions on <FIRDataSnapshot>.hasChild() which will affect valid usernames
@@ -83,13 +90,18 @@ class SignUpViewController: UIViewController, AlertController {
             return
         }
         
+        print("CHECK 5")
+
         
         // Take snapshot of databse to check for existing username
         registeredUsernamesRef.observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
             
+            print("CHECK 6")
+            
             // If username is not found, we are OK to create account
             if (!snapshot.hasChild(username)) {
                 
+                print("CHECK 7")
                 
                 // Let the auth object create a user with given fields
                 Auth.auth().createUser(withEmail: email, password: password) { (user, error) in
@@ -106,7 +118,7 @@ class SignUpViewController: UIViewController, AlertController {
                     // All fields are accounted for, displayName defaults to username
                     
                     let userEntry = ["displayName" : username, "email" : email, "firstName" : firstName,
-                        "lastName" : lastName, "username" : username]
+                        "lastName" : lastName, "notificationID": NotificationsController.currentUserNotificationsID() ?? nil, "username" : username]
                     
                     
                     // Add entry to usernames registry and user info registry
@@ -132,6 +144,8 @@ class SignUpViewController: UIViewController, AlertController {
                 })
             }
         })
+        
+        print("CHECK 8")
     }
     
     
