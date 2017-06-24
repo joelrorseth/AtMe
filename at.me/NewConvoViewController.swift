@@ -104,18 +104,24 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         // Retrieve uid of selected user, create conversation record in Firebase
         if let selectedUserUid = cell.uid, let selectedUserUsername = cell.username {
             
-            
-            // IMPORTANT: First obtain unique id separately to use in userConversationList
-            // In new record, store creator username, starting number of active participants, number of messages
-            
+            // Generate unique conversation identifier
             let convoId = conversationsRef.childByAutoId().key
-            conversationsRef.child("\(convoId)/creator").setValue(UserState.currentUser.username!)
-            conversationsRef.child("\(convoId)/activeMembers").setValue(2)
-            conversationsRef.child("\(convoId)/messagesCount").setValue(0)
             
-            // For both users separately, record the convoId in a record identified by other user's username
-            userConversationListRef.child(UserState.currentUser.uid!).child(selectedUserUsername).setValue(convoId)
-            userConversationListRef.child(selectedUserUid).child(UserState.currentUser.username!).setValue(convoId)
+            // Establish the database record for this conversation
+            userInformationRef.observe(DataEventType.value, with: { snapshot in
+                
+                // Store list of member uid's and their notificationIDs in conversation for quick lookup
+                let selectedUserNotificationID = snapshot.childSnapshot(forPath: "\(selectedUserUid)/notificationID").value as? String
+                let membersDictionary: [String: String] = [UserState.currentUser.uid!: UserState.currentUser.notificationID!, selectedUserUid: selectedUserNotificationID!]
+                
+                self.conversationsRef.child("\(convoId)/creator").setValue(UserState.currentUser.username!)
+                self.conversationsRef.child("\(convoId)/activeMembers").setValue(membersDictionary)
+                self.conversationsRef.child("\(convoId)/messagesCount").setValue(0)
+                
+                // For both users separately, record the convoId in a record identified by other user's username
+                self.userConversationListRef.child(UserState.currentUser.uid!).child(selectedUserUsername).setValue(convoId)
+                self.userConversationListRef.child(selectedUserUid).child(UserState.currentUser.username!).setValue(convoId)
+            })
             
             
             // TODO: For now, just dismiss. Future update: dismiss then open up conversation

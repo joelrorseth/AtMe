@@ -141,8 +141,7 @@ class ChatListViewController: UITableViewController {
     private func addConversation(convoId: String, with username: String) {
         
         self.conversationsRef.child("\(convoId)/").observeSingleEvent(of: .value, with: { (snapshot) in
-            print("\t==> Attempting to load convo with id: \(convoId)")
-            print(snapshot)
+            
             if ((snapshot.childSnapshot(forPath: "messagesCount").value as! Int) == 0) {
                 // Convo has no messages
                 
@@ -347,21 +346,19 @@ extension ChatListViewController {
             let convoId = conversations[indexPath.row].convoId
             let activeMembersRef = conversationsRef.child("\(convoId)/activeMembers")
             
+            
             activeMembersRef.observeSingleEvent(of: .value, with: { snapshot in
                 
-                // Decrement value since current user is leaving convo
-                let membersCount = (snapshot.value as? Int)! - 1
+                // Remove current user from members list in database
+                // If current user was the last member, the conversation will delete entirely
                 
-                // If no members left in convo, delete the conversation entirely!
-                if (membersCount == 0) {
-                    
-                    // Delete conversation
+                var members = snapshot.value as? [String: String]
+                members?.removeValue(forKey: UserState.currentUser.uid!)
+                
+                if (members?.count == 0) {
                     self.conversationsRef.child(convoId).removeValue()
-                    
                 } else {
-                    
-                    // Otherwise, just decrement number of convo members
-                    activeMembersRef.setValue(membersCount)
+                    activeMembersRef.setValue(members)
                 }
             })
             

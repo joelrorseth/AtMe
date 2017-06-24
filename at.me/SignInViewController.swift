@@ -60,9 +60,9 @@ class SignInViewController: UIViewController, AlertController {
     // ==========================================
     override func viewDidAppear(_ animated: Bool) {
         
-        if let currentUser = Auth.auth().currentUser {
-            self.processSignIn(forUser: currentUser)
-        }
+//        if let currentUser = Auth.auth().currentUser {
+//            self.processSignIn(forUser: currentUser)
+//        }
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -88,6 +88,7 @@ class SignInViewController: UIViewController, AlertController {
                 
                 UserState.currentUser.username = snapshot.childSnapshot(forPath: "\(uid)/username").value as? String
                 UserState.currentUser.displayName = snapshot.childSnapshot(forPath: "\(uid)/displayName").value as? String
+                UserState.currentUser.notificationID = snapshot.childSnapshot(forPath: "\(uid)/notificationID").value as? String
                 
                 // Maintain information of current user for duration of the app lifetime
                 UserState.currentUser.uid = uid

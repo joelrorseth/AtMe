@@ -16,6 +16,7 @@ class UserState: NSObject {
     var displayName: String?
     var displayPicture: UIImage?
     var email: String?
+    var notificationID: String?
     var uid: String?
     var username: String?
 }

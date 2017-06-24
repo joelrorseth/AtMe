@@ -21,7 +21,7 @@ class SignUpViewController: UIViewController, AlertController {
     @IBOutlet weak var firstNameTextField: UITextField!
     @IBOutlet weak var lastNameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
-    
+        
     
     // MARK: View
     // ==========================================
@@ -46,7 +46,6 @@ class SignUpViewController: UIViewController, AlertController {
     // ==========================================
     @IBAction func didTapCreateAccount(_ sender: Any) {
         
-        print("CHECK 1")
         
         if (emailTextField.text == "" || usernameTextField.text! == "" || firstNameTextField.text == ""
             || lastNameTextField.text == "" || passwordTextField.text == "") {
@@ -56,7 +55,6 @@ class SignUpViewController: UIViewController, AlertController {
             return
         }
         
-        print("CHECK 2")
         
         // Make sure all important info is provided, then store
         guard let email = emailTextField.text, let password = passwordTextField.text,
@@ -65,7 +63,6 @@ class SignUpViewController: UIViewController, AlertController {
         
         let username = (self.usernameTextField.text == nil) ? email.components(separatedBy: "@")[0] : self.usernameTextField.text!
         
-        print("CHECK 3")
         
         // ERROR CASE 1: Weak password
         if (password.characters.count < 6) {
@@ -77,7 +74,6 @@ class SignUpViewController: UIViewController, AlertController {
             return
         }
         
-        print("CHECK 4")
         
         // ERROR CASE 2: Improper username specified at signup
         // TODO: Look into restrictions on <FIRDataSnapshot>.hasChild() which will affect valid usernames
@@ -90,62 +86,59 @@ class SignUpViewController: UIViewController, AlertController {
             return
         }
         
-        print("CHECK 5")
-
         
-        // Take snapshot of databse to check for existing username
-        registeredUsernamesRef.observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
+        
+        // Let the auth object create a user with given fields
+        Auth.auth().createUser(withEmail: email, password: password) { (user, error) in
             
-            print("CHECK 6")
             
-            // If username is not found, we are OK to create account
-            if (!snapshot.hasChild(username)) {
-                
-                print("CHECK 7")
-                
-                // Let the auth object create a user with given fields
-                Auth.auth().createUser(withEmail: email, password: password) { (user, error) in
-                    
-                    
-                    // ERROR CASE 2: Any other error (Email taken)
-                    if let error = error {
-                        print("AT.ME:: \(error.localizedDescription)")
-                        return
-                    }
-                    
-                    
-                    // Add entry to database with public user information (username, email)
-                    // All fields are accounted for, displayName defaults to username
-                    
-                    let userEntry = ["displayName" : username, "email" : email, "firstName" : firstName,
-                        "lastName" : lastName, "notificationID": NotificationsController.currentUserNotificationsID() ?? nil, "username" : username]
-                    
-                    
-                    // Add entry to usernames registry and user info registry
-                    self.registeredUsernamesRef.child(username).setValue((user?.uid)!)
-                    self.userInformationRef.child((user?.uid)!).setValue(userEntry)
-                    
-                    // Update any <FIRUser> properties maintained internally by Firebase
-                    let changeRequest = user?.createProfileChangeRequest()
-                    changeRequest?.displayName = username
-                    
-                    // First time use, set up user name then log into app
-                    print("AT.ME:: New user creation successful")
-                    self.setAccountDetails(user!, username, firstName, lastName)
-                    self.attemptLogin(withEmail: email, andPassword: password)
-                }
-                
-                
-            } else {
-                
-                // ERROR CASE 3: Username was already taken
-                self.presentSimpleAlert(title: "Username Already Taken", message: "Please choose another username.", completion: {
-                    self.usernameTextField.becomeFirstResponder()
-                })
+            // ERROR CASE 2: Any other error (Email taken)
+            if let error = error {
+                print("AT.ME:: \(error.localizedDescription)")
+                return
             }
-        })
+            
+            
+            // Add entry to database with public user information (username, email)
+            // All fields are accounted for, displayName defaults to username
+            
+            let userEntry = ["displayName" : username, "email" : email, "firstName" : firstName,
+                             "lastName" : lastName, "notificationID": NotificationsController.currentUserNotificationsID() ?? nil, "username" : username]
+            
+            
+            // Add entry to usernames registry and user info registry
+            self.registeredUsernamesRef.child(username).setValue((user?.uid)!)
+            self.userInformationRef.child((user?.uid)!).setValue(userEntry)
+            
+            // Update any <FIRUser> properties maintained internally by Firebase
+            let changeRequest = user?.createProfileChangeRequest()
+            changeRequest?.displayName = username
+            
+            // First time use, set up user name then log into app
+            print("AT.ME:: New user creation successful")
+            self.setAccountDetails(user!, username, firstName, lastName)
+            self.attemptLogin(withEmail: email, andPassword: password)
+        }
         
-        print("CHECK 8")
+        
+//        // Take snapshot of databse to check for existing username
+//        registeredUsernamesRef.observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
+//
+//
+//            // If username is not found, we are OK to create account
+//            if (!snapshot.hasChild(username)) {
+//                
+//
+//                
+//            } else {
+//                
+//                // ERROR CASE 3: Username was already taken
+//                self.presentSimpleAlert(title: "Username Already Taken", message: "Please choose another username.", completion: {
+//                    self.usernameTextField.becomeFirstResponder()
+//                })
+//            }
+//        })
+        
     }
     
     

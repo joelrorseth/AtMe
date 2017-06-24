@@ -55,11 +55,13 @@ class ConvoViewController: UITableViewController, AlertController {
     
     var observingMessages = false
     var messages: [Message] = []
+    var notificationIDs: [String] = []
     
     var convoId: String = "" {
         didSet {
             messagesRef = Database.database().reference().child("conversations/\(convoId)/messages/")
             pictureMessagesRef = Storage.storage().reference().child("conversations/\(convoId)/images/")
+            observeNotificationIDs()
             if (!observingMessages) { observeReceivedMessages(); observingMessages = true }
         }
     }
@@ -164,24 +166,22 @@ class ConvoViewController: UITableViewController, AlertController {
         
         // Increment message count by 1
         // TODO: Look into better method of doing this. Look up Firebase Transcation
+        //let incrementedValue = (snapshot.childSnapshot(forPath: "messagesCount").value as! Int) + 1
+        //Database.database().reference(withPath: "conversations/\(self.convoId)/messagesCount").setValue(incrementedValue)
         
-        conversationsRef.child(convoId).observeSingleEvent(of: .value, with: { snapshot in
-            
-            let incrementedValue = (snapshot.childSnapshot(forPath: "messagesCount").value as! Int) + 1
-            Database.database().reference(withPath: "conversations/\(self.convoId)/messagesCount").setValue(incrementedValue)
-        })
         
         // Each message record (uniquely identified) will record sender and message text
-        messagesRef?.child(randomMessageId).setValue(
+        self.messagesRef?.child(randomMessageId).setValue(
             ["imageURL": message.imageURL, "sender" : message.sender, "text" : message.text, "timestamp" : message.timestamp]
         )
+
+        // Ask NotificationController to send this message as a push notification
+        for id in notificationIDs {
+            print("Sending to \(id)")
+            NotificationsController.send(to: id, title: message.sender, message: message.text ?? "Picture message")
+        }
         
-        // TODO: Look up receiver's OneSignal userID (to be stored in userInformation?)
-        // Send a notification to the receiver from the sender (sender's name and message are attached)
-        NotificationsController.send(to: "3a5e4f8c-3a1f-4044-989a-e0935615901a", title: message.sender, message: message.text ?? "Picture message")
-        
-        // TODO: Possibly cache messages for certain amount of time / 3 messages
-        // Look into solution to avoid loading sent messages from server (no point in that?)
+        // TODO: Look into solution to avoid loading sent messages from server (no point in that?)
         // Potentially keep boolean for each user in chat saying if chat has changed since, or
         // even most recent cached message
     }
@@ -202,6 +202,7 @@ class ConvoViewController: UITableViewController, AlertController {
         self.tableView.scrollToRow(at: IndexPath.init(row: messages.count - 1, section: 0) , at: .bottom, animated: true)
     }
     
+    // MARK: Observers
     // ==========================================
     // ==========================================
     private func observeReceivedMessages() {
@@ -231,6 +232,24 @@ class ConvoViewController: UITableViewController, AlertController {
             
             // Add message to local messages cache
             self.addMessage(message: Message(imageURL: imageURL, sender: sender, text: text, timestamp: timestamp))
+        })
+    }
+    
+    /**
+     Observes all existing and new notifications IDs for the current conversation.
+     */
+    private func observeNotificationIDs() {
+        
+        conversationsRef.child(convoId).child("activeMembers").observe(DataEventType.childAdded, with: { snapshot in
+            
+            // Each member in activeMembers stores key-value pairs, specifically  (UID: notificationID) for active users
+            // Firebase will take snapshot of each existing and new notificationID, store in property for push notifications later
+            if let notificationID = snapshot.value as? String {
+                
+                // Avoid adding current user to notification list. We do not want notifications for our own messages
+                if (notificationID != UserState.currentUser.notificationID!) { self.notificationIDs.append(notificationID) }
+                
+            } else { print("Error: Active member could not be converted into tuple during notificationID loading") }
         })
     }
     
