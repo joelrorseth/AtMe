@@ -142,6 +142,9 @@ class ChatListViewController: UITableViewController {
         
         self.conversationsRef.child("\(convoId)/").observeSingleEvent(of: .value, with: { (snapshot) in
             
+            // TODO: Important: Delay showing conversations from cache until we know it still exists in Firebase
+            // If convo was deleted and fetches from cache, this is the first line it will hit and crash trying to access!!
+        
             if ((snapshot.childSnapshot(forPath: "messagesCount").value as! Int) == 0) {
                 // Convo has no messages
                 

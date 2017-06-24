@@ -69,7 +69,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     // ==========================================
     // ==========================================
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return CGFloat(56)
+        return CGFloat(80)
     }
     
     // ==========================================
