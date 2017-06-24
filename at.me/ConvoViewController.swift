@@ -108,7 +108,7 @@ class ConvoViewController: UITableViewController, AlertController {
             imageURL: nil,
             sender: UserState.currentUser.username!,
             text: chatInputAccessoryView.expandingTextView.text!,
-            timestamp: getCurrentTimestamp()
+            timestamp: Date()
         )
         
         // Pass message along to be stored
@@ -171,9 +171,17 @@ class ConvoViewController: UITableViewController, AlertController {
         
         
         // Each message record (uniquely identified) will record sender and message text
-        self.messagesRef?.child(randomMessageId).setValue(
-            ["imageURL": message.imageURL, "sender" : message.sender, "text" : message.text, "timestamp" : message.timestamp]
-        )
+        if let text = message.text {
+            self.messagesRef?.child(randomMessageId).setValue(
+                ["sender" : message.sender, "text" : text, "timestamp" : message.timestamp.timeIntervalSince1970]
+            )
+            
+        } else if let imageURL = message.imageURL {
+            self.messagesRef?.child(randomMessageId).setValue(
+                ["imageURL": imageURL, "sender" : message.sender, "timestamp" : message.timestamp.timeIntervalSince1970]
+            )
+        }
+        
 
         // Ask NotificationController to send this message as a push notification
         for id in notificationIDs {
@@ -228,7 +236,7 @@ class ConvoViewController: UITableViewController, AlertController {
             }
             
             let sender = snapshot.childSnapshot(forPath: "sender").value as! String
-            let timestamp = snapshot.childSnapshot(forPath: "timestamp").value as! String
+            let timestamp = Date.init(timeIntervalSince1970: snapshot.childSnapshot(forPath: "timestamp").value as! Double)
             
             // Add message to local messages cache
             self.addMessage(message: Message(imageURL: imageURL, sender: sender, text: text, timestamp: timestamp))
@@ -275,10 +283,12 @@ class ConvoViewController: UITableViewController, AlertController {
     
     
     // MARK: Additional functions
-    // ==========================================
-    // ==========================================
-    func getCurrentTimestamp() -> String {
-        return dateFormatter.string(from: Date())
+    /**
+     Obtains a timestamp of the current moment in time (described as the interval from 1970 until now)
+     - returns: A TimeInterval object representing the time interval since 1970
+     */
+    func getCurrentTimestamp() -> TimeInterval {
+        return Date().timeIntervalSince1970
     }
     
     // ==========================================
@@ -320,7 +330,7 @@ extension ConvoViewController: UIImagePickerControllerDelegate, UINavigationCont
                         imageURL: pictureRef.child(path).fullPath,
                         sender: UserState.currentUser.username!,
                         text: nil,
-                        timestamp: self.getCurrentTimestamp()))
+                        timestamp: Date()))
                 })
                 
             } else { print("AT.ME:: Error extracting image from source") }
@@ -410,7 +420,7 @@ extension ConvoViewController {
                 print("AT.ME:: Successfully loaded picture into message")
             })
         }
-        
+
         
         if (message.sender == UserState.currentUser.username! && messageContentReference != nil) { // Outgoing
             
