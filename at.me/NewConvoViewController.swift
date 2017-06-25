@@ -16,6 +16,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     private lazy var userConversationListRef: DatabaseReference = Database.database().reference().child("userConversationList")
     private lazy var userInformationRef: DatabaseReference = Database.database().reference().child("userInformation")
     private lazy var conversationsRef: DatabaseReference = Database.database().reference().child("conversations")
+    lazy var userDisplayPictureRef: StorageReference = Storage.storage().reference().child("displayPictures")
     
     @IBOutlet weak var usersSearchBar: UISearchBar!
     @IBOutlet weak var usersTableView: UITableView!
@@ -83,6 +84,8 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         // Populate table with results from lookup
+        // Important: At this point in development, we are assuming only one search result can be found and displayed
+        
         let cell = usersTableView.dequeueReusableCell(withIdentifier: "UserInfoCell", for: indexPath) as! UserInfoCell
         
         cell.displayName.text = searchResults[0].displayName
@@ -90,6 +93,21 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         
         cell.uid = searchResults[0].uid
         cell.username = searchResults[0].username
+        
+        // Download image into cell using DatabaseController (this facilitates automatic caching)
+        let displayPictureRef = self.userDisplayPictureRef.child("\(searchResults[0].uid)/\(searchResults[0].uid).JPG")
+        DatabaseController.downloadImage(into: cell.displayImage, from: displayPictureRef, completion: { error in
+            
+            if let error = error {
+                print("At.ME:: An error has occurred, but image data was detected. \(error)")
+                return
+            }
+        })
+        
+        // FIXME: Move circle frame code into Cell class (also applies to ChatListViewController)
+        // Give display picture a circular mask
+        cell.displayImage.layer.masksToBounds = true;
+        cell.displayImage.layer.cornerRadius = cell.displayImage.frame.width / 2
         
         return cell
     }
@@ -180,6 +198,8 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         }
         
         // Update the data source, then insert the rows into the table view
+        // Important: This will trigger CellForRow:AtIndex() using the data source to populate
+        
         self.searchResults = users
         self.usersTableView.insertRows(at: [IndexPath.init(row: self.searchResults.count - 1, section: 0)], with: .automatic)
         
