@@ -163,9 +163,26 @@ class ConvoViewController: UITableViewController, AlertController {
         let randomMessageId = messagesRef!.childByAutoId().key
         
         // TODO: Refactor convoId to be an optional
+        // FIXME: Transaction may cause bug. More tests required
         
-        // Increment message count by 1
-        // TODO: Look into better method of doing this. Look up Firebase Transcation
+        // Increment messages counter using a Firebase Transaction
+        // Transactions are a concurrently safe method of updating values in database
+        
+        conversationsRef.child(convoId).runTransactionBlock({ (currentData: MutableData) -> TransactionResult in
+            
+            if var conversationRecord = currentData.value as? [String : AnyObject] {
+        
+                // Retrieve current message count, write it back incremented by one
+                let currentMessagesCount = conversationRecord["messagesCount"] as? Int ?? 0
+                conversationRecord["messagesCount"] = (currentMessagesCount + 1) as AnyObject?
+                
+                // Set value and report Transaction success
+                currentData.value = conversationRecord
+            }
+            
+            return TransactionResult.success(withValue: currentData)
+        })
+        
         //let incrementedValue = (snapshot.childSnapshot(forPath: "messagesCount").value as! Int) + 1
         //Database.database().reference(withPath: "conversations/\(self.convoId)/messagesCount").setValue(incrementedValue)
         

@@ -24,6 +24,14 @@ class ChatListViewController: UITableViewController {
     // Local Conversation cache
     var conversations: [Conversation] = []
     
+    private lazy var dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = DateFormatter.Style.none
+        formatter.timeStyle = DateFormatter.Style.short
+        
+        return formatter
+    }()
+    
     // TODO: Sort conversations newest at the top
     // TODO: Store timestamp with more precision (NSDate?)
     
@@ -166,7 +174,8 @@ class ChatListViewController: UITableViewController {
                 self.conversationsRef.child("\(convoId)/messages").queryLimited(toLast: 1)
                     .observe(DataEventType.childAdded, with: { (snapshot) in
                         
-                        let timestamp = snapshot.childSnapshot(forPath: "timestamp").value as! String
+                        let timestamp = Date.init(timeIntervalSince1970: snapshot.childSnapshot(forPath: "timestamp").value as! Double)
+                        //let timestamp = snapshot.childSnapshot(forPath: "timestamp").value as! String
                         var message = "This is the beginning of your conversation with \(username)"
                         
                         // Extract the new message, set as the current convo's newest message!
@@ -182,7 +191,7 @@ class ChatListViewController: UITableViewController {
                         for convo in self.conversations {
                             if (convo.otherUsername == username) {
                                 convo.newestMessage = message
-                                convo.newestMessageTimestamp = timestamp
+                                convo.newestMessageTimestamp = self.dateFormatter.string(from: timestamp)
                                 
                                 self.tableView.reloadData()
                                 return
@@ -193,7 +202,7 @@ class ChatListViewController: UITableViewController {
                             Conversation(convoId: convoId,
                                          otherUsername: username,
                                          newestMessage: message,
-                                         newestMessageTimestamp: timestamp))
+                                         newestMessageTimestamp: self.dateFormatter.string(from: timestamp)))
                         
                     })
             }
