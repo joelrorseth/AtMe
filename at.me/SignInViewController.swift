@@ -20,26 +20,37 @@ class SignInViewController: UIViewController, AlertController {
     @IBOutlet weak var signInButton: UIButton!
     @IBOutlet weak var signUpButton: UIButton!
     
+    let authController = AuthController()
+    
+    
     // MARK: Buttons
     // ==========================================
     // ==========================================
     @IBAction func didTapSignIn(_ sender: Any) {
         
+        if (!fieldsAreFilled()) {
+            presentSimpleAlert(title: "Missing Fields", message: Constants.Errors.missingFields, completion: nil)
+            return
+        }
+        
         guard let email = emailField.text, let password = passwordField.text else { return }
         
-        // Let the auth object sign in the user with given credentials
-        Auth.auth().signIn(withEmail: email, password: password) { (user, error) in
+        authController.signIn(email: email, password: password, completion: { error, configured in
             
-            // In the case of invalid login, handle gracefully
             if let error = error {
-                print("AT.ME:: Error during login\n\(error.localizedDescription)")
-                
-                self.presentSimpleAlert(title: "Invalid Login", message: "Please double check your email and password.", completion: nil)
+                self.presentSimpleAlert(title: "Could Not Sign In", message: error.localizedDescription, completion: nil)
                 return
             }
             
-            self.processSignIn(forUser: user)
-        }
+            if (!configured) {
+                self.presentSimpleAlert(title: "Sign In Error Occured", message: Constants.Errors.signInBadConfig, completion: nil)
+                return
+            }
+            
+            // If error was not set, sign in was successful
+            // Initiate segue to next view controller
+            self.performSegue(withIdentifier: Constants.Segues.signInSuccessSegue, sender: nil)
+        })
     }
     
     // MARK: View
@@ -65,67 +76,22 @@ class SignInViewController: UIViewController, AlertController {
 //        }
     }
     
+    // ==========================================
+    // ==========================================
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
+    }
+    
+    
+    // MARK: Validation
+    // ==========================================
+    // ==========================================
+    private func fieldsAreFilled() -> Bool {
+        return emailField.text != "" && passwordField.text != ""
     }
     
     // MARK: Segue
     // ==========================================
     // ==========================================
     @IBAction func unwindToSignIn(segue: UIStoryboardSegue) {}
-    
-    
-    // MARK: Additional Functions
-    // ==========================================
-    // ==========================================
-    private func processSignIn(forUser user: User?) {
-
-        // If any of the user details are nil, report error and break
-        if let uid = user?.uid, let email = user?.email {
-
-            // TODO: Implement error handling in case of failed read for 'username' record
-            userInformationRef.observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
-                
-                UserState.currentUser.username = snapshot.childSnapshot(forPath: "\(uid)/username").value as? String
-                UserState.currentUser.displayName = snapshot.childSnapshot(forPath: "\(uid)/displayName").value as? String
-                UserState.currentUser.notificationID = snapshot.childSnapshot(forPath: "\(uid)/notificationID").value as? String
-                
-                // Maintain information of current user for duration of the app lifetime
-                UserState.currentUser.uid = uid
-                UserState.currentUser.email = email
-                
-                // Note: This block is error safe, handles all errors
-                // TODO: Determine if displayPicture recorded path is even necessary since it is predictable using 'uid'
-                
-                // Load profile picture on a background thread
-                // Extract stored path, download data at location if path is set
-                
-                if let relativeURL = snapshot.childSnapshot(forPath: "\(uid)/displayPicture").value as? String {
-                    
-                    // Asynchronously download the file data stored at 'path' (display picture)                    
-                    self.userDisplayPictureRef.child(relativeURL).getData(maxSize: INT64_MAX, completion: { (data, error) in
-                        
-                        if let image = data {
-                            UserState.currentUser.displayPicture = UIImage(data: image)
-                            print("AT.ME:: Loaded display picture into local memory")
-                        } else {
-                            print("AT.ME:: Image data was nil at path: \(relativeURL)")
-                        }
-                    })
-                    
-                } else { print("AT.ME:: Did not find a display picture to load") }
-
-                
-                
-                // Initiate segue to next view
-                self.performSegue(withIdentifier: Constants.Segues.signInSuccessSegue, sender: nil)
-                print("AT.ME:: Current user set. Login successful")
-            })
-            
-        } else {
-            
-            presentSimpleAlert(title: "Something Went Wrong", message: "Please try signing in again.", completion: nil)
-            print("AT.ME:: Login unsuccessful due to nil properties for the FIRUser")
-        }
-    }
 }

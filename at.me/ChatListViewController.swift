@@ -126,22 +126,20 @@ class ChatListViewController: UITableViewController {
     // ==========================================
     // ==========================================
     private func observeConversations() {
+        // FIXME: Exiting chat to this screen does not update newest message (fix observer?)
         
-        // TODO: Refactor UserState to make everything non-optional
-        // TODO: Exiting chat to this screen does not update newest message
-        if let uid = UserState.currentUser.uid {
+        let uid = UserState.currentUser.uid
+        
+        // Call this closure once for every conversation record, and any time a record is added
+        userConversationListRef.child(uid).keepSynced(true)
+        userConversationListRef.child(uid).observe(DataEventType.childAdded, with: { snapshot in
             
-            // Call this closure once for every conversation record, and any time a record is added
-            userConversationListRef.child(uid).keepSynced(true)
-            userConversationListRef.child(uid).observe(DataEventType.childAdded, with: { snapshot in
+            let otherUsername = snapshot.key
+            if let convoId = snapshot.value as? String {
                 
-                let otherUsername = snapshot.key
-                if let convoId = snapshot.value as? String {
-                    
-                    self.addConversation(convoId: convoId, with: otherUsername)
-                }
-            })
-        }
+                self.addConversation(convoId: convoId, with: otherUsername)
+            }
+        })
     }
     
     // ==========================================
@@ -352,7 +350,7 @@ extension ChatListViewController {
             // Update records in Firebase
             // Delete current user's reference to convo, then decrement number of members in convo
             
-            userConversationListRef.child(UserState.currentUser.uid!).child(conversations[indexPath.row].otherUsername).removeValue()
+            userConversationListRef.child(UserState.currentUser.uid).child(conversations[indexPath.row].otherUsername).removeValue()
             
             // Extract conversation unique id and Firebase ref to activeMembers record
             let convoId = conversations[indexPath.row].convoId
@@ -365,7 +363,7 @@ extension ChatListViewController {
                 // If current user was the last member, the conversation will delete entirely
                 
                 var members = snapshot.value as? [String: String]
-                members?.removeValue(forKey: UserState.currentUser.uid!)
+                members?.removeValue(forKey: UserState.currentUser.uid)
                 
                 if (members?.count == 0) {
                     self.conversationsRef.child(convoId).removeValue()

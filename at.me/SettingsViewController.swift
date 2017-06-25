@@ -47,40 +47,42 @@ class SettingsViewController: UITableViewController, AlertController {
         userPictureImageView.layer.cornerRadius = userPictureImageView.frame.width / 2
     }
     
+    // ==========================================
+    // ==========================================
+    func updateUserDisplayPicture(image: UIImage) {
+        
+        let uid = UserState.currentUser.uid
+        let url = "\(uid)/\(uid).JPG"
+        
+        UserState.currentUser.displayPicture = url
+        userInformationRef.child("\(uid)/displayPicture").setValue(url)
+        
+        // Update current user stored display picture, reload image view
+        loadCurrentUserInformation()
+    }
     
     // ==========================================
     // ==========================================
     private func loadCurrentUserInformation() {
         
         // Should never happen, app blocks until these have been set at login
-        userDisplayNameLabel.text = UserState.currentUser.displayName ?? "Loading..."
-        usernameLabel.text = UserState.currentUser.username ?? "Loading..."
+        userDisplayNameLabel.text = UserState.currentUser.name
+        usernameLabel.text = UserState.currentUser.username
+        
+        guard let picture = UserState.currentUser.displayPicture else {
+            presentSimpleAlert(title: "Could Not Set Picture", message: Constants.Errors.DisplayPictureMissing, completion: nil)
+            return
+        }
         
         // Display picture may very well be nil if not set or loaded yet
         // This is because display pictures are loaded asynchronously at launch
         
-        if let image = UserState.currentUser.displayPicture {
-            userPictureImageView.image = image
-        }
-        
-        self.tableView.reloadData()
-    }
-    
-    // ==========================================
-    // ==========================================
-    func updateUserDisplayPicture(image: UIImage) {
-        
-        if let uid = UserState.currentUser.uid {
-            let path = "\(uid)/\(uid).JPG"
-            self.userInformationRef.child("\(uid)/displayPicture").setValue(path)
-            
-            // Update current user stored display picture, reload image view
-            UserState.currentUser.displayPicture = image
-            loadCurrentUserInformation()
-            
-        } else {
-            print("AT.ME:: Could not determine current user uid to update display picture")
-        }
+        DatabaseController.downloadImage(into: userPictureImageView,
+            from: self.userDisplayPictureRef.child(picture), completion: { error in
+                                            
+            if error != nil { return }
+            else { self.tableView.reloadData() }
+        })
     }
     
     // ==========================================
@@ -164,7 +166,7 @@ extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationC
     // ==========================================
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
-        guard let uid = UserState.currentUser.uid else { return }
+        let uid = UserState.currentUser.uid
         let path = "\(uid)/\(uid).JPG"
         
         // Extract the image after editing, upload to database as Data object

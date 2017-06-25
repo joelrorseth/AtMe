@@ -11,9 +11,6 @@ import Firebase
 
 class SignUpViewController: UIViewController, AlertController {
     
-    // Firebase References
-    private lazy var userInformationRef: DatabaseReference = Database.database().reference().child("userInformation")
-    private lazy var registeredUsernamesRef: DatabaseReference = Database.database().reference().child("registeredUsernames")
 
     @IBOutlet weak var createAccountButton: UIButton!
     @IBOutlet weak var emailTextField: UITextField!
@@ -21,6 +18,9 @@ class SignUpViewController: UIViewController, AlertController {
     @IBOutlet weak var firstNameTextField: UITextField!
     @IBOutlet weak var lastNameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
+    
+    // FIXME: Pass around one AuthController if possible between SignIn and SignUp
+    let authController = AuthController()
         
     
     // MARK: View
@@ -37,185 +37,125 @@ class SignUpViewController: UIViewController, AlertController {
         createAccountButton.backgroundColor = Constants.Colors.primaryAccent
     }
     
+    // ==========================================
+    // ==========================================
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
     
+    
     // MARK: Button Handling
-    // ==========================================
-    // ==========================================
-    @IBAction func didTapCreateAccount(_ sender: Any) {
-        
-        
-        if (emailTextField.text == "" || usernameTextField.text! == "" || firstNameTextField.text == ""
-            || lastNameTextField.text == "" || passwordTextField.text == "") {
-            
-            // At least one required field is empty
-            self.presentSimpleAlert(title: "Missing Fields", message: "Please fill in all required information", completion: nil)
-            return
-        }
-        
-        
-        // Make sure all important info is provided, then store
-        guard let email = emailTextField.text, let password = passwordTextField.text,
-            let firstName = firstNameTextField.text, let lastName = lastNameTextField.text
-        else { return }
-        
-        let username = (self.usernameTextField.text == nil) ? email.components(separatedBy: "@")[0] : self.usernameTextField.text!
-        
-        
-        // ERROR CASE 1: Weak password
-        if (password.characters.count < 6) {
-            
-            presentSimpleAlert(title: "Password is Too Weak", message: "Your password must be 6 or more characters.", completion: {
-                self.passwordTextField.becomeFirstResponder()
-            })
-            
-            return
-        }
-        
-        
-        // ERROR CASE 2: Improper username specified at signup
-        // TODO: Look into restrictions on <FIRDataSnapshot>.hasChild() which will affect valid usernames
-        if (username.characters.count < 4 || username.contains(" ")) {
-
-            presentSimpleAlert(title: "Username is Invalid", message: "Your username must be 4 or more valid characters", completion: {
-                self.usernameTextField.becomeFirstResponder()
-            })
-            
-            return
-        }
-        
-        
-        
-        // Let the auth object create a user with given fields
-        Auth.auth().createUser(withEmail: email, password: password) { (user, error) in
-            
-            
-            // ERROR CASE 2: Any other error (Email taken)
-            if let error = error {
-                print("AT.ME:: \(error.localizedDescription)")
-                return
-            }
-            
-            
-            // Add entry to database with public user information (username, email)
-            // All fields are accounted for, displayName defaults to username
-            
-            let userEntry = ["displayName" : username, "email" : email, "firstName" : firstName,
-                             "lastName" : lastName, "notificationID": NotificationsController.currentUserNotificationsID() ?? nil, "username" : username]
-            
-            
-            // Add entry to usernames registry and user info registry
-            self.registeredUsernamesRef.child(username).setValue((user?.uid)!)
-            self.userInformationRef.child((user?.uid)!).setValue(userEntry)
-            
-            // Update any <FIRUser> properties maintained internally by Firebase
-            let changeRequest = user?.createProfileChangeRequest()
-            changeRequest?.displayName = username
-            
-            // First time use, set up user name then log into app
-            print("AT.ME:: New user creation successful")
-            self.setAccountDetails(user!, username, firstName, lastName)
-            self.attemptLogin(withEmail: email, andPassword: password)
-        }
-        
-        
-//        // Take snapshot of databse to check for existing username
-//        registeredUsernamesRef.observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
-//
-//
-//            // If username is not found, we are OK to create account
-//            if (!snapshot.hasChild(username)) {
-//                
-//
-//                
-//            } else {
-//                
-//                // ERROR CASE 3: Username was already taken
-//                self.presentSimpleAlert(title: "Username Already Taken", message: "Please choose another username.", completion: {
-//                    self.usernameTextField.becomeFirstResponder()
-//                })
-//            }
-//        })
-        
-    }
-    
-    
-    // MARK: Login Processing
-    // ==========================================
-    // ==========================================
-    private func attemptLogin(withEmail email: String, andPassword password: String) {
-        
-        // Let the auth object sign in the user with given credentials
-        Auth.auth().signIn(withEmail: email, password: password) { (user, error) in
-            
-            // In the case of invalid login, handle gracefully
-            if let error = error {
-                
-                // TODO: Handle seemingly impossible case of failed login after account creation
-                
-                print("AT.ME:: Login failed, however account was created\n\(error.localizedDescription)");
-                self.presentSimpleAlert(title: "Invalid Login", message: "Please double check your email and password", completion: nil)
-                
-                return
-            }
-            
-            // At this point, sign in was successful
-            self.processSignIn(forUser: user)
-        }
-    }
-    
-    // ==========================================
-    // ==========================================
-    private func processSignIn(forUser user: User?) {
-        
-        // If any of the user details are nil, report error and break
-        if let uid = user?.uid, let email = user?.email {
-            
-            // TODO: Implement error handling in case of failed read for 'username' record
-            userInformationRef.observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
-                UserState.currentUser.username = snapshot.childSnapshot(forPath: "\(uid)/username").value as? String
-            })
-            
-            // Maintain information of current user for duration of the app lifetime
-            UserState.currentUser.uid = uid
-            UserState.currentUser.email = email
-            
-        } else {
-            
-            print("AT.ME:: Login unsuccessful due to nil properties for the FIRUser")
-            presentSimpleAlert(title: "Something Went Wrong", message: "Please try signing in again.", completion: nil)
-            
-            return
-        }
-        
-        // Initiate segue to next view
-        self.performSegue(withIdentifier: Constants.Segues.signUpSuccessSegue, sender: nil)
-        print("AT.ME:: Login successful")
-    }
-    
-    
-    // MARK: Firebase Config
-    // ==========================================
-    // ==========================================
-    func setAccountDetails(_ user: User?, _ username: String, _ firstName: String, _ lastName: String) {
-        
-        // Obtain an object (change request) to change details of account
-        let changeRequest = user?.createProfileChangeRequest()
-        
-        // Change display name, then commit changes
-        changeRequest?.displayName = user?.email!.components(separatedBy: "@")[0]
-        changeRequest?.commitChanges() { (error) in
-            
-            if let error = error { print("AT.ME:: \(error.localizedDescription)"); return }
-        }
-    }
-    
     // ==========================================
     // Go back (dismiss) to sign in controller
     // ==========================================
     @IBAction func transitionToSignIn(_ sender: Any) {
         self.dismiss(animated: false, completion: nil)
+    }
+    
+    
+    // ==========================================
+    // ==========================================
+    @IBAction func didTapCreateAccount(_ sender: Any) {
+        
+        if (!fieldsAreFilled()) {
+            self.presentSimpleAlert(title: "Missing Fields", message: "Please fill in all required information", completion: nil)
+            return
+        }
+        
+
+        // Proceed with account creation only if profile settings are ok, and
+        // all fields can be explicitly unwrapped
+        
+        guard let email = emailTextField.text, let username = usernameTextField.text,
+            let firstName = firstNameTextField.text, let lastName = lastNameTextField.text,
+            let password = passwordTextField.text else { return }
+        
+        // If fields are adequate, and this @Me username is not taken, proceed with account creation
+        if (profileSettingsAreAdequate()) {
+            
+            // Let the Auth Controller attempt to create the account
+            authController.createAccount(email: email, username: username, firstName: firstName,
+                lastName: lastName, password: password, completion: { (error, taken) in
+                                       
+                    if let error = error {
+                        self.presentSimpleAlert(title: "Authorization Error", message: error.localizedDescription, completion: nil)
+                        return
+                    
+                    } else if (taken) {
+                        self.presentSimpleAlert(title: "Username taken", message: Constants.Errors.usernameTaken, completion: nil)
+                        return
+                    }
+                    
+                    // First time use, set up user name then log into app
+                    print("AT.ME:: Successfully created new user ")
+                    
+                    self.authController.signIn(email: email, password: password, completion: { (error, configured) in
+    
+                        if let error = error {
+                            self.presentSimpleAlert(title: "Could Not Sign In", message: error.localizedDescription, completion: nil)
+                            return
+                        }
+                        
+                        if (!configured) {
+                            self.presentSimpleAlert(title: "Sign In Error Occured", message: Constants.Errors.signInBadConfig, completion: nil)
+                            return
+                        }
+                        
+                        // If error was not set, sign in was successful
+                        // Initiate segue to next view controller
+                        self.performSegue(withIdentifier: Constants.Segues.signUpSuccessSegue, sender: nil)
+                    })
+            })
+        }
+    }
+    
+    
+    // MARK: Validation
+    // ==========================================
+    // ==========================================
+    private func fieldsAreFilled() -> Bool {
+        
+        return emailTextField.text != "" && usernameTextField.text! != "" && firstNameTextField.text != ""
+            && lastNameTextField.text != "" && passwordTextField.text != ""
+    }
+    
+    // ==========================================
+    // ==========================================
+    private func profileSettingsAreAdequate() -> Bool {
+        
+        // Prevent any further checking until we know all fields are non-nil
+        // This should have been taken care of in fieldsAreFilled()
+        
+        guard let username = usernameTextField.text, let firstName = firstNameTextField.text,
+            let lastName = lastNameTextField.text, let password = passwordTextField.text
+            else { return false }
+        
+        // Iterate through each field to check for rules applying to all fields
+        for field in [username, firstName, lastName, password] {
+            
+            // Return false and present alert if illegal characters are found
+            if (field.contains(".") || field.contains("$") || field.contains("#") ||
+                field.contains("[") || field.contains("]") || field.contains("/") || field.contains(" ")) {
+                
+                presentSimpleAlert(title: "Invalid Characters", message: Constants.Errors.invalidCharacters, completion: nil)
+                return false
+            }
+        }
+        
+        // Return false and present alert if password is not long enough
+        if (password.characters.count < 6) {
+            presentSimpleAlert(title: "Password is Too Weak", message: Constants.Errors.passwordLength,
+                               completion: { self.passwordTextField.becomeFirstResponder() })
+            return false
+        }
+        
+        // Return false and present alert if password is not long enough
+        if (username.characters.count < 4 || username.contains(" ")) {
+            presentSimpleAlert(title: "Username is Invalid", message: Constants.Errors.usernameLength,
+                               completion: { self.usernameTextField.becomeFirstResponder() })
+            return false
+        }
+        
+        return true
     }
 }

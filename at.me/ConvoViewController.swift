@@ -106,7 +106,7 @@ class ConvoViewController: UITableViewController, AlertController {
         
         let message = Message(
             imageURL: nil,
-            sender: UserState.currentUser.username!,
+            sender: UserState.currentUser.username,
             text: chatInputAccessoryView.expandingTextView.text!,
             timestamp: Date()
         )
@@ -272,7 +272,7 @@ class ConvoViewController: UITableViewController, AlertController {
             if let notificationID = snapshot.value as? String {
                 
                 // Avoid adding current user to notification list. We do not want notifications for our own messages
-                if (notificationID != UserState.currentUser.notificationID!) { self.notificationIDs.append(notificationID) }
+                if (notificationID != UserState.currentUser.notificationID) { self.notificationIDs.append(notificationID) }
                 
             } else { print("Error: Active member could not be converted into tuple during notificationID loading") }
         })
@@ -345,7 +345,7 @@ extension ConvoViewController: UIImagePickerControllerDelegate, UINavigationCont
                     print("AT.ME:: Image uploaded successfully to \(pictureRef.child(path).fullPath)")
                     self.send(message: Message(
                         imageURL: pictureRef.child(path).fullPath,
-                        sender: UserState.currentUser.username!,
+                        sender: UserState.currentUser.username,
                         text: nil,
                         timestamp: Date()))
                 })
@@ -439,7 +439,7 @@ extension ConvoViewController {
         }
 
         
-        if (message.sender == UserState.currentUser.username! && messageContentReference != nil) { // Outgoing
+        if (message.sender == UserState.currentUser.username && messageContentReference != nil) { // Outgoing
             
             cell.bubbleView.backgroundColor = UIColor.white
             cell.messageTextView.textColor = UIColor.black

@@ -9,6 +9,16 @@
 import UIKit
 struct Constants {
     
+    struct Errors {
+        static let missingFields = "Please fill in all required information"
+        static let invalidCharacters = "Your fields must not contain any of the following: . $ # [ ] /"
+        static let passwordLength = "Your password must be 6 or more characters."
+        static let usernameLength = "Your username must be 4 or more valid characters."
+        static let usernameTaken = "Your @Me username must be unique, please choose another."
+        static let signInBadConfig = "Sign In configuration was unsuccessful. Please try again."
+        static let DisplayPictureMissing = "An error occured while setting your new picture. Please try again."
+    }
+    
     struct Fonts {
         static let regularFont = UIFont.systemFont(ofSize: CGFloat(14))
     }

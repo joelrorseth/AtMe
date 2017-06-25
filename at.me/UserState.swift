@@ -9,14 +9,28 @@
 import Foundation
 import UIKit.UIImage
 
-class UserState: NSObject {
+struct UserState {
+
+    // Important: currentUser holds details accessed everywhere in the app about the user
+    // This is initialized with empty strings instead of making them optionals to enforce the
+    // idea that this object and its properties should NEVER be null.
     
-    static let currentUser = UserState()
+    static var currentUser: UserState = UserState(displayPicture: nil, email: "", name: "", notificationID: "", uid: "", username: "")
     
-    var displayName: String?
-    var displayPicture: UIImage?
-    var email: String?
-    var notificationID: String?
-    var uid: String?
-    var username: String?
+    var displayPicture: String?     // You will not have a display picture until set
+    var email: String
+    var name: String
+    var notificationID: String
+    var uid: String
+    var username: String
+    
+    /*
+    init(displayPicture: String, email: String, name: String, notificationID: String, uid: String, username: String) {
+        self.displayPicture = displayPicture
+        self.email = email
+        self.name = name
+        self.notificationID = notificationID
+        self.uid = uid
+        self.username = username
+    }*/
 }

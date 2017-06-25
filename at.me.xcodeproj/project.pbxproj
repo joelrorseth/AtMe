@@ -31,6 +31,7 @@
 		5DA9E0DD1E5B6E0900F38C96 /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA9E0DC1E5B6E0900F38C96 /* MessageCell.swift */; };
 		5DAF28B71E5BBCBC00288F31 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DAF28B61E5BBCBC00288F31 /* Constants.swift */; };
 		5DAFF1621E72FD02008DE303 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DAFF1611E72FD02008DE303 /* SignUpViewController.swift */; };
+		5DE764EE1F0046E700E483C6 /* AuthController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE764ED1F0046E700E483C6 /* AuthController.swift */; };
 		5DF36ED91EB3D35400346868 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF36ED81EB3D35400346868 /* Message.swift */; };
 		5DFC7F3D1E7A27CF003C6594 /* ConversationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFC7F3C1E7A27CF003C6594 /* ConversationCell.swift */; };
 		B3D949AD9D6BD7072A218A2B /* libPods-OneSignalNotificationServiceExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D296102BA5B8EB197C8D7AB /* libPods-OneSignalNotificationServiceExtension.a */; };
@@ -93,6 +94,7 @@
 		5DA9E0DC1E5B6E0900F38C96 /* MessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageCell.swift; sourceTree = "<group>"; };
 		5DAF28B61E5BBCBC00288F31 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		5DAFF1611E72FD02008DE303 /* SignUpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
+		5DE764ED1F0046E700E483C6 /* AuthController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthController.swift; sourceTree = "<group>"; };
 		5DF36ED81EB3D35400346868 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		5DFC7F3C1E7A27CF003C6594 /* ConversationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationCell.swift; sourceTree = "<group>"; };
 		997179A80F10509A4302F162 /* Pods_at_me.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_at_me.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -179,6 +181,7 @@
 				5DF36ED81EB3D35400346868 /* Message.swift */,
 				5D5D67751ED1E90200FF8F2A /* DatabaseController.swift */,
 				5D65EBF51EFA1798009F512E /* NotificationsController.swift */,
+				5DE764ED1F0046E700E483C6 /* AuthController.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -453,6 +456,7 @@
 				5DF36ED91EB3D35400346868 /* Message.swift in Sources */,
 				5D07CAB21E752C0100316D75 /* UserProfile.swift in Sources */,
 				5D2B62601EC909A300B8363E /* PromptViewController.swift in Sources */,
+				5DE764EE1F0046E700E483C6 /* AuthController.swift in Sources */,
 				5D9D443A1EAEE81500CF25F7 /* UserState.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -595,6 +599,7 @@
 				CODE_SIGN_ENTITLEMENTS = at.me/at.me.entitlements;
 				DEVELOPMENT_TEAM = TGHSJ2W3HB;
 				INFOPLIST_FILE = at.me/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.JoelRorseth.at-me";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -611,6 +616,7 @@
 				CODE_SIGN_ENTITLEMENTS = at.me/at.me.entitlements;
 				DEVELOPMENT_TEAM = TGHSJ2W3HB;
 				INFOPLIST_FILE = at.me/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.JoelRorseth.at-me";
 				PRODUCT_NAME = "$(TARGET_NAME)";
