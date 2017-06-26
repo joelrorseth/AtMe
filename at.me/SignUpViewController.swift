@@ -14,13 +14,14 @@ class SignUpViewController: UIViewController, AlertController {
 
     @IBOutlet weak var createAccountButton: UIButton!
     @IBOutlet weak var emailTextField: UITextField!
-    @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var firstNameTextField: UITextField!
     @IBOutlet weak var lastNameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     
-    // FIXME: Pass around one AuthController if possible between SignIn and SignUp
-    let authController = AuthController()
+    private var email: String = ""
+    private var firstName: String = ""
+    private var lastName: String = ""
+    private var password: String = ""
         
     
     // MARK: View
@@ -62,50 +63,16 @@ class SignUpViewController: UIViewController, AlertController {
             return
         }
         
-
-        // Proceed with account creation only if profile settings are ok, and
-        // all fields can be explicitly unwrapped
         
-        guard let email = emailTextField.text, let username = usernameTextField.text,
-            let firstName = firstNameTextField.text, let lastName = lastNameTextField.text,
-            let password = passwordTextField.text else { return }
-        
-        // If fields are adequate, and this @Me username is not taken, proceed with account creation
+        // If fields are adequate, set properties that will be passed to next screen
         if (profileSettingsAreAdequate()) {
             
-            // Let the Auth Controller attempt to create the account
-            authController.createAccount(email: email, username: username, firstName: firstName,
-                lastName: lastName, password: password, completion: { (error, taken) in
-                                       
-                    if let error = error {
-                        self.presentSimpleAlert(title: "Authorization Error", message: error.localizedDescription, completion: nil)
-                        return
-                    
-                    } else if (taken) {
-                        self.presentSimpleAlert(title: "Username taken", message: Constants.Errors.usernameTaken, completion: nil)
-                        return
-                    }
-                    
-                    // First time use, set up user name then log into app
-                    print("AT.ME:: Successfully created new user ")
-                    
-                    self.authController.signIn(email: email, password: password, completion: { (error, configured) in
-    
-                        if let error = error {
-                            self.presentSimpleAlert(title: "Could Not Sign In", message: error.localizedDescription, completion: nil)
-                            return
-                        }
-                        
-                        if (!configured) {
-                            self.presentSimpleAlert(title: "Sign In Error Occured", message: Constants.Errors.signInBadConfig, completion: nil)
-                            return
-                        }
-                        
-                        // If error was not set, sign in was successful
-                        // Initiate segue to next view controller
-                        self.performSegue(withIdentifier: Constants.Segues.signUpSuccessSegue, sender: nil)
-                    })
-            })
+            email = emailTextField.text!
+            firstName = firstNameTextField.text!
+            lastName = lastNameTextField.text!
+            password = passwordTextField.text!
+            
+            self.performSegue(withIdentifier: Constants.Segues.signUpSuccessSegue, sender: nil)
         }
     }
     
@@ -115,7 +82,7 @@ class SignUpViewController: UIViewController, AlertController {
     // ==========================================
     private func fieldsAreFilled() -> Bool {
         
-        return emailTextField.text != "" && usernameTextField.text! != "" && firstNameTextField.text != ""
+        return emailTextField.text != "" && firstNameTextField.text != ""
             && lastNameTextField.text != "" && passwordTextField.text != ""
     }
     
@@ -126,12 +93,11 @@ class SignUpViewController: UIViewController, AlertController {
         // Prevent any further checking until we know all fields are non-nil
         // This should have been taken care of in fieldsAreFilled()
         
-        guard let username = usernameTextField.text, let firstName = firstNameTextField.text,
-            let lastName = lastNameTextField.text, let password = passwordTextField.text
-            else { return false }
+        guard let firstName = firstNameTextField.text, let lastName = lastNameTextField.text,
+            let password = passwordTextField.text else { return false }
         
         // Iterate through each field to check for rules applying to all fields
-        for field in [username, firstName, lastName, password] {
+        for field in [firstName, lastName, password] {
             
             // Return false and present alert if illegal characters are found
             if (field.contains(".") || field.contains("$") || field.contains("#") ||
@@ -149,13 +115,22 @@ class SignUpViewController: UIViewController, AlertController {
             return false
         }
         
-        // Return false and present alert if password is not long enough
-        if (username.characters.count < 4 || username.contains(" ")) {
-            presentSimpleAlert(title: "Username is Invalid", message: Constants.Errors.usernameLength,
-                               completion: { self.usernameTextField.becomeFirstResponder() })
-            return false
-        }
-        
         return true
+    }
+    
+    
+    // MARK: Segue
+    // ==========================================
+    // ==========================================
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let userSetupVC = segue.destination as! UserSetupViewController
+        
+        // Pass along form information from this controller to the next
+        // We want to avoid signing in or creating an account until ALL fields are obtained...
+        
+        userSetupVC.email = self.email
+        userSetupVC.firstName = self.firstName
+        userSetupVC.lastName = self.lastName
+        userSetupVC.password = password
     }
 }

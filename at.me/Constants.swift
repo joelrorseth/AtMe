@@ -35,6 +35,7 @@ struct Constants {
         static let signInSuccessSegue = "SignInSuccessSegue"
         static let signUpSuccessSegue = "SignUpSuccessSegue"
         static let loadConvoSegue = "LoadConvoSegue"
+        static let createAccountSuccessSegue = "CreateAccountSuccessSegue"
     }
     
     struct Storyboard {
