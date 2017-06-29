@@ -131,6 +131,6 @@ class SignUpViewController: UIViewController, AlertController {
         userSetupVC.email = self.email
         userSetupVC.firstName = self.firstName
         userSetupVC.lastName = self.lastName
-        userSetupVC.password = password
+        userSetupVC.password = self.password
     }
 }

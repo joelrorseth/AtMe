@@ -115,16 +115,29 @@ class AuthController {
     }
     
     
+    /**
+     Writes a user's username into their information record and usernames registry in the database
+     - parameters:
+     - username: Username chosen by the current user
+     - completion: Callback that is called upon successful completion
+     */
     public func setUsername(username: String, completion: (() -> ())) {
         
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
+        // Set current user, update username field in userInformation and registeredUsernames
         UserState.currentUser.username = username
         userInformationRef.child("\(uid)/username").setValue(username)
+        registeredUsernamesRef.child(username).setValue(uid)
         completion()
     }
     
     
+    /**
+     Writes the database storage path of an uploaded display picture to the current users information record
+     - parameters:
+     - path: The path where the display picture has been successfully uploaded to
+     */
     public func setDisplayPicture(path: String) {
         
         guard let uid = Auth.auth().currentUser?.uid else { return }

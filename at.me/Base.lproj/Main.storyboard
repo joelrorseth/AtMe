@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -246,8 +247,8 @@
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="@" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j9z-as-Bwf">
                                 <rect key="frame" x="28" y="268" width="30" height="44"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="30" id="HWS-PB-9M8"/>
-                                    <constraint firstAttribute="height" constant="44" id="Tto-Pd-INj"/>
+                                    <constraint firstAttribute="height" constant="44" id="16v-06-bxE"/>
+                                    <constraint firstAttribute="width" constant="30" id="1hp-vW-7OX"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="30"/>
                                 <color key="textColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
@@ -262,9 +263,6 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="w6V-nX-crj">
                                 <rect key="frame" x="37" y="357" width="300" height="60"/>
                                 <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="60" id="QHU-q6-H2k"/>
-                                </constraints>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                                 <state key="normal" title="Create Account">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -274,39 +272,41 @@
                                     <action selector="didTapCreateAccount:" destination="cE4-CE-511" eventType="touchUpInside" id="Bm1-JQ-wSe"/>
                                 </connections>
                             </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="HTK-vC-Kgk">
-                                <rect key="frame" x="117" y="51" width="140" height="160"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="140" id="2RN-01-0Wt"/>
-                                </constraints>
-                            </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Choose a username" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lv1-Fe-sEQ">
                                 <rect key="frame" x="28" y="239" width="331" height="21"/>
                                 <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="15"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="HTK-vC-Kgk">
+                                <rect key="frame" x="107" y="48" width="160" height="160"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="HTK-vC-Kgk" secondAttribute="height" multiplier="1:1" id="KaD-NV-Ooo"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.45098039220000002" green="0.086274509799999996" blue="0.90588235289999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="Lv1-Fe-sEQ" firstAttribute="leading" secondItem="bUR-YU-LPD" secondAttribute="leadingMargin" constant="12" id="36f-pV-rdz"/>
-                            <constraint firstItem="HTK-vC-Kgk" firstAttribute="top" secondItem="p4T-1X-fnQ" secondAttribute="bottom" constant="31" id="F33-Rn-Ey8"/>
-                            <constraint firstItem="Lv1-Fe-sEQ" firstAttribute="trailing" secondItem="xyY-XS-X24" secondAttribute="trailing" id="Ob8-vy-cfH"/>
-                            <constraint firstItem="j9z-as-Bwf" firstAttribute="bottom" secondItem="xyY-XS-X24" secondAttribute="bottom" id="Pg7-aR-pCY"/>
-                            <constraint firstItem="j9z-as-Bwf" firstAttribute="top" secondItem="Lv1-Fe-sEQ" secondAttribute="bottom" constant="8" symbolic="YES" id="RbY-09-TvZ"/>
-                            <constraint firstItem="Lv1-Fe-sEQ" firstAttribute="leading" secondItem="j9z-as-Bwf" secondAttribute="leading" id="S9E-5j-ME0"/>
-                            <constraint firstItem="Lv1-Fe-sEQ" firstAttribute="top" secondItem="HTK-vC-Kgk" secondAttribute="bottom" constant="28" id="SbG-Cj-qDs"/>
-                            <constraint firstItem="Lv1-Fe-sEQ" firstAttribute="trailing" secondItem="bUR-YU-LPD" secondAttribute="trailingMargin" id="XTj-H1-DIf"/>
-                            <constraint firstItem="cRq-Hz-zUy" firstAttribute="top" secondItem="w6V-nX-crj" secondAttribute="bottom" constant="250" id="Xj8-Og-bgd"/>
-                            <constraint firstItem="j9z-as-Bwf" firstAttribute="top" secondItem="xyY-XS-X24" secondAttribute="top" id="Zs5-I4-iA3"/>
-                            <constraint firstItem="HTK-vC-Kgk" firstAttribute="centerX" secondItem="bUR-YU-LPD" secondAttribute="centerX" id="anS-a8-4Ek"/>
-                            <constraint firstItem="w6V-nX-crj" firstAttribute="leading" secondItem="bUR-YU-LPD" secondAttribute="leadingMargin" constant="21" id="d6P-Ox-Wi4"/>
-                            <constraint firstItem="HTK-vC-Kgk" firstAttribute="centerX" secondItem="w6V-nX-crj" secondAttribute="centerX" id="gr3-WN-iwq"/>
-                            <constraint firstItem="xyY-XS-X24" firstAttribute="leading" secondItem="j9z-as-Bwf" secondAttribute="trailing" constant="8" symbolic="YES" id="hX1-Gb-C6g"/>
-                            <constraint firstItem="w6V-nX-crj" firstAttribute="top" secondItem="j9z-as-Bwf" secondAttribute="bottom" constant="45" id="xbh-Z5-2ah"/>
+                            <constraint firstItem="HTK-vC-Kgk" firstAttribute="centerX" secondItem="bUR-YU-LPD" secondAttribute="centerX" id="1ln-eO-HlW"/>
+                            <constraint firstItem="w6V-nX-crj" firstAttribute="top" secondItem="j9z-as-Bwf" secondAttribute="bottom" constant="45" id="6Fq-ha-5Dm"/>
+                            <constraint firstItem="Lv1-Fe-sEQ" firstAttribute="leading" secondItem="bUR-YU-LPD" secondAttribute="leadingMargin" constant="12" id="CFQ-lH-sFL"/>
+                            <constraint firstItem="Lv1-Fe-sEQ" firstAttribute="top" secondItem="HTK-vC-Kgk" secondAttribute="bottom" constant="31" id="D0S-Jf-krR"/>
+                            <constraint firstItem="Lv1-Fe-sEQ" firstAttribute="leading" secondItem="j9z-as-Bwf" secondAttribute="leading" id="FDa-Rf-GZ3"/>
+                            <constraint firstItem="Lv1-Fe-sEQ" firstAttribute="trailing" secondItem="xyY-XS-X24" secondAttribute="trailing" id="P9A-gr-UoB"/>
+                            <constraint firstItem="j9z-as-Bwf" firstAttribute="top" secondItem="xyY-XS-X24" secondAttribute="top" id="Y99-bG-ae7"/>
+                            <constraint firstItem="HTK-vC-Kgk" firstAttribute="top" secondItem="p4T-1X-fnQ" secondAttribute="bottom" constant="28" id="dE8-g0-u9i"/>
+                            <constraint firstItem="w6V-nX-crj" firstAttribute="leading" secondItem="bUR-YU-LPD" secondAttribute="leadingMargin" constant="21" id="ek3-N9-T2Z"/>
+                            <constraint firstItem="cRq-Hz-zUy" firstAttribute="top" secondItem="w6V-nX-crj" secondAttribute="bottom" constant="250" id="pf0-Un-tU0"/>
+                            <constraint firstItem="Lv1-Fe-sEQ" firstAttribute="trailing" secondItem="bUR-YU-LPD" secondAttribute="trailingMargin" id="qmG-q8-RQd"/>
+                            <constraint firstItem="j9z-as-Bwf" firstAttribute="bottom" secondItem="xyY-XS-X24" secondAttribute="bottom" id="w4E-a7-C5E"/>
+                            <constraint firstItem="j9z-as-Bwf" firstAttribute="top" secondItem="Lv1-Fe-sEQ" secondAttribute="bottom" constant="8" symbolic="YES" id="wDH-B5-KuO"/>
+                            <constraint firstItem="HTK-vC-Kgk" firstAttribute="leading" secondItem="bUR-YU-LPD" secondAttribute="leadingMargin" constant="91" id="xZA-Ig-0Kp"/>
+                            <constraint firstItem="xyY-XS-X24" firstAttribute="leading" secondItem="j9z-as-Bwf" secondAttribute="trailing" constant="8" symbolic="YES" id="xhe-kZ-zXO"/>
+                            <constraint firstItem="HTK-vC-Kgk" firstAttribute="centerX" secondItem="w6V-nX-crj" secondAttribute="centerX" id="z69-kz-yBs"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="createAccountButton" destination="w6V-nX-crj" id="sJv-s0-SN9"/>
                         <outlet property="displayPictureImageView" destination="HTK-vC-Kgk" id="ydh-iJ-Vic"/>
                         <outlet property="usernameTextField" destination="xyY-XS-X24" id="WJr-Jl-RTf"/>
                         <segue destination="0Nr-uk-D2A" kind="show" identifier="CreateAccountSuccessSegue" id="Y9u-wz-Va2"/>

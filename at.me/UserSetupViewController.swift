@@ -15,6 +15,7 @@ class UserSetupViewController: UIViewController, AlertController {
 
     @IBOutlet var usernameTextField: UITextField!
     @IBOutlet var displayPictureImageView: UIImageView!
+    @IBOutlet var createAccountButton: UIButton!
     
     // These should be set upon segue by SignUpViewController
     var email: String = ""
@@ -101,11 +102,28 @@ class UserSetupViewController: UIViewController, AlertController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupView()
+        
         // Add gesture recognizer to the profile picture UIImageView
         let imageGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UserSetupViewController.promptImageSelection))
         
         displayPictureImageView.addGestureRecognizer(imageGestureRecognizer)
         displayPictureImageView.isUserInteractionEnabled = true
+    }
+    
+    // ==========================================
+    // ==========================================
+    private func setupView() {
+        
+        // Set background gradient
+        self.view.layer.insertSublayer(self.renderGradientLayer(), at: 0)
+        
+        // Set button rounded edges amd color
+        createAccountButton.layer.cornerRadius = Constants.Radius.regularRadius
+        createAccountButton.backgroundColor = Constants.Colors.primaryAccent
+        
+        displayPictureImageView.layer.masksToBounds = true
+        displayPictureImageView.layer.cornerRadius = displayPictureImageView.frame.width / 2
     }
     
     // ==========================================
