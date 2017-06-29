@@ -588,7 +588,7 @@
                                                     <rect key="frame" x="21" y="10" width="52" height="52"/>
                                                     <color key="backgroundColor" red="0.45098039220000002" green="0.084757633509999999" blue="0.90426400380000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" constant="52" id="RtE-fo-2Ta"/>
+                                                        <constraint firstAttribute="width" secondItem="bSv-Nu-AGp" secondAttribute="height" multiplier="1:1" id="cKc-hl-fLg"/>
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="John Smith" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LWv-K7-TAL">
@@ -600,17 +600,17 @@
                                             </subviews>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
-                                                <constraint firstAttribute="bottomMargin" secondItem="LWv-K7-TAL" secondAttribute="bottom" constant="29.5" id="1A4-JN-8KI"/>
-                                                <constraint firstItem="bSv-Nu-AGp" firstAttribute="top" secondItem="wof-y7-ZYH" secondAttribute="topMargin" constant="2" id="2hq-vA-c3X"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="2dw-Ko-P3j" secondAttribute="bottom" constant="9.5" id="Cj6-Vp-mJ2"/>
-                                                <constraint firstItem="bSv-Nu-AGp" firstAttribute="centerY" secondItem="wof-y7-ZYH" secondAttribute="centerY" id="D50-Jk-NeR"/>
-                                                <constraint firstItem="bSv-Nu-AGp" firstAttribute="leading" secondItem="wof-y7-ZYH" secondAttribute="leadingMargin" constant="13" id="Dun-6E-ESM"/>
-                                                <constraint firstItem="LWv-K7-TAL" firstAttribute="top" secondItem="wof-y7-ZYH" secondAttribute="topMargin" constant="5" id="Zs8-Jq-why"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="LWv-K7-TAL" secondAttribute="trailing" constant="31" id="g4r-27-mn6"/>
-                                                <constraint firstItem="2dw-Ko-P3j" firstAttribute="top" secondItem="wof-y7-ZYH" secondAttribute="topMargin" constant="27" id="gSe-tt-CLn"/>
-                                                <constraint firstItem="LWv-K7-TAL" firstAttribute="leading" secondItem="bSv-Nu-AGp" secondAttribute="trailing" constant="20" id="jFf-ve-n7D"/>
-                                                <constraint firstItem="LWv-K7-TAL" firstAttribute="trailing" secondItem="2dw-Ko-P3j" secondAttribute="trailing" id="w9s-p4-QYJ"/>
-                                                <constraint firstItem="LWv-K7-TAL" firstAttribute="leading" secondItem="2dw-Ko-P3j" secondAttribute="leading" id="zfF-dA-sXf"/>
+                                                <constraint firstItem="LWv-K7-TAL" firstAttribute="top" secondItem="wof-y7-ZYH" secondAttribute="topMargin" constant="5" id="5co-y4-MW9"/>
+                                                <constraint firstItem="LWv-K7-TAL" firstAttribute="leading" secondItem="2dw-Ko-P3j" secondAttribute="leading" id="DFr-og-kak"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="LWv-K7-TAL" secondAttribute="bottom" constant="29.5" id="JnV-XD-h3T"/>
+                                                <constraint firstItem="bSv-Nu-AGp" firstAttribute="leading" secondItem="wof-y7-ZYH" secondAttribute="leadingMargin" constant="13" id="PIA-CU-9zE"/>
+                                                <constraint firstItem="bSv-Nu-AGp" firstAttribute="top" secondItem="wof-y7-ZYH" secondAttribute="topMargin" constant="2" id="Uz5-9K-NaB"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="2dw-Ko-P3j" secondAttribute="bottom" constant="9.5" id="e0Z-te-RYM"/>
+                                                <constraint firstItem="LWv-K7-TAL" firstAttribute="trailing" secondItem="2dw-Ko-P3j" secondAttribute="trailing" id="ikj-bE-fDw"/>
+                                                <constraint firstItem="2dw-Ko-P3j" firstAttribute="top" secondItem="wof-y7-ZYH" secondAttribute="topMargin" constant="27" id="mBe-8K-e05"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="LWv-K7-TAL" secondAttribute="trailing" constant="31" id="o8b-ek-ZJF"/>
+                                                <constraint firstItem="LWv-K7-TAL" firstAttribute="leading" secondItem="bSv-Nu-AGp" secondAttribute="trailing" constant="20" id="riv-C1-iO2"/>
+                                                <constraint firstItem="bSv-Nu-AGp" firstAttribute="centerY" secondItem="wof-y7-ZYH" secondAttribute="centerY" id="xPh-fD-rAr"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

@@ -168,10 +168,10 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
                 // Return a User object with details about user with id 'uidFound'
                 // Completion block will initiate update in table view (results)
                 
-                self.findUserDetail(forUID: uidFound, completion: { (user: UserProfile) in
+                self.findUserDetail(forUID: uidFound, completion: { users in
         
                     // Update results to show all users in array (just one for now)
-                    self.updateResults(users: [user])
+                    self.updateResults(users: users)
                 })
                 
                 
@@ -209,7 +209,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     // MARK: Database Retrieval Functions
     // ==========================================
     // ==========================================
-    private func findUserDetail(forUID uid: String, completion: @escaping (_ user: UserProfile) -> Void) {
+    private func findUserDetail(forUID uid: String, completion: @escaping ([UserProfile]) -> Void) {
         
         // Using userInformation record, lookup using 'uid' as key
         userInformationRef.child(uid).observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
@@ -217,20 +217,22 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
             // TODO: Bug causing crash (displayName)
             // Can't force unwrap snapshot
             
+            var users: [UserProfile] = []
+            
             let fullName = (snapshot.childSnapshot(forPath: "firstName").value as! String) +
                 " " + (snapshot.childSnapshot(forPath: "lastName").value as! String)
             
-            let user = UserProfile(
+            users.append(UserProfile(
                 name: fullName,
                 uid: uid,
                 username: snapshot.childSnapshot(forPath: "username").value as! String
-            )
+            ))
             
             // IMPORTANT: Initiate user specified callback (provided when called)
             // User object must be returned through completion callback to
             // allow observeSingleEvent() time to execute asynchronously!
             
-            completion(user)
+            completion(users)
         })
     }
     
