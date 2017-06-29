@@ -71,9 +71,12 @@ class SignInViewController: UIViewController, AlertController {
     // ==========================================
     override func viewDidAppear(_ animated: Bool) {
         
-//        if let currentUser = Auth.auth().currentUser {
-//            self.processSignIn(forUser: currentUser)
-//        }
+        if let currentUser = Auth.auth().currentUser {
+            print("LOGGED IN ALREADY")
+            
+            //self.performSegue(withIdentifier: Constants.Segues.signInSuccessSegue, sender: nil)
+            //self.processSignIn(forUser: currentUser)
+        }
     }
     
     // ==========================================

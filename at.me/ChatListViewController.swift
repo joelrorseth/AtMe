@@ -43,6 +43,10 @@ class ChatListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+            tableView.backgroundView = emptyView()
+        
+        
         // TODO: Refactor cache clearing into Settings menu option
         // Add code to intelligently delete from cache (come up with nested naming convention?)
         //ImageCache.default.clearDiskCache()
@@ -84,6 +88,40 @@ class ChatListViewController: UITableViewController {
         
         self.navigationItem.leftBarButtonItem = settingsButton
         self.navigationItem.title = "@Me"
+    }
+    
+    // ==========================================
+    // ==========================================
+    private func emptyView() -> UIView {
+        
+        let label = UILabel(frame: CGRect(x: 30, y: tableView.bounds.size.height/3, width: tableView.bounds.size.width - 60, height: tableView.bounds.size.height/13))
+        label.text = "You have no active conversations!"
+        label.font = UIFont(name: "Avenir Next", size: 18)
+        label.textColor = UIColor.darkGray
+        label.textAlignment = NSTextAlignment.center
+        label.heightAnchor.constraint(equalToConstant: self.tableView.frame.height / 8).isActive = true
+        label.widthAnchor.constraint(equalToConstant: self.tableView.frame.width).isActive = true
+        
+        
+        let randomButton = UIButton(type: .custom)
+        randomButton.frame = CGRect(x: 30, y: tableView.bounds.size.height - (tableView.bounds.size.height/13) - 30,
+                                    width: tableView.bounds.size.width - 60,
+                                    height: tableView.bounds.size.height/13)
+        
+        randomButton.titleLabel?.font = UIFont(name: "Avenir Next Demi Bold", size: 18)
+        randomButton.setTitleColor(UIColor.darkGray, for: .normal)
+        randomButton.setTitleColor(UIColor.lightGray, for: .selected)
+        randomButton.setTitle("Chat @Random", for: .normal)
+        randomButton.titleLabel?.textAlignment = NSTextAlignment.center
+        randomButton.layer.cornerRadius = Constants.Radius.regularRadius
+        randomButton.backgroundColor = Constants.Colors.primaryAccent
+        
+        
+        let background = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.size.width, height: tableView.bounds.size.height))
+        background.backgroundColor = UIColor.groupTableViewBackground
+        background.addSubview(randomButton)
+        background.addSubview(label)
+        return background
     }
     
     // ==========================================
