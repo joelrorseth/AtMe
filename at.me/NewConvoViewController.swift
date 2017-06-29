@@ -88,7 +88,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         
         let cell = usersTableView.dequeueReusableCell(withIdentifier: "UserInfoCell", for: indexPath) as! UserInfoCell
         
-        cell.displayName.text = searchResults[0].displayName
+        cell.displayName.text = searchResults[0].name
         cell.usernameLabel.text = searchResults[0].username
         
         cell.uid = searchResults[0].uid
@@ -169,7 +169,6 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
                 // Completion block will initiate update in table view (results)
                 
                 self.findUserDetail(forUID: uidFound, completion: { (user: UserProfile) in
-                    print("AT.ME:: Search found user: \(user.displayName) \(user.uid) \(user.username)")
         
                     // Update results to show all users in array (just one for now)
                     self.updateResults(users: [user])
@@ -218,8 +217,11 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
             // TODO: Bug causing crash (displayName)
             // Can't force unwrap snapshot
             
+            let fullName = (snapshot.childSnapshot(forPath: "firstName").value as! String) +
+                " " + (snapshot.childSnapshot(forPath: "lastName").value as! String)
+            
             let user = UserProfile(
-                displayName: snapshot.childSnapshot(forPath: "displayName").value as! String,
+                name: fullName,
                 uid: uid,
                 username: snapshot.childSnapshot(forPath: "username").value as! String
             )

@@ -10,7 +10,7 @@ import Foundation
 
 public class UserProfile {
     
-    var displayName: String
+    var name: String
     var uid: String
     var username: String
     
@@ -18,8 +18,8 @@ public class UserProfile {
     // All display picture URLs can be composed with the user's UID, thus elimintating need to store this
     //var displayPicture: String
 
-    init(displayName: String, uid: String, username: String) {
-        self.displayName = displayName
+    init(name: String, uid: String, username: String) {
+        self.name = name
         self.uid = uid
         self.username = username
     }
