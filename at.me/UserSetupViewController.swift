@@ -124,6 +124,8 @@ class UserSetupViewController: UIViewController, AlertController {
         
         displayPictureImageView.layer.masksToBounds = true
         displayPictureImageView.layer.cornerRadius = displayPictureImageView.frame.width / 2
+        displayPictureImageView.layer.borderColor = UIColor.white.cgColor
+        displayPictureImageView.layer.borderWidth = 3
     }
     
     // ==========================================
