@@ -70,7 +70,7 @@ class SettingsViewController: UITableViewController, AlertController {
         usernameLabel.text = UserState.currentUser.username
         
         guard let picture = UserState.currentUser.displayPicture else {
-            presentSimpleAlert(title: "Could Not Set Picture", message: Constants.Errors.DisplayPictureMissing, completion: nil)
+            presentSimpleAlert(title: "Could Not Set Picture", message: Constants.Errors.displayPictureMissing, completion: nil)
             return
         }
         

@@ -43,13 +43,8 @@ class ChatListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
         tableView.backgroundView = emptyView()
-        
-        
-        // TODO: Refactor cache clearing into Settings menu option
-        // Add code to intelligently delete from cache (come up with nested naming convention?)
-        //ImageCache.default.clearDiskCache()
+                
         ImageCache.default.calculateDiskCacheSize { (size) in print("Used disk size by bytes: \(size)") }
         
         setupView()

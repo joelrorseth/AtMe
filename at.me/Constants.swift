@@ -16,7 +16,8 @@ struct Constants {
         static let usernameLength = "Your username must be 4 or more valid characters."
         static let usernameTaken = "Your @Me username must be unique, please choose another."
         static let signInBadConfig = "Sign In configuration was unsuccessful. Please try again."
-        static let DisplayPictureMissing = "An error occured while setting your new picture. Please try again."
+        static let displayPictureMissing = "An error occured while setting your new picture. Please try again."
+        static let unestablishedCurrentUser = "An error occured while authorizing. Please try signing in again."
     }
     
     struct Fonts {

@@ -71,11 +71,24 @@ class SignInViewController: UIViewController, AlertController {
     // ==========================================
     override func viewDidAppear(_ animated: Bool) {
         
-        if let currentUser = Auth.auth().currentUser {
-            print("LOGGED IN ALREADY")
+        if let user = Auth.auth().currentUser {
+            print("Auth detected a user already signed into the application")
             
-            //self.performSegue(withIdentifier: Constants.Segues.signInSuccessSegue, sender: nil)
-            //self.processSignIn(forUser: currentUser)
+            // Ask the Authorization Controller to use previously authorized User object to sign in
+            // Will return bool to indicate if this autmatic login could be performed safely
+            
+            authController.establishCurrentUser(user: user, completion: { configured in
+                
+                // Successful configuration allows segue to next view without having to type anything!
+                if (configured) {
+                    self.performSegue(withIdentifier: Constants.Segues.signInSuccessSegue, sender: nil)
+                
+                } else {
+                    
+                    print("Error: Could not obtain information from database about previously authorized user")
+                    self.presentSimpleAlert(title: "Automatic Login Error", message: Constants.Errors.unestablishedCurrentUser, completion: nil)
+                }
+            })
         }
     }
     

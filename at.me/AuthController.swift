@@ -74,25 +74,10 @@ class AuthController {
             if let error = error { completion(error, false); return }
             guard let user = user else { return }
             
-            self.userInformationRef.observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
-                
-                // Important: Must be able to set ALL PROPERTIES of current user, else do not authorize!
-                guard let email = user.email,
-                    let username = snapshot.childSnapshot(forPath: "\(user.uid)/username").value as? String,
-                    let first = snapshot.childSnapshot(forPath: "\(user.uid)/firstName").value as? String,
-                    let last = snapshot.childSnapshot(forPath: "\(user.uid)/lastName").value as? String,
-                    let notificationID = NotificationsController.currentUserNotificationsID()
-                    else { completion(error, false); return }
-                
-                // Set all properties of currentUser now that they have been unwrapped if needed
-                UserState.currentUser.displayPicture = "\(user.uid)/\(user.uid).JPG"
-                UserState.currentUser.email = email
-                UserState.currentUser.name = first + " " + last
-                UserState.currentUser.notificationID = notificationID
-                UserState.currentUser.uid = user.uid
-                UserState.currentUser.username = username
-                
-                completion(error, true)
+            // Call database function to retrieve information about current user, and set the static current user object
+            // The completion callback returns a bool indicating success, so return that value in this completion callback too!
+            self.establishCurrentUser(user: user, completion: { configured in
+                completion(error, configured)
             })
         }
     }
@@ -101,11 +86,11 @@ class AuthController {
     /**
      Asynchronously determines if a given username has been taken in the current database
      - parameters:
-     - username: Username to search for
-     - completion: Callback that returns a Bool, representing whether the username was found or not
-        - found: True if username was found in database, false otherwise
+        - username: Username to search for
+        - completion: Callback that fires when function has finished
+            - found: True if username was found in database, false otherwise
      */
-    public func usernameExists(username: String, completion: @escaping ((Bool) -> ())) {
+    public func usernameExists(username: String, completion: @escaping (Bool) -> ()) {
         
         registeredUsernamesRef.observeSingleEvent(of: DataEventType.value, with: { snapshot in
             
@@ -113,6 +98,41 @@ class AuthController {
             else { completion(false) }
         })
     }
+    
+    
+    /**
+     Retrieve details for current user from the database. User must be authorized already.
+     - parameters:
+        - user: The current user, which should be authorized at this point
+        - completion:Callback that fires when function has finished
+            - configured: A boolean representing if the current user object could be configured (required)
+     */
+    public func establishCurrentUser(user: User, completion: @escaping (Bool) -> ()) {
+        
+        // TODO: Change to take snapshot of only this user's info, use child(uid)
+        // Look up information about the User, set the UserState.currentUser object properties
+        self.userInformationRef.observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
+            
+            // Important: Must be able to set ALL PROPERTIES of current user, else do not authorize!
+            guard let email = user.email,
+                let username = snapshot.childSnapshot(forPath: "\(user.uid)/username").value as? String,
+                let first = snapshot.childSnapshot(forPath: "\(user.uid)/firstName").value as? String,
+                let last = snapshot.childSnapshot(forPath: "\(user.uid)/lastName").value as? String,
+                let notificationID = NotificationsController.currentUserNotificationsID()
+                else { completion(false); return }
+            
+            // Set all properties of currentUser now that they have been unwrapped if needed
+            UserState.currentUser.displayPicture = "\(user.uid)/\(user.uid).JPG"
+            UserState.currentUser.email = email
+            UserState.currentUser.name = first + " " + last
+            UserState.currentUser.notificationID = notificationID
+            UserState.currentUser.uid = user.uid
+            UserState.currentUser.username = username
+            
+            completion(true)
+        })
+    }
+    
     
     
     /**
