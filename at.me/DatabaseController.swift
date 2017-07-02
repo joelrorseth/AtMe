@@ -55,4 +55,28 @@ class DatabaseController {
             completion(localError)
         }
     }
+    
+    // ==========================================
+    // ==========================================
+    public static func clearCachedImages() {
+        
+        // Clear memory cache right away.
+        ImageCache.default.clearMemoryCache()
+        
+        // Clear disk cache. This is an async operation.
+        ImageCache.default.clearDiskCache()
+        
+        // Clean expired or size exceeded disk cache. This is an async operation.
+        ImageCache.default.cleanExpiredDiskCache()
+        
+        print("Image cache cleared from disk and memory")
+        ImageCache.default.calculateDiskCacheSize { (size) in print("Used disk size by bytes: \(size)") }
+    }
+    
+    // TODO:
+    // ==========================================
+    // ==========================================
+    public static func clearCachedConversationData() {
+        
+    }
 }

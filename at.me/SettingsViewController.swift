@@ -211,9 +211,19 @@ extension SettingsViewController {
                 self.performSegue(withIdentifier: "ShowPrompt", sender: self)
             }
         }
+            
+        // Handle cache removal request
+        if (indexPath.section == 3) {
+            if (indexPath.row == 0) {
+                DatabaseController.clearCachedImages()
+            
+            } else if (indexPath.row == 1) {
+                DatabaseController.clearCachedConversationData()
+            }
+        }
         
         // Initiate logout
-        else if (indexPath.section == 3 && indexPath.row == 0) {
+        else if (indexPath.section == 4 && indexPath.row == 0) {
             logout()
         }
     }
