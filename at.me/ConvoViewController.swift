@@ -419,7 +419,7 @@ extension ConvoViewController {
         
         // Normal Text Message
         if let text = message.text {
-            messageSize = sizeForString(text, maxWidth: tableView.bounds.width * 0.7, font: Constants.Fonts.regularFont)
+            messageSize = sizeForString(text, maxWidth: tableView.bounds.width * 0.7, font: Constants.Fonts.regularText)
             messageContentReference = cell.messageTextView
             
             cell.messageTextView.text = message.text
@@ -499,7 +499,7 @@ extension ConvoViewController {
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
         if let text = messages[indexPath.row].text {
-            return sizeForString(text, maxWidth: tableView.bounds.width * 0.7, font: Constants.Fonts.regularFont).height + (2 * MessageCell.verticalBubbleSpacing) + (2 * MessageCell.verticalInsetPadding)
+            return sizeForString(text, maxWidth: tableView.bounds.width * 0.7, font: Constants.Fonts.regularText).height + (2 * MessageCell.verticalBubbleSpacing) + (2 * MessageCell.verticalInsetPadding)
         }
         
         if let _ = messages[indexPath.row].imageURL {

@@ -44,7 +44,7 @@ class ChatListViewController: UITableViewController {
         super.viewDidLoad()
         
         
-            tableView.backgroundView = emptyView()
+        tableView.backgroundView = emptyView()
         
         
         // TODO: Refactor cache clearing into Settings menu option
@@ -73,9 +73,11 @@ class ChatListViewController: UITableViewController {
     private func setupView() {
         
         // Set translucent navigation bar with color
-        let image = UIImage.imageFromColor(color: Constants.Colors.primaryColor)
-        self.navigationController?.navigationBar.setBackgroundImage(image, for: UIBarMetrics.default)
-        self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName : UIColor.white]
+        self.title = "@Me"
+        self.navigationController?.navigationBar.barTintColor = Constants.Colors.primaryColor
+        self.navigationController?.navigationBar.isTranslucent = false
+        self.navigationController?.navigationBar.titleTextAttributes =
+            [NSForegroundColorAttributeName : UIColor.white, NSFontAttributeName: UIFont(name: "AvenirNext-Medium", size: 20)!]
         
         // Set background color appearing behind the cells
         self.tableView.backgroundColor = UIColor.groupTableViewBackground

@@ -36,7 +36,7 @@ class MessageCell: UITableViewCell {
     // Text view for message content
     let messageTextView: UITextView = {
         let textView = UITextView()
-        textView.font = Constants.Fonts.regularFont
+        textView.font = Constants.Fonts.regularText
         textView.isEditable = false
         textView.isScrollEnabled = false
         textView.backgroundColor = UIColor.clear       // Change back to clear

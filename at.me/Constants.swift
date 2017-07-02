@@ -20,7 +20,8 @@ struct Constants {
     }
     
     struct Fonts {
-        static let regularFont = UIFont.systemFont(ofSize: CGFloat(14))
+        static let lightTitle = UIFont(name: "AvenirNext-Medium", size: 20)!
+        static let regularText = UIFont(name: "AvenirNext-Regular", size: 14)!
     }
     
     struct Text {
