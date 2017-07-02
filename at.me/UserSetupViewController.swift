@@ -27,6 +27,11 @@ class UserSetupViewController: UIViewController, AlertController {
     // FIXME: Pass around one AuthController if possible between SignIn and SignUp
     let authController = AuthController()
 
+    // ==========================================
+    // ==========================================
+    @IBAction func didTapBackButton(_ sender: Any) {
+        navigationController?.popViewController(animated: true)
+    }
     
     // TODO: This is kinda a nightmare. Should refactor to try and avoid callback hell
     // However, Firebase doesn't really provide 'completion' callbacks with their own functions :(
@@ -125,7 +130,7 @@ class UserSetupViewController: UIViewController, AlertController {
         displayPictureImageView.layer.masksToBounds = true
         displayPictureImageView.layer.cornerRadius = displayPictureImageView.frame.width / 2
         displayPictureImageView.layer.borderColor = UIColor.white.cgColor
-        displayPictureImageView.layer.borderWidth = 3
+        displayPictureImageView.layer.borderWidth = 1.3
     }
     
     // ==========================================
