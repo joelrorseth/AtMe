@@ -152,9 +152,11 @@ class ChatListViewController: UITableViewController {
         cell.cellBackgroundView.layer.shadowRadius = 2.4
         cell.cellBackgroundView.layer.cornerRadius = Constants.Radius.regularRadius
         
-        // Give display picture a circular mask
-        cell.userDisplayImageView.layer.masksToBounds = true;
+        // Give display picture and new message indicator a circular mask
+        cell.userDisplayImageView.layer.masksToBounds = true
+        cell.newMessageIndicator.layer.masksToBounds = true
         cell.userDisplayImageView.layer.cornerRadius = cell.userDisplayImageView.frame.width / 2
+        cell.newMessageIndicator.layer.cornerRadius = cell.newMessageIndicator.frame.width / 2
     }
     
     // MARK: Loading

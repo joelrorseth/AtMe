@@ -17,6 +17,7 @@ class ConversationCell: UITableViewCell {
     @IBOutlet weak var recentMessageLabel: UILabel!
     @IBOutlet weak var userDisplayImageView: UIImageView!
     @IBOutlet weak var recentMessageTimeStampLabel: UILabel!
+    @IBOutlet var newMessageIndicator: UIView!
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
