@@ -10,14 +10,14 @@ import Foundation
 
 public class Conversation {
     
-    var convoId: String
-    var otherUsername: String
+    var convoID: String
+    var name: String
     var newestMessage: String
     var newestMessageTimestamp: String
     
-    init(convoId: String, otherUsername: String, newestMessage: String, newestMessageTimestamp: String) {
-        self.convoId = convoId
-        self.otherUsername = otherUsername
+    init(convoID: String, name: String, newestMessage: String, newestMessageTimestamp: String) {
+        self.convoID = convoID
+        self.name = name
         self.newestMessage = newestMessage
         self.newestMessageTimestamp = newestMessageTimestamp
     }

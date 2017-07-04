@@ -33,7 +33,6 @@ class ChatListViewController: UITableViewController {
     }()
     
     // TODO: Sort conversations newest at the top
-    // TODO: Store timestamp with more precision (NSDate?)
     
     
     
@@ -51,7 +50,7 @@ class ChatListViewController: UITableViewController {
         self.setNeedsStatusBarAppearanceUpdate()
         
         // Start the observers
-        observeConversations()
+        observeUserConversations()
     }
     
     // ==========================================
@@ -159,11 +158,11 @@ class ChatListViewController: UITableViewController {
         cell.newMessageIndicator.layer.cornerRadius = cell.newMessageIndicator.frame.width / 2
     }
     
-    // MARK: Loading
+    
+    // MARK: Observers
     // ==========================================
     // ==========================================
-    private func observeConversations() {
-        // FIXME: Exiting chat to this screen does not update newest message (fix observer?)
+    private func observeUserConversations() {
         
         let uid = UserState.currentUser.uid
         
@@ -172,76 +171,73 @@ class ChatListViewController: UITableViewController {
         userConversationListRef.child(uid).observe(DataEventType.childAdded, with: { snapshot in
             
             let otherUsername = snapshot.key
-            if let convoId = snapshot.value as? String {
+            let message = "This is the beginning of your conversation with \(otherUsername)"
+            
+            if let convoID = snapshot.value as? String {
                 
-                self.addConversation(convoId: convoId, with: otherUsername)
+                // Insert a blank conversation into the data source, start observing the conversation record
+                let conversation = Conversation(convoID: convoID, name: otherUsername, newestMessage: message, newestMessageTimestamp: "")
+                self.conversations.append(conversation)
+                
+                self.insertConversationCell(conversation: conversation)
+                self.observeConversation(convoId: convoID, with: otherUsername)
             }
         })
     }
     
+    
     // ==========================================
     // ==========================================
-    private func addConversation(convoId: String, with username: String) {
+    private func observeConversation(convoId: String, with username: String) {
         
-        self.conversationsRef.child("\(convoId)/").observeSingleEvent(of: .value, with: { (snapshot) in
+        // Retrieve a snapshot for the most recent message record in this conversation
+        conversationsRef.child("\(convoId)/messages").queryLimited(toLast: 1).observe(DataEventType.childAdded, with: { snapshot in
             
-            // TODO: Important: Delay showing conversations from cache until we know it still exists in Firebase
-            // If convo was deleted and fetches from cache, this is the first line it will hit and crash trying to access!!
-        
-            if ((snapshot.childSnapshot(forPath: "messagesCount").value as! Int) == 0) {
-                // Convo has no messages
-                
-                // Insert placeholder to prompt user to start the conversation
-                self.insertConversationCell(conversation:
-                    Conversation(convoId: convoId,
-                                 otherUsername: username,
-                                 newestMessage: "This is the beginning of your conversation with \(username)",
-                                 newestMessageTimestamp: ""))
-                
-            } else {
-                // Convo has messages
-                
-                // TODO: Possibly switch design to store a most recent message in the convo record
-                // This would avoid querying every time, but would take more space and work require
-                // updating this every time a message is ever sent
-                
-                // Retrieve a snapshot for the most recent message record in this conversation
-                self.conversationsRef.child("\(convoId)/messages").queryLimited(toLast: 1)
-                    .observe(DataEventType.childAdded, with: { (snapshot) in
+            var messageTimestamp: String = ""
+            
+            if let interval = snapshot.childSnapshot(forPath: "timestamp").value as? Double {
+                let timestamp = Date.init(timeIntervalSince1970: interval)
+                messageTimestamp = self.dateFormatter.string(from: timestamp)
+            }
+            
+            // Extract the new message, set as the current convo's newest message!
+            // If picture message, don't load, but let user know it was a picture message
+            
+            var message = "This is the beginning of your conversation with \(username)"
+            
+            if let text = snapshot.childSnapshot(forPath: "text").value as? String { message = text }
+            else if let _ = snapshot.childSnapshot(forPath: "imageURL").value { message = "Picture Message" }
+
+            
+            // Go through every visible cell, determine if a cell is currently displayed for this conversation
+            if let cells = self.tableView.visibleCells as? [ConversationCell] {
+                for cell in cells {
+                    
+                    // If found, update the most recent message and efficiently move the cell to the top
+                    if (cell.nameLabel.text! == username) {
                         
-                        let timestamp = Date.init(timeIntervalSince1970: snapshot.childSnapshot(forPath: "timestamp").value as! Double)
-                        //let timestamp = snapshot.childSnapshot(forPath: "timestamp").value as! String
-                        var message = "This is the beginning of your conversation with \(username)"
+                        // Obtain index path where this convo is being shown as a cell
+                        // We are maintaining the order of the data source (coversations), so we can safely assume that
+                        // a conversaton cell at index k corresponds to conversations[k] !!
                         
-                        // Extract the new message, set as the current convo's newest message!
-                        // If picture message, don't load, but let user know it was a picture message
+                        if let currentIndexPath = self.tableView.indexPath(for: cell) {
+                            self.updateRecentMessage(at: currentIndexPath.row, message: message, timestamp: messageTimestamp)
+                            self.moveConversation(from: currentIndexPath, to: IndexPath(row: 0, section: 0))
                         
-                        if let text = snapshot.childSnapshot(forPath: "text").value as? String { message = text }
-                        else if let _ = snapshot.childSnapshot(forPath: "imageURL").value { message = "Picture Message" }
-                        
-                        
-                        // If conversation has already been created, simply update message displayed instead of making new convo
-                        // TODO: Find better way
-                        
-                        for convo in self.conversations {
-                            if (convo.otherUsername == username) {
-                                convo.newestMessage = message
-                                convo.newestMessageTimestamp = self.dateFormatter.string(from: timestamp)
-                                
-                                self.tableView.reloadData()
-                                return
-                            }
-                        }
-                        
-                        self.insertConversationCell(conversation:
-                            Conversation(convoId: convoId,
-                                         otherUsername: username,
-                                         newestMessage: message,
-                                         newestMessageTimestamp: self.dateFormatter.string(from: timestamp)))
-                        
-                    })
+                        } else { print("Error: Couldn't find location of cell for convo \(convoId)") }
+                    } else { print("Error: No match") }
+                }
             }
         })
+    }
+    
+    
+    // ==========================================
+    // ==========================================
+    func updateRecentMessage(at index: Int, message: String, timestamp: String) {
+        
+        conversations[index].newestMessage = message
+        conversations[index].newestMessageTimestamp = timestamp
     }
     
     
@@ -259,7 +255,7 @@ class ChatListViewController: UITableViewController {
             // Pass along convoId of selected conversation
             
             if let indexPath = tableView.indexPathForSelectedRow {
-                let selectedConvoId = conversations[indexPath.row].convoId
+                let selectedConvoId = conversations[indexPath.row].convoID
                 
                 //print("AT.ME:: Setting messagesRef from ChatListViewController!")
                 cvc.messagesRef = conversationsRef.child("\(selectedConvoId)/messages")
@@ -303,13 +299,31 @@ extension ChatListViewController {
     // ==========================================
     func insertConversationCell(conversation: Conversation) {
         
-        // Insert the object into the data source
-        self.conversations.append(conversation)
         
         // Efficiently update by updating / inserting only the cells that need to be
         self.tableView.beginUpdates()
         self.tableView.insertRows(at: [IndexPath(row: self.conversations.count - 1, section: 0)], with: .left)
         self.tableView.endUpdates()
+    }
+    
+    // ==========================================
+    // ==========================================
+    func moveConversation(from source: IndexPath, to destination: IndexPath) {
+        
+        // First update data source by removing element at source index, placing at the front
+        let element = conversations.remove(at: source.row)
+        conversations.insert(element, at: 0)
+        
+        // TODO: In future update, iOS 11 introduces and recommends performBatchUpdates() for UITableView
+        // Update the actual table view dynamically, by moving the cells
+        
+        self.tableView.beginUpdates()
+        self.tableView.moveRow(at: source, to: destination)
+        self.tableView.endUpdates()
+        
+        // Once cell has moved from source to destination, update the cell contents
+        // This is because we changed the message for that cell earlier and didn't refresh anything
+        self.tableView.reloadRows(at: [destination], with: UITableViewRowAnimation.automatic)
     }
     
     // ==========================================
@@ -336,9 +350,9 @@ extension ChatListViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChatListCell", for: indexPath) as! ConversationCell
         
         formatConversationCell(cell: cell)
-        
+        print("CellForRow() found message \"\(conversations[indexPath.row].newestMessage) at \(indexPath.row)")
         // Update the sender, newest message, and timestamp from this conversation
-        cell.nameLabel.text = conversations[indexPath.row].otherUsername
+        cell.nameLabel.text = conversations[indexPath.row].name
         cell.recentMessageLabel.text = conversations[indexPath.row].newestMessage
         cell.recentMessageTimeStampLabel.text = conversations[indexPath.row].newestMessageTimestamp
         
@@ -348,7 +362,7 @@ extension ChatListViewController {
         
         rootDatabaseRef.observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
             
-            if let uid = snapshot.childSnapshot(forPath: "registeredUsernames/\(self.conversations[indexPath.row].otherUsername)").value as? String {
+            if let uid = snapshot.childSnapshot(forPath: "registeredUsernames/\(self.conversations[indexPath.row].name)").value as? String {
                 if let _ = snapshot.childSnapshot(forPath: "userInformation/\(uid)/displayPicture").value as? String {
                     
                     DatabaseController.downloadImage(into: cell.userDisplayImageView, from: self.userDisplayPictureRef.child("\(uid)/\(uid).JPG") , completion: { (error) in
@@ -387,10 +401,10 @@ extension ChatListViewController {
             // Update records in Firebase
             // Delete current user's reference to convo, then decrement number of members in convo
             
-            userConversationListRef.child(UserState.currentUser.uid).child(conversations[indexPath.row].otherUsername).removeValue()
+            userConversationListRef.child(UserState.currentUser.uid).child(conversations[indexPath.row].name).removeValue()
             
             // Extract conversation unique id and Firebase ref to activeMembers record
-            let convoId = conversations[indexPath.row].convoId
+            let convoId = conversations[indexPath.row].convoID
             let activeMembersRef = conversationsRef.child("\(convoId)/activeMembers")
             
             
