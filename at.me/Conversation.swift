@@ -14,11 +14,16 @@ public class Conversation {
     var name: String
     var newestMessage: String
     var newestMessageTimestamp: String
+    var unseenMessages: Bool
     
-    init(convoID: String, name: String, newestMessage: String, newestMessageTimestamp: String) {
+    // TODO: Refactor to store date instead of string
+    var timestamp: Date!
+    
+    init(convoID: String, name: String, newestMessage: String, newestMessageTimestamp: String, unseenMessages: Bool) {
         self.convoID = convoID
         self.name = name
         self.newestMessage = newestMessage
         self.newestMessageTimestamp = newestMessageTimestamp
+        self.unseenMessages = unseenMessages
     }
 }

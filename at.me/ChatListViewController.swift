@@ -23,6 +23,7 @@ class ChatListViewController: UITableViewController {
     
     // Local Conversation cache
     var conversations: [Conversation] = []
+    var lastSeen: [String : Date] = [:]
     
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -32,9 +33,8 @@ class ChatListViewController: UITableViewController {
         return formatter
     }()
     
-    // TODO: Sort conversations newest at the top
     
-    
+    // FIXME: Sort conversations newest at the top
     
     // MARK: View
     // ==========================================
@@ -43,14 +43,24 @@ class ChatListViewController: UITableViewController {
         super.viewDidLoad()
         
         tableView.backgroundView = emptyView()
-                
-        ImageCache.default.calculateDiskCacheSize { (size) in print("Used disk size by bytes: \(size)") }
         
         setupView()
         self.setNeedsStatusBarAppearanceUpdate()
         
         // Start the observers
         observeUserConversations()
+    }
+    
+    // ==========================================
+    // ==========================================
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // FIXME: Find better way to check lastSeen array for the selected cell when returning
+        // from ConvoViewController. Somehow must reload only that selected cell upon reentry or
+        // while ConvoViewController is still being shown (use observer here)
+        
+        tableView.reloadData()
     }
     
     // ==========================================
@@ -176,11 +186,13 @@ class ChatListViewController: UITableViewController {
             if let convoID = snapshot.value as? String {
                 
                 // Insert a blank conversation into the data source, start observing the conversation record
-                let conversation = Conversation(convoID: convoID, name: otherUsername, newestMessage: message, newestMessageTimestamp: "")
+                let conversation = Conversation(convoID: convoID, name: otherUsername, newestMessage: message, newestMessageTimestamp: "", unseenMessages: false)
                 self.conversations.append(conversation)
                 
+                // Insert this conversation as a cell into table view, start observing lastSeen and messages
                 self.insertConversationCell(conversation: conversation)
-                self.observeConversation(convoId: convoID, with: otherUsername)
+                self.observeLastSeen(convoID: convoID)
+                self.observeMessages(convoId: convoID, with: otherUsername)
             }
         })
     }
@@ -188,16 +200,23 @@ class ChatListViewController: UITableViewController {
     
     // ==========================================
     // ==========================================
-    private func observeConversation(convoId: String, with username: String) {
+    private func observeMessages(convoId: String, with username: String) {
         
         // Retrieve a snapshot for the most recent message record in this conversation
         conversationsRef.child("\(convoId)/messages").queryLimited(toLast: 1).observe(DataEventType.childAdded, with: { snapshot in
             
-            var messageTimestamp: String = ""
+            var unseenMessages = false
+            var timestamp: Date = Date()
             
             if let interval = snapshot.childSnapshot(forPath: "timestamp").value as? Double {
-                let timestamp = Date.init(timeIntervalSince1970: interval)
-                messageTimestamp = self.dateFormatter.string(from: timestamp)
+                timestamp = Date.init(timeIntervalSince1970: interval)
+                
+                // If this message was sent after last time user viewed conversation, mark unseen as true
+                // This will be used to set the unseen messages indicator in the conversation cell
+                
+                if let lastDateSeen = self.lastSeen[convoId] {
+                    if lastDateSeen < timestamp { unseenMessages = true }
+                }
             }
             
             // Extract the new message, set as the current convo's newest message!
@@ -221,7 +240,7 @@ class ChatListViewController: UITableViewController {
                         // a conversaton cell at index k corresponds to conversations[k] !!
                         
                         if let currentIndexPath = self.tableView.indexPath(for: cell) {
-                            self.updateRecentMessage(at: currentIndexPath.row, message: message, timestamp: messageTimestamp)
+                            self.updateRecentMessage(at: currentIndexPath.row, message: message, timestamp: timestamp, unseen: unseenMessages)
                             self.moveConversation(from: currentIndexPath, to: IndexPath(row: 0, section: 0))
                         
                         } else { print("Error: Couldn't find location of cell for convo \(convoId)") }
@@ -231,13 +250,28 @@ class ChatListViewController: UITableViewController {
         })
     }
     
+    // ==========================================
+    // ==========================================
+    private func observeLastSeen(convoID: String) {
+        
+        conversationsRef.child("\(convoID)/lastSeen/\(UserState.currentUser.uid)").observe(DataEventType.value, with: { snapshot in
+
+            if let interval = snapshot.value as? Double {
+                self.lastSeen[convoID] = Date.init(timeIntervalSince1970: interval)
+            }
+        })
+    }
+    
     
     // ==========================================
     // ==========================================
-    func updateRecentMessage(at index: Int, message: String, timestamp: String) {
+    func updateRecentMessage(at index: Int, message: String, timestamp: Date, unseen: Bool) {
         
+        // Set properties of the conversation, specifically the ones we need to show in cell!
         conversations[index].newestMessage = message
-        conversations[index].newestMessageTimestamp = timestamp
+        conversations[index].timestamp = timestamp
+        conversations[index].newestMessageTimestamp = dateFormatter.string(from: timestamp)
+        conversations[index].unseenMessages = unseen
     }
     
     
@@ -257,7 +291,9 @@ class ChatListViewController: UITableViewController {
             if let indexPath = tableView.indexPathForSelectedRow {
                 let selectedConvoId = conversations[indexPath.row].convoID
                 
-                //print("AT.ME:: Setting messagesRef from ChatListViewController!")
+                // Using the index of selected cell, remove (hide) new message indicator from the cell!
+                (tableView.cellForRow(at: indexPath) as! ConversationCell).newMessageIndicator.alpha = 0
+                
                 cvc.messagesRef = conversationsRef.child("\(selectedConvoId)/messages")
                 cvc.convoId = selectedConvoId
                 
@@ -299,7 +335,6 @@ extension ChatListViewController {
     // ==========================================
     func insertConversationCell(conversation: Conversation) {
         
-        
         // Efficiently update by updating / inserting only the cells that need to be
         self.tableView.beginUpdates()
         self.tableView.insertRows(at: [IndexPath(row: self.conversations.count - 1, section: 0)], with: .left)
@@ -323,7 +358,7 @@ extension ChatListViewController {
         
         // Once cell has moved from source to destination, update the cell contents
         // This is because we changed the message for that cell earlier and didn't refresh anything
-        self.tableView.reloadRows(at: [destination], with: UITableViewRowAnimation.automatic)
+        self.tableView.reloadRows(at: [destination], with: UITableViewRowAnimation.none)
     }
     
     // ==========================================
@@ -350,12 +385,15 @@ extension ChatListViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChatListCell", for: indexPath) as! ConversationCell
         
         formatConversationCell(cell: cell)
-        print("CellForRow() found message \"\(conversations[indexPath.row].newestMessage) at \(indexPath.row)")
+        
         // Update the sender, newest message, and timestamp from this conversation
         cell.nameLabel.text = conversations[indexPath.row].name
         cell.recentMessageLabel.text = conversations[indexPath.row].newestMessage
         cell.recentMessageTimeStampLabel.text = conversations[indexPath.row].newestMessageTimestamp
         
+        if let seen = lastSeen[conversations[indexPath.row].convoID] {
+            cell.newMessageIndicator.alpha = (seen < conversations[indexPath.row].timestamp) ? 1 : 0
+        }
         
         // TODO: Refactor Conversation class to hold the uid of the other user
         // This way, don't need to lookup uid and can access storage reference right away

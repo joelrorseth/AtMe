@@ -124,22 +124,24 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         if let selectedUserUid = cell.uid, let selectedUserUsername = cell.username {
             
             // Generate unique conversation identifier
-            let convoId = conversationsRef.childByAutoId().key
+            let convoID = conversationsRef.childByAutoId().key
             
             // Establish the database record for this conversation
             userInformationRef.observe(DataEventType.value, with: { snapshot in
                 
                 // Store list of member uid's and their notificationIDs in conversation for quick lookup
                 let selectedUserNotificationID = snapshot.childSnapshot(forPath: "\(selectedUserUid)/notificationID").value as? String
-                let membersDictionary: [String: String] = [UserState.currentUser.uid: UserState.currentUser.notificationID, selectedUserUid: selectedUserNotificationID!]
+                let members = [UserState.currentUser.uid: UserState.currentUser.notificationID, selectedUserUid: selectedUserNotificationID!]
+                let lastSeen = [UserState.currentUser.uid: Date().timeIntervalSince1970, selectedUserUid: Date().timeIntervalSinceNow]
                 
-                self.conversationsRef.child("\(convoId)/creator").setValue(UserState.currentUser.username)
-                self.conversationsRef.child("\(convoId)/activeMembers").setValue(membersDictionary)
-                self.conversationsRef.child("\(convoId)/messagesCount").setValue(0)
+                self.conversationsRef.child("\(convoID)/creator").setValue(UserState.currentUser.username)
+                self.conversationsRef.child("\(convoID)/activeMembers").setValue(members)
+                self.conversationsRef.child("\(convoID)/lastSeen").setValue(lastSeen)
+                self.conversationsRef.child("\(convoID)/messagesCount").setValue(0)
                 
                 // For both users separately, record the convoId in a record identified by other user's username
-                self.userConversationListRef.child(UserState.currentUser.uid).child(selectedUserUsername).setValue(convoId)
-                self.userConversationListRef.child(selectedUserUid).child(UserState.currentUser.username).setValue(convoId)
+                self.userConversationListRef.child(UserState.currentUser.uid).child(selectedUserUsername).setValue(convoID)
+                self.userConversationListRef.child(selectedUserUid).child(UserState.currentUser.username).setValue(convoID)
             })
             
             

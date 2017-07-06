@@ -20,9 +20,9 @@ class NotificationsController {
         
         OneSignal.postNotification(jsonMessage, onSuccess: { _ in
             // TODO: Implement callback / UI update to show "delivered"
-            print("Delivered")
+            
         }, onFailure: { _ in
-            print("Could not be delivered")
+            print("Notification could not be delivered")
         })
     }
     

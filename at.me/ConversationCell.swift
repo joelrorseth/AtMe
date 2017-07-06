@@ -10,8 +10,6 @@ import UIKit
 
 class ConversationCell: UITableViewCell {
     
-    var convoId: String!
-    
     @IBOutlet weak var cellBackgroundView: UIView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var recentMessageLabel: UILabel!

@@ -57,6 +57,8 @@ class ConvoViewController: UITableViewController, AlertController {
     var messages: [Message] = []
     var notificationIDs: [String] = []
     
+    
+    // FIXME: This needs to be refactored, along with prepareForSegue in ChatList
     var convoId: String = "" {
         didSet {
             messagesRef = Database.database().reference().child("conversations/\(convoId)/messages/")
@@ -146,10 +148,6 @@ class ConvoViewController: UITableViewController, AlertController {
         self.tableView.backgroundColor = UIColor.groupTableViewBackground
         self.tableView.allowsSelection = false
         
-        // Set some properties of UI elements
-        //messageTextField.borderStyle = .none
-        //tableView?.register(MessageCell.self, forCellWithReuseIdentifier: Constants.Storyboard.messageId)
-        
         addKeyboardObservers()
     }
     
@@ -162,48 +160,52 @@ class ConvoViewController: UITableViewController, AlertController {
         // Write the message to Firebase
         let randomMessageId = messagesRef!.childByAutoId().key
         
-        // TODO: Refactor convoId to be an optional
-        // FIXME: Transaction may cause bug. More tests required
         
-        // Increment messages counter using a Firebase Transaction
-        // Transactions are a concurrently safe method of updating values in database
+        // MARK: Removal - Not really needed anymore and seems to be causing a bug where
+        // messages are dropped randomly and observers stop working. This will also mean
+        // removing all references to messagesCount in other places
         
-        conversationsRef.child(convoId).runTransactionBlock({ (currentData: MutableData) -> TransactionResult in
-            
-            if var conversationRecord = currentData.value as? [String : AnyObject] {
-        
-                // Retrieve current message count, write it back incremented by one
-                let currentMessagesCount = conversationRecord["messagesCount"] as? Int ?? 0
-                conversationRecord["messagesCount"] = (currentMessagesCount + 1) as AnyObject?
-                
-                // Set value and report Transaction success
-                currentData.value = conversationRecord
-            }
-            
-            return TransactionResult.success(withValue: currentData)
-        })
-        
-        //let incrementedValue = (snapshot.childSnapshot(forPath: "messagesCount").value as! Int) + 1
-        //Database.database().reference(withPath: "conversations/\(self.convoId)/messagesCount").setValue(incrementedValue)
+//        // Increment messages counter using a Firebase Transaction
+//        // Transactions are a concurrently safe method of updating values in database
+//
+//        conversationsRef.child(convoId).runTransactionBlock({ (currentData: MutableData) -> TransactionResult in
+//            
+//            if var conversationRecord = currentData.value as? [String : AnyObject] {
+//        
+//                // Retrieve current message count, write it back incremented by one
+//                let currentMessagesCount = conversationRecord["messagesCount"] as? Int ?? 0
+//                conversationRecord["messagesCount"] = (currentMessagesCount + 1) as AnyObject?
+//                
+//                // Set value and report Transaction success
+//                currentData.value = conversationRecord
+//            }
+//            
+//            return TransactionResult.success(withValue: currentData)
+//        })
+
         
         
         // Each message record (uniquely identified) will record sender and message text
         if let text = message.text {
-            self.messagesRef?.child(randomMessageId).setValue(
+            messagesRef?.child(randomMessageId).setValue(
                 ["sender" : message.sender, "text" : text, "timestamp" : message.timestamp.timeIntervalSince1970]
             )
             
         } else if let imageURL = message.imageURL {
-            self.messagesRef?.child(randomMessageId).setValue(
+            messagesRef?.child(randomMessageId).setValue(
                 ["imageURL": imageURL, "sender" : message.sender, "timestamp" : message.timestamp.timeIntervalSince1970]
             )
         }
         
-
+        
+        // Set timestamp for most recent conversation viewing
+        // This is required to later determine if messages loaded have already been seen
+        updateLastSeenTimestamp(convoID: convoId)
+        
         // Ask NotificationController to send this message as a push notification
-        for id in notificationIDs {
-            print("Sending to \(id)")
-            NotificationsController.send(to: id, title: message.sender, message: message.text ?? "Picture message")
+        
+        for notificationID in notificationIDs {
+            NotificationsController.send(to: notificationID, title: message.sender, message: message.text ?? "Picture message")
         }
         
         // TODO: Look into solution to avoid loading sent messages from server (no point in that?)
@@ -227,6 +229,14 @@ class ConvoViewController: UITableViewController, AlertController {
         self.tableView.scrollToRow(at: IndexPath.init(row: messages.count - 1, section: 0) , at: .bottom, animated: true)
     }
     
+    // ==========================================
+    // ==========================================
+    private func updateLastSeenTimestamp(convoID: String) {
+        
+        conversationsRef.child("\(convoID)/lastSeen/\(UserState.currentUser.uid)").setValue(Date().timeIntervalSince1970)
+    }
+    
+    
     // MARK: Observers
     // ==========================================
     // ==========================================
@@ -236,32 +246,29 @@ class ConvoViewController: UITableViewController, AlertController {
         let messagesQuery = messagesRef!.queryLimited(toLast: 25)
         
         // This closure is triggered once for every existing record found, and for each record added here
-        newMessageRefHandle = messagesQuery.observe(DataEventType.childAdded, with: { (snapshot) in
-            
-            //print("AT.ME:: Incoming message! observeReceivedMessages() called!")
-            
+        newMessageRefHandle = messagesQuery.observe(DataEventType.childAdded, with: { snapshot in
+                        
             var imageURL: String?
             var text: String?
             
             // Unwrap picture message url or text message, can and must always be only one or the other
-            if let imageURLValue = snapshot.childSnapshot(forPath: "imageURL").value as? String {
-                imageURL = imageURLValue
-            }
-            
-            if let textValue = snapshot.childSnapshot(forPath: "text").value as? String {
-                text = textValue
-            }
+            if let imageURLValue = snapshot.childSnapshot(forPath: "imageURL").value as? String { imageURL = imageURLValue }
+            if let textValue = snapshot.childSnapshot(forPath: "text").value as? String { text = textValue }
             
             let sender = snapshot.childSnapshot(forPath: "sender").value as! String
             let timestamp = Date.init(timeIntervalSince1970: snapshot.childSnapshot(forPath: "timestamp").value as! Double)
+            
+            // Because a new message has arrived, update the last message seen timestamp!
+            self.updateLastSeenTimestamp(convoID: self.convoId)
             
             // Add message to local messages cache
             self.addMessage(message: Message(imageURL: imageURL, sender: sender, text: text, timestamp: timestamp))
         })
     }
     
+    
     /**
-     Observes all existing and new notifications IDs for the current conversation.
+     Observes all existing and new UIDs and notification IDs for the current conversation.
      */
     private func observeNotificationIDs() {
         
@@ -269,14 +276,19 @@ class ConvoViewController: UITableViewController, AlertController {
             
             // Each member in activeMembers stores key-value pairs, specifically  (UID: notificationID) for active users
             // Firebase will take snapshot of each existing and new notificationID, store in property for push notifications later
+            
             if let notificationID = snapshot.value as? String {
                 
                 // Avoid adding current user to notification list. We do not want notifications for our own messages
-                if (notificationID != UserState.currentUser.notificationID) { self.notificationIDs.append(notificationID) }
+                if (notificationID != UserState.currentUser.notificationID) {
+                    self.notificationIDs.append(notificationID)
+                }
                 
             } else { print("Error: Active member could not be converted into tuple during notificationID loading") }
         })
     }
+    
+    
     
     
     
