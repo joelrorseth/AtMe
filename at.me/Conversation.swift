@@ -18,6 +18,9 @@ public class Conversation {
     
     // TODO: Refactor to store date instead of string
     var timestamp: Date!
+    var lastSeenByCurrentUser: Date!
+    var memberUIDs = Set<String>()
+    var memberNotificationIDs = Set<String>()
     
     init(convoID: String, name: String, newestMessage: String, newestMessageTimestamp: String, unseenMessages: Bool) {
         self.convoID = convoID

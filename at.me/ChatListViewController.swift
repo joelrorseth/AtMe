@@ -23,7 +23,10 @@ class ChatListViewController: UITableViewController {
     
     // Local Conversation cache
     var conversations: [Conversation] = []
-    var lastSeen: [String : Date] = [:]
+    var conversationIndexes: [String : Int] = [:]
+    
+    //var convoLastSeen: [String : Date] = [:]
+    //var memberNotificationIDsByConvo = [String : [String: String]]()
     
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -152,11 +155,15 @@ class ChatListViewController: UITableViewController {
                 
                 // Insert a blank conversation into the data source, start observing the conversation record
                 let conversation = Conversation(convoID: convoID, name: otherUsername, newestMessage: message, newestMessageTimestamp: "", unseenMessages: false)
-                self.conversations.append(conversation)
                 
-                // Insert this conversation as a cell into table view, start observing lastSeen and messages
-                self.insertConversationCell(conversation: conversation)
+                // Insert this conversation into data source and into table view
+                self.insertConversation(conversation: conversation)
+                
+                // Start observing other properties of each conversation
+                // These observers will update the corresponding conversation objects with more info asynchronously
+                
                 self.observeLastSeen(convoID: convoID)
+                self.observeMembers(convoID: convoID)
                 self.observeMessages(convoId: convoID, with: otherUsername)
             }
         })
@@ -179,7 +186,7 @@ class ChatListViewController: UITableViewController {
                 // If this message was sent after last time user viewed conversation, mark unseen as true
                 // This will be used to set the unseen messages indicator in the conversation cell
                 
-                if let lastDateSeen = self.lastSeen[convoId] {
+                if let lastDateSeen = self.conversations[self.conversationIndexes[convoId]!].lastSeenByCurrentUser {
                     if lastDateSeen < timestamp { unseenMessages = true }
                 }
             }
@@ -217,13 +224,44 @@ class ChatListViewController: UITableViewController {
     
     // ==========================================
     // ==========================================
+    private func observeMembers(convoID: String) {
+        
+        conversationsRef.child("\(convoID)/activeMembers/").observe(DataEventType.childAdded, with: { snapshot in
+            
+            let uid = snapshot.key
+            
+            // Extract the notification id of the user, but only add to local dictionary it that usr is not current user
+            // We only need the uid or notification id for other users (eg. quick way to push notifications to all users)
+            
+            if let notificationID = snapshot.value as? String, let index = self.conversationIndexes[convoID] {
+                if (uid != UserState.currentUser.uid) {
+                    
+                    // Insert uid and notification id's into sets, reload corresponding row to update cell with info
+                    self.conversations[index].memberUIDs.insert(uid)
+                    self.conversations[index].memberNotificationIDs.insert(notificationID)
+                    self.reloadConversation(at: index)
+                }
+                
+            } else { print("Error: Could not parse observer value for \'activeMembers\'") }
+        })
+    }
+    
+    // ==========================================
+    // ==========================================
     private func observeLastSeen(convoID: String) {
         
         conversationsRef.child("\(convoID)/lastSeen/\(UserState.currentUser.uid)").observe(DataEventType.value, with: { snapshot in
 
-            if let interval = snapshot.value as? Double {
-                self.lastSeen[convoID] = Date.init(timeIntervalSince1970: interval)
-            }
+            // Extract the recorded timestamp of the current user's last visit to this conversation
+            // This will change often, and must be updated to determine if we should display new message indicator
+            
+            if let interval = snapshot.value as? Double, let index = self.conversationIndexes[convoID] {
+            
+                // Store this date directly in the conversation, reload cell to update with new info
+                self.conversations[index].lastSeenByCurrentUser = Date(timeIntervalSince1970: interval)
+                self.reloadConversation(at: index)
+            
+            } else { print("Error: Could not parse observer value for \'lastSeen\'") }
         })
     }
     
@@ -308,13 +346,18 @@ extension ChatListViewController {
     
     // ==========================================
     // ==========================================
-    func insertConversationCell(conversation: Conversation) {
+    func insertConversation(conversation: Conversation) {
+        
+        // Append conversation to data source, maintain the index lookup
+        conversationIndexes[conversation.convoID] = self.conversations.count
+        conversations.append(conversation)
         
         // Efficiently update by updating / inserting only the cells that need to be
         self.tableView.beginUpdates()
         self.tableView.insertRows(at: [IndexPath(row: self.conversations.count - 1, section: 0)], with: .left)
         self.tableView.endUpdates()
     }
+
     
     // ==========================================
     // ==========================================
@@ -323,6 +366,14 @@ extension ChatListViewController {
         // First update data source by removing element at source index, placing at the front
         let element = conversations.remove(at: source.row)
         conversations.insert(element, at: 0)
+        
+        // Go through every conversation, use their convoIDs to increment index of all other
+        // conversations except one we moved to top. This is necessarry to maintain the index lookup
+        
+        for convo in conversations {
+            if (convo.convoID != element.convoID) { conversationIndexes[convo.convoID]? += 1 }
+            else { conversationIndexes[convo.convoID] = 0 }
+        }
         
         // TODO: In future update, iOS 11 introduces and recommends performBatchUpdates() for UITableView
         // Update the actual table view dynamically, by moving the cells
@@ -334,6 +385,15 @@ extension ChatListViewController {
         // Once cell has moved from source to destination, update the cell contents
         // This is because we changed the message for that cell earlier and didn't refresh anything
         self.tableView.reloadRows(at: [destination], with: UITableViewRowAnimation.none)
+    }
+    
+    // ==========================================
+    // ==========================================
+    func reloadConversation(at row: Int) {
+        
+        self.tableView.beginUpdates()
+        self.tableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: .none)
+        self.tableView.endUpdates()
     }
     
     // ==========================================
@@ -352,6 +412,7 @@ extension ChatListViewController {
     // ==========================================
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
+        // A custom view should display only when no conversations can be displayed
         if (conversations.count == 0) {
             let empty = EmptyChatListView(frame: tableView.frame)
             empty.emptyChatDelegate = self
@@ -376,32 +437,27 @@ extension ChatListViewController {
         cell.recentMessageLabel.text = conversations[indexPath.row].newestMessage
         cell.recentMessageTimeStampLabel.text = conversations[indexPath.row].newestMessageTimestamp
         
-        if let seen = lastSeen[conversations[indexPath.row].convoID] {
-            cell.newMessageIndicator.alpha = (seen < conversations[indexPath.row].timestamp) ? 1 : 0
+        // If timestamp has been read for most recent message, and we obtained most recent convo viewing,
+        // we can safely update the new message indicator based on the relative time difference
+        
+        if let seen = conversations[indexPath.row].lastSeenByCurrentUser, let recentMessageTimestamp = conversations[indexPath.row].timestamp {
+            cell.newMessageIndicator.alpha = (seen < recentMessageTimestamp) ? 1 : 0
         }
         
-        // TODO: Refactor Conversation class to hold the uid of the other user
-        // This way, don't need to lookup uid and can access storage reference right away
+        // ASSUMPTION: Only two people can belong to a chat
+        // Take first (only) member UID and download image for the convo cell (fail safe if not provided)
         
-        rootDatabaseRef.observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
+        if let uid = conversations[indexPath.row].memberUIDs.first {
+            let path = "\(uid)/\(uid).JPG"
             
-            if let uid = snapshot.childSnapshot(forPath: "registeredUsernames/\(self.conversations[indexPath.row].name)").value as? String {
-                if let _ = snapshot.childSnapshot(forPath: "userInformation/\(uid)/displayPicture").value as? String {
-                    
-                    DatabaseController.downloadImage(into: cell.userDisplayImageView, from: self.userDisplayPictureRef.child("\(uid)/\(uid).JPG") , completion: { (error) in
-                        
-                        if let downloadError = error {
-                            print("At.ME:: An error has occurred, but image data was detected. \(downloadError)")
-                            return
-                        }
-                        
-                        //print("At.ME:: Image data was downloded and converted successfully")
-                        
-                    })
-                    
-                } else { print("AT.ME:: This user does not have a display picture") }
-            }
-        })
+            DatabaseController.downloadImage(into: cell.userDisplayImageView, from: self.userDisplayPictureRef.child(path) , completion: { error in
+                
+                if let downloadError = error {
+                    print("At.ME:: An error has occurred, but image data was detected. \(downloadError)")
+                    return
+                }
+            })
+        }
         
         return cell
     }
