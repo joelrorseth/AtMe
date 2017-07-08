@@ -43,7 +43,8 @@ class SettingsViewController: UITableViewController, AlertController {
         
         logoutCell.backgroundColor = Constants.Colors.primaryColor
         userPictureImageView.layer.masksToBounds = true
-        userPictureImageView.layer.cornerRadius = userPictureImageView.frame.width / 2
+        userPictureImageView.clipsToBounds = true
+        userPictureImageView.layer.cornerRadius = userPictureImageView.frame.size.width / 2
     }
     
     // ==========================================

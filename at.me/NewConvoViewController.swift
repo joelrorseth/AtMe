@@ -90,7 +90,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         let cell = usersTableView.dequeueReusableCell(withIdentifier: "UserInfoCell", for: indexPath) as! UserInfoCell
         
         cell.displayName.text = searchResults[0].name
-        cell.usernameLabel.text = searchResults[0].username
+        cell.usernameLabel.text = "@" + searchResults[0].username
         
         cell.uid = searchResults[0].uid
         cell.username = searchResults[0].username
@@ -108,7 +108,8 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         // FIXME: Move circle frame code into Cell class (also applies to ChatListViewController)
         // Give display picture a circular mask
         cell.displayImage.layer.masksToBounds = true;
-        cell.displayImage.layer.cornerRadius = cell.displayImage.frame.width / 2
+        cell.displayImage.clipsToBounds = true
+        cell.displayImage.layer.cornerRadius = cell.displayImage.frame.size.width / 2
         
         return cell
     }
