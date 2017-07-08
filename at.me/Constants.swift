@@ -34,10 +34,12 @@ struct Constants {
     }
     
     struct Segues {
+        static let createAccountSuccessSegue = "CreateAccountSuccessSegue"
+        static let loadConvoSegue = "LoadConvoSegue"
+        static let newConvoSegue = "NewConvoSegue"
+        static let settingsSegue = "SettingsSegue"
         static let signInSuccessSegue = "SignInSuccessSegue"
         static let signUpSuccessSegue = "SignUpSuccessSegue"
-        static let loadConvoSegue = "LoadConvoSegue"
-        static let createAccountSuccessSegue = "CreateAccountSuccessSegue"
     }
     
     struct Storyboard {
@@ -48,20 +50,7 @@ struct Constants {
     struct Colors {
         static let primaryColor = UIColor(red: 115/255, green: 22/255, blue: 231/255, alpha: 1)
 
-        // Theme 0
-//        static let primaryLight = UIColor(red: 115/255, green: 22/255, blue: 244/255, alpha: 1.0)
-//        static let primaryDark = UIColor(red: 119/255, green: 61/255, blue: 115/255, alpha: 1.0)
-        
-        //Theme 1
-//        static let primaryLight = UIColor(red: 250/255, green: 225/255, blue: 133/255, alpha: 1.0)
-//        static let primaryDark = UIColor(red: 203/255, green: 152/255, blue: 175/255, alpha: 1.0)
-//        static let primaryAccent = UIColor(red: 218/255, green: 177/255, blue: 161/255, alpha: 1.0)
-//        static let primaryBackground = UIColor(red: 232/255, green: 219/255, blue: 212/255, alpha: 1.0)
-
-        // Theme 2
-        //static let primaryLight = UIColor(red: 131/255, green: 145/255, blue: 150/255, alpha: 1.0)
-        //static let primaryDark = UIColor(red: 41/255, green: 48/255, blue: 74/255, alpha: 1.0)
-        //static let primaryAccent = UIColor(red: 218/255, green: 177/255, blue: 161/255, alpha: 1.0)
+        static let tableViewBackground = UIColor(red: 250/255, green: 250/255, blue: 250/255, alpha: 1.0)
 
         
         static let primaryLight = UIColor(red: 180/255, green: 93/255, blue: 231/255, alpha: 1)

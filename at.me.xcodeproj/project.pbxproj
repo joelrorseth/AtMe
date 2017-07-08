@@ -19,6 +19,7 @@
 		5D1C70461E58C64A00FEDEC3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5D1C70441E58C64A00FEDEC3 /* LaunchScreen.storyboard */; };
 		5D2B62601EC909A300B8363E /* PromptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2B625F1EC909A300B8363E /* PromptViewController.swift */; };
 		5D2B62621EC909CC00B8363E /* PromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2B62611EC909CC00B8363E /* PromptView.swift */; };
+		5D323B721F107C3E00853EDE /* EmptyChatListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D323B711F107C3E00853EDE /* EmptyChatListView.swift */; };
 		5D3DDA381E62469000B6FBB7 /* UserInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3DDA371E62469000B6FBB7 /* UserInfoCell.swift */; };
 		5D3DDA3A1E6248DA00B6FBB7 /* NewConvoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3DDA391E6248DA00B6FBB7 /* NewConvoViewController.swift */; };
 		5D5D67761ED1E90200FF8F2A /* DatabaseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D5D67751ED1E90200FF8F2A /* DatabaseController.swift */; };
@@ -81,6 +82,7 @@
 		5D1C70471E58C64A00FEDEC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5D2B625F1EC909A300B8363E /* PromptViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromptViewController.swift; sourceTree = "<group>"; };
 		5D2B62611EC909CC00B8363E /* PromptView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromptView.swift; sourceTree = "<group>"; };
+		5D323B711F107C3E00853EDE /* EmptyChatListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyChatListView.swift; sourceTree = "<group>"; };
 		5D3DDA371E62469000B6FBB7 /* UserInfoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoCell.swift; sourceTree = "<group>"; };
 		5D3DDA391E6248DA00B6FBB7 /* NewConvoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewConvoViewController.swift; sourceTree = "<group>"; };
 		5D43855F1EEC4D8F0005D7CD /* at.me.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = at.me.entitlements; sourceTree = "<group>"; };
@@ -159,8 +161,8 @@
 			isa = PBXGroup;
 			children = (
 				5D43855F1EEC4D8F0005D7CD /* at.me.entitlements */,
-				5D5EDF831EC3D01900F7FC44 /* Customization */,
-				5D1C704F1E58C69C00FEDEC3 /* Views */,
+				5D5EDF831EC3D01900F7FC44 /* Views */,
+				5D1C704F1E58C69C00FEDEC3 /* Cells */,
 				5D1C704E1E58C68A00FEDEC3 /* Controllers */,
 				5D1C704D1E58C67800FEDEC3 /* Model */,
 				5D1C70421E58C64A00FEDEC3 /* Assets.xcassets */,
@@ -175,6 +177,7 @@
 		5D1C704D1E58C67800FEDEC3 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				5D5EDF841EC3D14C00F7FC44 /* Extensions.swift */,
 				5D1C703B1E58C64A00FEDEC3 /* AppDelegate.swift */,
 				5D9027221EB2A3E60021AEE9 /* Conversation.swift */,
 				5DAF28B61E5BBCBC00288F31 /* Constants.swift */,
@@ -203,23 +206,23 @@
 			name = Controllers;
 			sourceTree = "<group>";
 		};
-		5D1C704F1E58C69C00FEDEC3 /* Views */ = {
+		5D1C704F1E58C69C00FEDEC3 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
 				5DA9E0DC1E5B6E0900F38C96 /* MessageCell.swift */,
 				5DFC7F3C1E7A27CF003C6594 /* ConversationCell.swift */,
 				5D3DDA371E62469000B6FBB7 /* UserInfoCell.swift */,
 			);
-			name = Views;
+			name = Cells;
 			sourceTree = "<group>";
 		};
-		5D5EDF831EC3D01900F7FC44 /* Customization */ = {
+		5D5EDF831EC3D01900F7FC44 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				5D323B711F107C3E00853EDE /* EmptyChatListView.swift */,
 				5D2B62611EC909CC00B8363E /* PromptView.swift */,
-				5D5EDF841EC3D14C00F7FC44 /* Extensions.swift */,
 			);
-			name = Customization;
+			name = Views;
 			sourceTree = "<group>";
 		};
 		5DA1D56B1EF78B57001A6ED5 /* OneSignalNotificationServiceExtension */ = {
@@ -455,6 +458,7 @@
 				5D1C703C1E58C64A00FEDEC3 /* AppDelegate.swift in Sources */,
 				5DFC7F3D1E7A27CF003C6594 /* ConversationCell.swift in Sources */,
 				5DAF28B71E5BBCBC00288F31 /* Constants.swift in Sources */,
+				5D323B721F107C3E00853EDE /* EmptyChatListView.swift in Sources */,
 				5D5EDF851EC3D14C00F7FC44 /* Extensions.swift in Sources */,
 				5D0B5AB81E668EFB0077BE46 /* SettingsViewController.swift in Sources */,
 				5DF36ED91EB3D35400346868 /* Message.swift in Sources */,

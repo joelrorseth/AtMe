@@ -591,10 +591,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <searchBar contentMode="redraw" searchBarStyle="prominent" text="" placeholder="Enter a username" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YDB-sm-im2">
+                            <searchBar contentMode="redraw" text="" placeholder="Enter a username" translatesAutoresizingMaskIntoConstraints="NO" id="YDB-sm-im2">
                                 <rect key="frame" x="0.0" y="64" width="375" height="44"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <textInputTraits key="textInputTraits"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="search"/>
                                 <connections>
                                     <outlet property="delegate" destination="W22-SC-qbt" id="XyQ-x3-7b9"/>
                                 </connections>
@@ -602,7 +602,7 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="74" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="RZ2-U7-1Zc">
                                 <rect key="frame" x="0.0" y="108" width="375" height="559"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <color key="sectionIndexBackgroundColor" red="0.45253223180000002" green="0.084757633509999999" blue="0.95668333770000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="sectionIndexBackgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="UserInfoCell" rowHeight="74" id="gPK-Lk-nby" customClass="UserInfoCell" customModule="at_me" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="74"/>
@@ -656,7 +656,7 @@
                                 </connections>
                             </tableView>
                         </subviews>
-                        <color key="backgroundColor" red="0.97636479139328003" green="0.97653168439865112" blue="0.97635418176651001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="YDB-sm-im2" firstAttribute="leading" secondItem="xrJ-lF-Rpx" secondAttribute="leading" id="2wO-VE-7Ht"/>
                             <constraint firstAttribute="trailing" secondItem="YDB-sm-im2" secondAttribute="trailing" id="SD9-vH-Xxh"/>
@@ -684,7 +684,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <color key="sectionIndexBackgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ChatListCell" rowHeight="94" id="RQK-Tm-HT6" customClass="ConversationCell" customModule="at_me" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="375" height="94"/>
@@ -749,7 +748,7 @@
                                             </constraints>
                                         </view>
                                     </subviews>
-                                    <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                    <color key="backgroundColor" red="0.98039215686274506" green="0.98039215686274506" blue="0.98039215686274506" alpha="1" colorSpace="calibratedRGB"/>
                                     <constraints>
                                         <constraint firstItem="dJp-j9-5Al" firstAttribute="top" secondItem="VB3-B0-OEO" secondAttribute="topMargin" constant="-4" id="CRu-mO-aWp"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="dJp-j9-5Al" secondAttribute="bottom" constant="-4" id="KPx-rd-kvA"/>
@@ -779,12 +778,12 @@
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="FGq-LO-JNy">
                             <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
-                                <segue destination="W22-SC-qbt" kind="show" id="i8h-i9-nDT"/>
+                                <segue destination="W22-SC-qbt" kind="show" identifier="NewConvoSegue" id="i8h-i9-nDT"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <segue destination="TfL-yf-bTj" kind="show" identifier="ShowSettings" id="BST-kF-Jzb"/>
+                        <segue destination="TfL-yf-bTj" kind="show" identifier="SettingsSegue" id="BST-kF-Jzb"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XxR-aQ-NVs" userLabel="First Responder" sceneMemberID="firstResponder"/>

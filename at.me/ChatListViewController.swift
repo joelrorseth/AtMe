@@ -42,7 +42,6 @@ class ChatListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.backgroundView = emptyView()
         
         setupView()
         self.setNeedsStatusBarAppearanceUpdate()
@@ -84,7 +83,7 @@ class ChatListViewController: UITableViewController {
             [NSForegroundColorAttributeName : UIColor.white, NSFontAttributeName: UIFont(name: "AvenirNext-Medium", size: 20)!]
         
         // Set background color appearing behind the cells
-        self.tableView.backgroundColor = UIColor.groupTableViewBackground
+        self.tableView.backgroundColor = Constants.Colors.tableViewBackground
         
         
         // Establish bar button items in conversations view
@@ -94,40 +93,6 @@ class ChatListViewController: UITableViewController {
         
         self.navigationItem.leftBarButtonItem = settingsButton
         self.navigationItem.title = "@Me"
-    }
-    
-    // ==========================================
-    // ==========================================
-    private func emptyView() -> UIView {
-        
-        let label = UILabel(frame: CGRect(x: 30, y: tableView.bounds.size.height/3, width: tableView.bounds.size.width - 60, height: tableView.bounds.size.height/13))
-        label.text = "You have no active conversations!"
-        label.font = UIFont(name: "Avenir Next", size: 18)
-        label.textColor = UIColor.darkGray
-        label.textAlignment = NSTextAlignment.center
-        label.heightAnchor.constraint(equalToConstant: self.tableView.frame.height / 8).isActive = true
-        label.widthAnchor.constraint(equalToConstant: self.tableView.frame.width).isActive = true
-        
-        
-        let randomButton = UIButton(type: .custom)
-        randomButton.frame = CGRect(x: 30, y: tableView.bounds.size.height - (tableView.bounds.size.height/13) - 30,
-                                    width: tableView.bounds.size.width - 60,
-                                    height: tableView.bounds.size.height/13)
-        
-        randomButton.titleLabel?.font = UIFont(name: "Avenir Next Demi Bold", size: 18)
-        randomButton.setTitleColor(UIColor.darkGray, for: .normal)
-        randomButton.setTitleColor(UIColor.lightGray, for: .selected)
-        randomButton.setTitle("Chat @Random", for: .normal)
-        randomButton.titleLabel?.textAlignment = NSTextAlignment.center
-        randomButton.layer.cornerRadius = Constants.Radius.regularRadius
-        randomButton.backgroundColor = Constants.Colors.primaryAccent
-        
-        
-        let background = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.size.width, height: tableView.bounds.size.height))
-        background.backgroundColor = UIColor.groupTableViewBackground
-        background.addSubview(randomButton)
-        background.addSubview(label)
-        return background
     }
     
     // ==========================================
@@ -310,7 +275,7 @@ class ChatListViewController: UITableViewController {
     // ==========================================
     // ==========================================
     @objc private func didTapSettings() {
-        self.performSegue(withIdentifier: "ShowSettings", sender: self)
+        performSegue(withIdentifier: Constants.Segues.settingsSegue, sender: nil)
     }
     
     // ==========================================
@@ -326,6 +291,16 @@ class ChatListViewController: UITableViewController {
         }
     }
 }
+
+
+// MARK: Empty Chat List Delegate
+extension ChatListViewController: EmptyChatListDelegate {
+    
+    func didTapChatSomebody() {
+        performSegue(withIdentifier: Constants.Segues.newConvoSegue, sender: nil)
+    }
+}
+
 
 
 // MARK: Table View
@@ -376,6 +351,16 @@ extension ChatListViewController {
     // ==========================================
     // ==========================================
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        if (conversations.count == 0) {
+            let empty = EmptyChatListView(frame: tableView.frame)
+            empty.emptyChatDelegate = self
+            tableView.backgroundView = empty
+        
+        } else {
+            tableView.backgroundView = nil
+        }
+        
         return conversations.count
     }
     
