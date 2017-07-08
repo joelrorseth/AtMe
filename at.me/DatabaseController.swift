@@ -72,11 +72,4 @@ class DatabaseController {
         print("Image cache cleared from disk and memory")
         ImageCache.default.calculateDiskCacheSize { (size) in print("Used disk size by bytes: \(size)") }
     }
-    
-    // TODO:
-    // ==========================================
-    // ==========================================
-    public static func clearCachedConversationData() {
-        
-    }
 }

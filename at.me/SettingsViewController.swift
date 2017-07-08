@@ -39,7 +39,6 @@ class SettingsViewController: UITableViewController, AlertController {
     // ==========================================
     // ==========================================
     override func viewWillAppear(_ animated: Bool) {
-        print("at.me:: Settings screen appeared, loading user information...")
         loadCurrentUserInformation()
         
         logoutCell.backgroundColor = Constants.Colors.primaryColor
@@ -116,6 +115,7 @@ class SettingsViewController: UITableViewController, AlertController {
         
         // Present a confirmation dialog to logout
         let ac = UIAlertController(title: "Confirm Logout", message: "Are you sure you want to logout?", preferredStyle: .alert)
+        ac.view.tintColor = Constants.Colors.primaryColor
         ac.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         ac.addAction(UIAlertAction(title: "Logout", style: .default, handler: { (action) in
             
@@ -125,7 +125,6 @@ class SettingsViewController: UITableViewController, AlertController {
                 
                 // At this point, signOut() succeeded by not throwing any errors
                 self.performSegue(withIdentifier: "unwindToSignIn", sender: self)
-                print("AT.ME:: Successfully logged out")
                 
             } catch let error as NSError {
                 print("AT.ME:: \(error.localizedDescription)")
@@ -179,7 +178,6 @@ extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationC
                         return
                     }
                     
-                    print("AT.ME:: Camera image uploaded successfully")
                     self.updateUserDisplayPicture(image: image)
                 })
                 
@@ -216,9 +214,6 @@ extension SettingsViewController {
         if (indexPath.section == 3) {
             if (indexPath.row == 0) {
                 DatabaseController.clearCachedImages()
-            
-            } else if (indexPath.row == 1) {
-                DatabaseController.clearCachedConversationData()
             }
         }
         
