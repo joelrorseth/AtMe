@@ -160,31 +160,6 @@ class ConvoViewController: UITableViewController, AlertController {
         // Write the message to Firebase
         let randomMessageId = messagesRef!.childByAutoId().key
         
-        
-        // MARK: Removal - Not really needed anymore and seems to be causing a bug where
-        // messages are dropped randomly and observers stop working. This will also mean
-        // removing all references to messagesCount in other places
-        
-//        // Increment messages counter using a Firebase Transaction
-//        // Transactions are a concurrently safe method of updating values in database
-//
-//        conversationsRef.child(convoId).runTransactionBlock({ (currentData: MutableData) -> TransactionResult in
-//            
-//            if var conversationRecord = currentData.value as? [String : AnyObject] {
-//        
-//                // Retrieve current message count, write it back incremented by one
-//                let currentMessagesCount = conversationRecord["messagesCount"] as? Int ?? 0
-//                conversationRecord["messagesCount"] = (currentMessagesCount + 1) as AnyObject?
-//                
-//                // Set value and report Transaction success
-//                currentData.value = conversationRecord
-//            }
-//            
-//            return TransactionResult.success(withValue: currentData)
-//        })
-
-        
-        
         // Each message record (uniquely identified) will record sender and message text
         if let text = message.text {
             messagesRef?.child(randomMessageId).setValue(

@@ -118,7 +118,6 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         let cell = tableView.cellForRow(at: indexPath) as! UserInfoCell
-        print("AT.ME:: Creating conversation with user with username: \(cell.usernameLabel.text!)")
         
         // Retrieve uid of selected user, create conversation record in Firebase
         if let selectedUserUid = cell.uid, let selectedUserUsername = cell.username {
@@ -127,7 +126,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
             let convoID = conversationsRef.childByAutoId().key
             
             // Establish the database record for this conversation
-            userInformationRef.observe(DataEventType.value, with: { snapshot in
+            userInformationRef.observeSingleEvent(of: DataEventType.value, with: { snapshot in
                 
                 // Store list of member uid's and their notificationIDs in conversation for quick lookup
                 let selectedUserNotificationID = snapshot.childSnapshot(forPath: "\(selectedUserUid)/notificationID").value as? String
@@ -137,7 +136,6 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
                 self.conversationsRef.child("\(convoID)/creator").setValue(UserState.currentUser.username)
                 self.conversationsRef.child("\(convoID)/activeMembers").setValue(members)
                 self.conversationsRef.child("\(convoID)/lastSeen").setValue(lastSeen)
-                self.conversationsRef.child("\(convoID)/messagesCount").setValue(0)
                 
                 // For both users separately, record the convoId in a record identified by other user's username
                 self.userConversationListRef.child(UserState.currentUser.uid).child(selectedUserUsername).setValue(convoID)
