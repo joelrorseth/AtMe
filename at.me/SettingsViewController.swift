@@ -41,7 +41,7 @@ class SettingsViewController: UITableViewController, AlertController {
     override func viewWillAppear(_ animated: Bool) {
         loadCurrentUserInformation()
         
-        logoutCell.backgroundColor = Constants.Colors.primaryColor
+        logoutCell.backgroundColor = Constants.Colors.primaryDark
         userPictureImageView.layer.masksToBounds = true
         userPictureImageView.clipsToBounds = true
         userPictureImageView.layer.cornerRadius = userPictureImageView.frame.size.width / 2
@@ -116,7 +116,7 @@ class SettingsViewController: UITableViewController, AlertController {
         
         // Present a confirmation dialog to logout
         let ac = UIAlertController(title: "Confirm Logout", message: "Are you sure you want to logout?", preferredStyle: .alert)
-        ac.view.tintColor = Constants.Colors.primaryColor
+        ac.view.tintColor = Constants.Colors.primaryDark
         ac.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         ac.addAction(UIAlertAction(title: "Logout", style: .default, handler: { (action) in
             
@@ -125,7 +125,7 @@ class SettingsViewController: UITableViewController, AlertController {
                 try Auth.auth().signOut()
                 
                 // At this point, signOut() succeeded by not throwing any errors
-                self.performSegue(withIdentifier: "unwindToSignIn", sender: self)
+                self.performSegue(withIdentifier: Constants.Segues.unwindToSignInSegue, sender: self)
                 
             } catch let error as NSError {
                 print("AT.ME:: \(error.localizedDescription)")
@@ -140,7 +140,7 @@ class SettingsViewController: UITableViewController, AlertController {
     // ==========================================
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        if segue.identifier == "ShowPrompt" {
+        if segue.identifier == Constants.Segues.showPromptSegue {
             if let destination = segue.destination as? PromptViewController {
                 var attributeIndex: Int = 0
                 
@@ -207,7 +207,7 @@ extension SettingsViewController {
         // Opting to change editable user attributes prompts PromptViewController
         if (indexPath.section == 1 || indexPath.section == 2) {
             DispatchQueue.main.async {
-                self.performSegue(withIdentifier: "ShowPrompt", sender: self)
+                self.performSegue(withIdentifier: Constants.Segues.showPromptSegue, sender: self)
             }
         }
             

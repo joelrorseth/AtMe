@@ -80,7 +80,7 @@ class ChatListViewController: UITableViewController {
         
         // Set translucent navigation bar with color
         self.title = "@Me"
-        self.navigationController?.navigationBar.barTintColor = Constants.Colors.primaryColor
+        self.navigationController?.navigationBar.barTintColor = Constants.Colors.primaryDark
         self.navigationController?.navigationBar.isTranslucent = false
         self.navigationController?.navigationBar.titleTextAttributes =
             [NSForegroundColorAttributeName : UIColor.white, NSFontAttributeName: UIFont(name: "AvenirNext-Medium", size: 20)!]

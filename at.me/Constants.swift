@@ -9,6 +9,13 @@
 import UIKit
 struct Constants {
     
+    struct Colors {
+        static let tableViewBackground = UIColor(red: 250/255, green: 250/255, blue: 250/255, alpha: 1.0)
+        static let primaryLight = UIColor(red: 180/255, green: 93/255, blue: 231/255, alpha: 1)
+        static let primaryDark = UIColor(red: 115/255, green: 22/255, blue: 231/255, alpha: 1)
+        static let primaryAccent = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)
+    }
+    
     struct Errors {
         static let missingFields = "Please fill in all required information"
         static let invalidCharacters = "Your fields must not contain any of the following: . $ # [ ] /"
@@ -26,10 +33,6 @@ struct Constants {
         static let regularText = UIFont(name: "AvenirNext-Regular", size: 14)!
     }
     
-    struct Text {
-        static let defaultTextSize = 14
-    }
-    
     struct Radius {
         static let regularRadius = CGFloat(12)
     }
@@ -39,29 +42,21 @@ struct Constants {
         static let loadConvoSegue = "LoadConvoSegue"
         static let newConvoSegue = "NewConvoSegue"
         static let settingsSegue = "SettingsSegue"
+        static let showPromptSegue = "ShowPrompt"
         static let signInSuccessSegue = "SignInSuccessSegue"
         static let signUpSuccessSegue = "SignUpSuccessSegue"
+        static let unwindToSignInSegue = "UnwindToSignIn"
     }
     
     struct Storyboard {
         static let messageId = "messageId"
     }
     
-    // MARK: In progress
-    struct Colors {
-        static let primaryColor = UIColor(red: 115/255, green: 22/255, blue: 231/255, alpha: 1)
-
-        static let tableViewBackground = UIColor(red: 250/255, green: 250/255, blue: 250/255, alpha: 1.0)
-
-        
-        static let primaryLight = UIColor(red: 180/255, green: 93/255, blue: 231/255, alpha: 1)
-        static let primaryDark = UIColor(red: 115/255, green: 22/255, blue: 231/255, alpha: 1)
-        static let primaryAccent = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)
-        static let primaryText = UIColor.white
-        static let primaryBackground = UIColor(red: 216/255, green: 230/255, blue: 240/255, alpha: 1.0)
+    struct Text {
+        static let defaultTextSize = 14
     }
     
-    enum UserAttribute: Int { case none = 0, displayName, firstName, lastName, email, password}
+    enum UserAttribute: Int { case none = 0, displayName, firstName, lastName, email, password }
     
     struct UserAttributes {
         static let UserAttributeNames = ["None", "display name", "first name", "last name", "email address", "password"]

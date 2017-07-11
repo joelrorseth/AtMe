@@ -539,7 +539,7 @@
                         <outlet property="userDisplayNameLabel" destination="ynd-17-MAP" id="rii-3x-NTU"/>
                         <outlet property="userPictureImageView" destination="nfq-RV-Ba3" id="PDj-n3-CDy"/>
                         <outlet property="usernameLabel" destination="P0O-xx-Sbx" id="UHg-2s-2BI"/>
-                        <segue destination="zHr-Ew-ICi" kind="unwind" identifier="unwindToSignIn" unwindAction="unwindToSignInSegue:" id="lHz-0J-yfa"/>
+                        <segue destination="zHr-Ew-ICi" kind="unwind" identifier="UnwindToSignIn" unwindAction="unwindToSignInSegue:" id="lHz-0J-yfa"/>
                         <segue destination="PUW-Nl-gDK" kind="presentation" identifier="ShowPrompt" modalPresentationStyle="overCurrentContext" modalTransitionStyle="crossDissolve" id="V0k-cK-80R"/>
                     </connections>
                 </tableViewController>

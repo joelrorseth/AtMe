@@ -443,7 +443,7 @@ extension ConvoViewController {
             
         } else { // Incoming
             
-            cell.bubbleView.backgroundColor = Constants.Colors.primaryColor
+            cell.bubbleView.backgroundColor = Constants.Colors.primaryDark
             cell.messageTextView.textColor = UIColor.white
             
             messageContentReference?.frame = CGRect(x: MessageCell.horizontalInsetPadding + MessageCell.horizontalBubbleSpacing,

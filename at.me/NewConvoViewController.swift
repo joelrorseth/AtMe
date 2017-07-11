@@ -39,7 +39,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         self.usersSearchBar.delegate = self
         self.usersSearchBar.becomeFirstResponder()
         
-        usersSearchBar.barTintColor = Constants.Colors.primaryColor
+        usersSearchBar.barTintColor = Constants.Colors.primaryDark
         usersSearchBar.isTranslucent = false
         
         self.title = "New Conversation"
