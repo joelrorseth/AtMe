@@ -38,11 +38,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         // Set up search bar, ask keyboard to appear when view is loaded
         self.usersSearchBar.delegate = self
         self.usersSearchBar.becomeFirstResponder()
-        //self.usersSearchBar.barTintColor = Constants.Colors.primaryColor
         
-        // Set translucent navigation bar with color
-        //let image = UIImage.imageFromColor(color: Constants.Colors.primaryColor)
-        //usersSearchBar.backgroundImage = UIImage()
         usersSearchBar.barTintColor = Constants.Colors.primaryColor
         usersSearchBar.isTranslucent = false
         
@@ -89,14 +85,17 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         
         let cell = usersTableView.dequeueReusableCell(withIdentifier: "UserInfoCell", for: indexPath) as! UserInfoCell
         
-        cell.displayName.text = searchResults[0].name
-        cell.usernameLabel.text = "@" + searchResults[0].username
+        // Set cell info
+        cell.displayImage.image = UIImage(named: "user_purple")
+        cell.displayName.text = searchResults[indexPath.row].name
+        cell.usernameLabel.text = "@" + searchResults[indexPath.row].username
         
-        cell.uid = searchResults[0].uid
-        cell.username = searchResults[0].username
+        let uid = searchResults[indexPath.row].uid
+        cell.uid = uid
+        cell.username = searchResults[indexPath.row].username
         
         // Download image into cell using DatabaseController (this facilitates automatic caching)
-        let displayPictureRef = self.userDisplayPictureRef.child("\(searchResults[0].uid)/\(searchResults[0].uid).JPG")
+        let displayPictureRef = self.userDisplayPictureRef.child("\(uid)/\(uid).JPG")
         DatabaseController.downloadImage(into: cell.displayImage, from: displayPictureRef, completion: { error in
             
             if let error = error {
@@ -157,87 +156,70 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     // ==========================================
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
+        clearResults()
+        guard let text = searchBar.text else { return }
         
         // Look inside registeredUsernames, determine if username is registered or not
         // Extract the uid recorded here if found, then use it to find user details
         
-        self.registeredUsernamesRef.observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
-            
-            // If valid user is found in the search
-            if (snapshot.hasChild(searchBar.text!)) {
-                
-                // The value of key (username) is the uid of that user!
-                let uidFound = snapshot.childSnapshot(forPath: searchBar.text!).value as! String
-
-                // Return a User object with details about user with id 'uidFound'
-                // Completion block will initiate update in table view (results)
-                
-                self.findUserDetail(forUID: uidFound, completion: { users in
+        // Must make end query upper bound include the searched text
+        // We accomplish this by adding a letter, eg. bill < billz and is thus included in query range below
         
-                    // Update results to show all users in array (just one for now)
-                    self.updateResults(users: users)
+        var end = text.characters.dropLast(0)
+        end.append("z")
+        
+        // Find all usernames containing search text
+        registeredUsernamesRef.queryOrderedByKey().queryStarting(atValue: text).queryEnding(atValue: String(end)).observeSingleEvent(of: DataEventType.value, with: { snapshot in
+            
+            // Parse results as dictionary of username/uid pairs
+            if let results = snapshot.value as? [String : String] {
+                
+                // One by one, obtain details of each user, and insert the result into table with more info
+                self.findDetailsForUsers(results: results, completion: { user in
+                    self.insertResult(user: user)
                 })
-                
-                
-            } else {
-                
-                // Alert user that the user name specified was not found
-                let ac = UIAlertController(title: "User Not Found", message: "Please enter another username", preferredStyle: .alert)
-                ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                self.present(ac, animated: true) { self.usersSearchBar.becomeFirstResponder() }
             }
         })
     }
     
     // ==========================================
     // ==========================================
-    private func updateResults(users: [UserProfile]) {
+    private func clearResults() {
         
-        // Begin updates to table view, delete the most recently found user if currently shown
-        self.usersTableView.beginUpdates()
+        searchResults.removeAll()
+        usersTableView.reloadData()
+    }
+    
+    // ==========================================
+    // ==========================================
+    private func insertResult(user: UserProfile) {
         
-        if (self.searchResults.count != 0) {
-            self.usersTableView.deleteRows(at: [IndexPath.init(row: self.searchResults.count - 1, section: 0)], with: .automatic)
-        }
-        
-        // Update the data source, then insert the rows into the table view
-        // Important: This will trigger CellForRow:AtIndex() using the data source to populate
-        
-        self.searchResults = users
-        self.usersTableView.insertRows(at: [IndexPath.init(row: self.searchResults.count - 1, section: 0)], with: .automatic)
-        
-        self.usersTableView.endUpdates()
+        // Update data source, then insert row
+        searchResults.append(user)
+        usersTableView.insertRows(at: [IndexPath(row: searchResults.count - 1, section: 0)], with: .none)
     }
     
     
     // MARK: Database Retrieval Functions
     // ==========================================
     // ==========================================
-    private func findUserDetail(forUID uid: String, completion: @escaping ([UserProfile]) -> Void) {
+    private func findDetailsForUsers(results: [String : String], completion: @escaping (UserProfile) -> Void) {
         
-        // Using userInformation record, lookup using 'uid' as key
-        userInformationRef.child(uid).observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
+        // For each result found, observe the user's full name and pass back as a UserProfile object
+        // Using this UserProfile, the table view can be updated with info by the caller!
+        
+        for (username, uid) in results {
+         
+            userInformationRef.child(uid).observeSingleEvent(of: DataEventType.value, with: { snapshot in
             
-            // TODO: Bug causing crash (displayName)
-            // Can't force unwrap snapshot
-            
-            var users: [UserProfile] = []
-            
-            let fullName = (snapshot.childSnapshot(forPath: "firstName").value as! String) +
-                " " + (snapshot.childSnapshot(forPath: "lastName").value as! String)
-            
-            users.append(UserProfile(
-                name: fullName,
-                uid: uid,
-                username: snapshot.childSnapshot(forPath: "username").value as! String
-            ))
-            
-            // IMPORTANT: Initiate user specified callback (provided when called)
-            // User object must be returned through completion callback to
-            // allow observeSingleEvent() time to execute asynchronously!
-            
-            completion(users)
-        })
+                // Read first and last name, pass back to caller using callback when done
+                let first = snapshot.childSnapshot(forPath: "firstName").value as? String ?? ""
+                let last = snapshot.childSnapshot(forPath: "lastName").value as? String ?? ""
+                    
+                let user = UserProfile(name: first + " " + last, uid: uid, username: username)
+                completion(user)
+            })
+        }
     }
     
     // MARK: Additional Functions
