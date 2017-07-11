@@ -11,6 +11,9 @@ import Kingfisher
 
 class DatabaseController {
     
+    // FIXME: Refactor this class and NotificationsController to be non static
+    private static var userConversationListRef: DatabaseReference = Database.database().reference().child("userConversationList")
+    
     // ==========================================
     // ==========================================
     public static func downloadImage(into destination: UIImageView, from location: StorageReference, completion: @escaping (Error?)->()){
@@ -71,5 +74,25 @@ class DatabaseController {
         
         print("Image cache cleared from disk and memory")
         ImageCache.default.calculateDiskCacheSize { (size) in print("Used disk size by bytes: \(size)") }
+    }
+    
+    /**
+     Determines if a conversation record currently exists between the current user and specified user
+     - parameters:
+        - username: Username to check for existence of conversation with current user
+        - completion: Asynchronously return boolean value representing conversation existence
+            - exists: A boolean which is true if current user has existing conversation record with specified user
+     */
+    public static func doesConversationExistWith(username: String, completion: @escaping (Bool) -> Void) {
+        
+        
+        // Query conversation record for the current user('s uid)
+        // If query returns non-nil, the query found a conversation record with other user
+        
+        userConversationListRef.child(UserState.currentUser.uid).queryOrderedByKey().queryEqual(toValue: username).observeSingleEvent(of: DataEventType.value, with: { snapshot in
+            
+            if (snapshot.hasChildren()) { completion(true) }
+            else { completion(false) }
+        })
     }
 }

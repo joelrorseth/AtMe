@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class NewConvoViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
+class NewConvoViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, AlertController {
 
     // Firebase references
     private lazy var registeredUsernamesRef: DatabaseReference = Database.database().reference().child("registeredUsernames")
@@ -119,32 +119,44 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         
         let cell = tableView.cellForRow(at: indexPath) as! UserInfoCell
         
+        
         // Retrieve uid of selected user, create conversation record in Firebase
+        // This should only be done if a conversation does not already exist
+        
         if let selectedUserUid = cell.uid, let selectedUserUsername = cell.username {
-            
-            // Generate unique conversation identifier
-            let convoID = conversationsRef.childByAutoId().key
-            
-            // Establish the database record for this conversation
-            userInformationRef.observeSingleEvent(of: DataEventType.value, with: { snapshot in
+        
+            DatabaseController.doesConversationExistWith(username: selectedUserUsername, completion: { exists in
                 
-                // Store list of member uid's and their notificationIDs in conversation for quick lookup
-                let selectedUserNotificationID = snapshot.childSnapshot(forPath: "\(selectedUserUid)/notificationID").value as? String
-                let members = [UserState.currentUser.uid: UserState.currentUser.notificationID, selectedUserUid: selectedUserNotificationID!]
-                let lastSeen = [UserState.currentUser.uid: Date().timeIntervalSince1970, selectedUserUid: Date().timeIntervalSinceNow]
+                if (!exists) {
+                    
+                    // Generate unique conversation identifier
+                    let convoID = self.conversationsRef.childByAutoId().key
+                    
+                    // Establish the database record for this conversation
+                    self.userInformationRef.observeSingleEvent(of: DataEventType.value, with: { snapshot in
+                        
+                        // Store list of member uid's and their notificationIDs in conversation for quick lookup
+                        let selectedUserNotificationID = snapshot.childSnapshot(forPath: "\(selectedUserUid)/notificationID").value as? String
+                        let members = [UserState.currentUser.uid: UserState.currentUser.notificationID, selectedUserUid: selectedUserNotificationID!]
+                        let lastSeen = [UserState.currentUser.uid: Date().timeIntervalSince1970, selectedUserUid: Date().timeIntervalSinceNow]
+                        
+                        self.conversationsRef.child("\(convoID)/creator").setValue(UserState.currentUser.username)
+                        self.conversationsRef.child("\(convoID)/activeMembers").setValue(members)
+                        self.conversationsRef.child("\(convoID)/lastSeen").setValue(lastSeen)
+                        
+                        // For both users separately, record the convoId in a record identified by other user's username
+                        self.userConversationListRef.child(UserState.currentUser.uid).child(selectedUserUsername).setValue(convoID)
+                        self.userConversationListRef.child(selectedUserUid).child(UserState.currentUser.username).setValue(convoID)
+                    })
+                    
+                    // Dismiss view now that conversation has been created
+                    self.dismiss(animated: true, completion: nil)
                 
-                self.conversationsRef.child("\(convoID)/creator").setValue(UserState.currentUser.username)
-                self.conversationsRef.child("\(convoID)/activeMembers").setValue(members)
-                self.conversationsRef.child("\(convoID)/lastSeen").setValue(lastSeen)
-                
-                // For both users separately, record the convoId in a record identified by other user's username
-                self.userConversationListRef.child(UserState.currentUser.uid).child(selectedUserUsername).setValue(convoID)
-                self.userConversationListRef.child(selectedUserUid).child(UserState.currentUser.username).setValue(convoID)
+                    
+                } else {
+                    self.presentSimpleAlert(title: "Conversation Already Exists", message: Constants.Errors.conversationAlreadyExists, completion: nil)
+                }
             })
-            
-            
-            // TODO: For now, just dismiss. Future update: dismiss then open up conversation
-            self.dismiss(animated: true, completion: nil)
         }
     }
     

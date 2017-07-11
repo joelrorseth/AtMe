@@ -18,6 +18,7 @@ struct Constants {
         static let signInBadConfig = "Sign In configuration was unsuccessful. Please try again."
         static let displayPictureMissing = "An error occured while setting your new picture. Please try again."
         static let unestablishedCurrentUser = "An error occured while authorizing. Please try signing in again."
+        static let conversationAlreadyExists = "Either you or this user still have an active conversation with eachother. Please delete these."
     }
     
     struct Fonts {
