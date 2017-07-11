@@ -169,10 +169,13 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         end.append("z")
         
         // Find all usernames containing search text
-        registeredUsernamesRef.queryOrderedByKey().queryStarting(atValue: text).queryEnding(atValue: String(end)).observeSingleEvent(of: DataEventType.value, with: { snapshot in
+        registeredUsernamesRef.queryOrderedByKey().queryStarting(atValue: text).queryEnding(atValue: String(end)).queryLimited(toFirst: 20).observeSingleEvent(of: DataEventType.value, with: { snapshot in
             
             // Parse results as dictionary of username/uid pairs
-            if let results = snapshot.value as? [String : String] {
+            if var results = snapshot.value as? [String : String] {
+                
+                // Never allow option to start conversation with yourself!!
+                results.removeValue(forKey: UserState.currentUser.username)
                 
                 // One by one, obtain details of each user, and insert the result into table with more info
                 self.findDetailsForUsers(results: results, completion: { user in
