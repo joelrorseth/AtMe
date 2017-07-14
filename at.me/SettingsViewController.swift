@@ -145,10 +145,12 @@ class SettingsViewController: UITableViewController, AlertController {
                 var attributeIndex: Int = 0
                 
                 // Based on which section was selected, extract the correct UserAttribute from enum
+                // TODO: In future, should find cleaner solution for this
+                
                 if (tableView.indexPathForSelectedRow!.section == 1) {
                     attributeIndex = tableView.indexPathForSelectedRow!.row + 1
                 } else if (tableView.indexPathForSelectedRow!.section == 2) {
-                    attributeIndex = tableView.indexPathForSelectedRow!.row + 4
+                    attributeIndex = tableView.indexPathForSelectedRow!.row + 3
                 }
                 
                 destination.changingAttribute = Constants.UserAttribute(rawValue: attributeIndex)!

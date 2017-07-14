@@ -48,27 +48,33 @@ class PromptView: UIView {
         
         // Label is added to the popup view
         label = UILabel(frame: CGRect(x: 0, y: 20, width: popupView.bounds.size.width, height: 20))
-        label.textColor = UIColor.black
+        label.textColor = Constants.Colors.primaryDark
         label.textAlignment = .center
-        label.font = UIFont(name: "System", size: 14)
+        label.font = Constants.Fonts.lightTitle
         label.text = "Enter a new \(changingAttributeName)"
         
         // Text field is added to the popup view
         textField = UITextField(frame: CGRect(x: 20, y: 50, width: popupView.bounds.size.width - 40, height: 34))
+        textField.placeholder = "Tap to type"
+        textField.font = Constants.Fonts.regularText
         textField.tag = 4000
+        textField.spellCheckingType = .no
+        textField.autocorrectionType = .no
+        textField.autocapitalizationType = .none
         textField.borderStyle = .roundedRect
-        textField.textColor = UIColor.darkGray
-        textField.textColor = UIColor.black
+        textField.backgroundColor = Constants.Colors.primaryAccent
+        textField.layer.cornerRadius = Constants.Radius.regularRadius
+        textField.textColor = Constants.Colors.primaryDark
         
         // Button is added to the popup view
         let button = UIButton(frame: CGRect(x: 30, y: popupView.bounds.size.height - 70, width: popupView.bounds.size.width - 60, height: 50))
         button.addTarget(self, action: #selector(changeCommitted), for: UIControlEvents.touchUpInside)
-        button.backgroundColor = UIColor.darkGray
+        button.backgroundColor = Constants.Colors.primaryDark
         button.contentHorizontalAlignment = .center
         button.setTitle("Save Changes", for: .normal)
         button.setTitleColor(UIColor.white, for: .normal)
-        button.titleLabel?.font = UIFont(name: "System", size: 16)
-        button.layer.cornerRadius = 5
+        button.titleLabel?.font = Constants.Fonts.lightTitle
+        button.layer.cornerRadius = Constants.Radius.regularRadius
         
         // Add gesture recognizer to handle tapping outside of keyboard
         dimmedView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissPopup)))

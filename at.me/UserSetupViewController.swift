@@ -141,7 +141,7 @@ class UserSetupViewController: UIViewController, AlertController {
             if (username.characters.count < 4) {
                 
                 presentSimpleAlert(title: "Username is Invalid", message: Constants.Errors.usernameLength,
-                                   completion: { self.usernameTextField.becomeFirstResponder() })
+                                   completion: { _ in self.usernameTextField.becomeFirstResponder() })
                 return false
             }
             

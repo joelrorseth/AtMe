@@ -35,19 +35,15 @@ class PromptViewController: UIViewController, AlertController {
     
     // ==========================================
     // ==========================================
-    func changeEmail(email: String, callback: ((Void) -> ())?) {
+    func changeEmail(email: String, callback: @escaping (Bool, Error?) -> Void) {
         
-        Auth.auth().currentUser?.updateEmail(to: email, completion: { (error) in
-            if let error = error {
-                
-                print("at.me:: Error changing email: \(error.localizedDescription)")
-                self.presentSimpleAlert(title: "Error changing email", message: "Please enter a valid email", completion: nil)
-                
-                callback?()
-                return
-            }
+        Auth.auth().currentUser?.updateEmail(to: email, completion: { error in
             
-            callback?()
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+                callback(false, error)
+            
+            } else { callback(true, error) }
         })
     }
     
@@ -78,9 +74,22 @@ extension PromptViewController: PromptViewDelegate {
     func didCommitChange(value: String) {
         
         if (changingAttribute == .email) {
-            // Allow fallthrough here, email is recorded in user record also
-            changeEmail(email: value, callback: {
-                self.dismiss(animated: true, completion: nil)
+            changeEmail(email: value, callback: { (success, error) in
+                
+                if (!success) {
+                    self.view.isHidden = true
+
+                    var message: String
+                    
+                    // Unwrap the error message or give it a general one if N/A
+                    if let error = error { message = error.localizedDescription }
+                    else { message = Constants.Errors.changeEmailError}
+
+                    // Present the alert, and dismiss this whole view when OK is pressed
+                    self.presentSimpleAlert(title: "Error changing email", message: message, completion: { _ in
+                        self.dismiss(animated: true, completion: nil)
+                    })
+                }
             })
             
         } else if (changingAttribute == .password) {
@@ -98,8 +107,8 @@ extension PromptViewController: PromptViewDelegate {
             userInformationRef.child(String(user.uid)).child("\(changingAttribute)").setValue(value)
         }
         
-        print("Commiting value: \(value) for key \(changingAttribute)")
-        self.dismiss(animated: true, completion: nil)
+        //print("Commiting value: \(value) for key \(changingAttribute)")
+        //self.dismiss(animated: true, completion: nil)
     }
     
     // ==========================================

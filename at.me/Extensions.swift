@@ -12,15 +12,22 @@ import Photos
 protocol AlertController{}
 extension AlertController where Self:UIViewController {
     
-    // ==========================================
-    // ==========================================
-    func presentSimpleAlert(title: String, message: String, completion: (() -> Void)?) {
+    /**
+     Present a simple alert message with an OK button
+     - parameters:
+     - title: Title of alert
+     - message: Message to print in the alert
+     - completion: A callback that will be triggered when the user *presses 'OK'*
+        - action: The UIAlertAction object passed in the handler for UIAlertAction's initializer
+     */
+    func presentSimpleAlert(title: String, message: String, completion: ((UIAlertAction) -> Void)?) {
         
         let controller = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        controller.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        controller.view.tintColor = Constants.Colors.primaryDark
+        controller.addAction(UIAlertAction(title: "OK", style: .default, handler: completion))
         
         // UIAlertController must be presented by the calling controller (self)
-        self.present(controller, animated: true, completion: completion)
+        self.present(controller, animated: true, completion: nil)
     }
     
     // ==========================================

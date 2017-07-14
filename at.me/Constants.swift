@@ -17,6 +17,7 @@ struct Constants {
     }
     
     struct Errors {
+        static let changeEmailError = "There was a problem changing your email. Please try again."
         static let missingFields = "Please fill in all required information"
         static let invalidCharacters = "Your fields must not contain any of the following: . $ # [ ] /"
         static let passwordLength = "Your password must be 6 or more characters."
@@ -56,9 +57,9 @@ struct Constants {
         static let defaultTextSize = 14
     }
     
-    enum UserAttribute: Int { case none = 0, displayName, firstName, lastName, email, password }
+    enum UserAttribute: Int { case none = 0, firstName, lastName, email, password }
     
     struct UserAttributes {
-        static let UserAttributeNames = ["None", "display name", "first name", "last name", "email address", "password"]
+        static let UserAttributeNames = ["None", "first name", "last name", "email address", "password"]
     }
 }

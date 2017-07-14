@@ -113,7 +113,7 @@ class SignUpViewController: UIViewController, AlertController {
         // Return false and present alert if password is not long enough
         if (password.characters.count < 6) {
             presentSimpleAlert(title: "Password is Too Weak", message: Constants.Errors.passwordLength,
-                               completion: { self.passwordTextField.becomeFirstResponder() })
+                               completion: { _ in self.passwordTextField.becomeFirstResponder() })
             return false
         }
         
