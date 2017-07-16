@@ -40,37 +40,41 @@ class PromptViewController: UIViewController, AlertController {
         Auth.auth().currentUser?.updateEmail(to: email, completion: { error in
             
             if let error = error {
-                print("Error: \(error.localizedDescription)")
+                print("Error changing email: \(error.localizedDescription)")
                 callback(false, error)
             
             } else { callback(true, error) }
         })
     }
     
-    // ==========================================
-    // ==========================================
-    func changePassword(password: String, callback: ((Void) -> ())?) {
+    /**
+     Attempt to change the current user's password
+     - parameters:
+        - password: The new password requested
+        - callback: Callback function that is called when Auth confirms it can or cannot perform change
+            - error: An optional Error object that will hold information if and when request fails
+     */
+    func changePassword(password: String, callback: @escaping (Error?) -> Void) {
         
-        Auth.auth().currentUser?.updatePassword(to: password, completion: { (error) in
+        Auth.auth().currentUser?.updatePassword(to: password, completion: { error in
+            
             if let error = error {
                 
-                // TODO: Not working
-                print("at.me:: Error changing password: \(error.localizedDescription)")
-                self.presentSimpleAlert(title: "Error changing password", message: "Please try another password", completion: nil)
-                
-                callback?()
-                return
-            }
+                print("Error changing password: \(error.localizedDescription)")
+                callback(error)
             
-            callback?()
+            } else { callback(nil) }
         })
     }
 }
 
 extension PromptViewController: PromptViewDelegate {
     
-    // ==========================================
-    // ==========================================
+    /**
+     Fires when the user has tapped the commit button on the prompt, to commit desired change
+     - parameters:
+        - value: The value present in the text field when commit button was pressed
+     */
     func didCommitChange(value: String) {
         
         if (changingAttribute == .email) {
@@ -86,16 +90,31 @@ extension PromptViewController: PromptViewDelegate {
                     else { message = Constants.Errors.changeEmailError}
 
                     // Present the alert, and dismiss this whole view when OK is pressed
-                    self.presentSimpleAlert(title: "Error changing email", message: message, completion: { _ in
+                    self.presentSimpleAlert(title: "Error changing email address", message: message, completion: { _ in
                         self.dismiss(animated: true, completion: nil)
                     })
                 }
             })
             
+            return
+            
         } else if (changingAttribute == .password) {
-            changePassword(password: value, callback: {
-                self.dismiss(animated: true, completion: nil)
+            
+            changePassword(password: value, callback: { error in
+                self.view.isHidden = true
+                
+                if let error = error {
+                    self.presentSimpleAlert(title: "Error changing password", message: error.localizedDescription, completion: { _ in
+                        self.dismiss(animated: true, completion: nil)
+                    })
+                
+                } else {
+                    self.presentSimpleAlert(title: "Success", message: "Your password has been updated", completion: { _ in
+                        self.dismiss(animated: true, completion: nil)
+                    })
+                }
             })
+            
             return
         }
         

@@ -17,8 +17,9 @@ struct Constants {
     }
     
     struct Errors {
-        static let changeEmailError = "There was a problem changing your email. Please try again."
-        static let missingFields = "Please fill in all required information"
+        static let changeEmailError = "A problem occured while changing your email address. Please try again."
+        static let changePasswordError = "A problem occured while changing your password. Please try again."
+        static let missingFields = "Please fill in all required information."
         static let invalidCharacters = "Your fields must not contain any of the following: . $ # [ ] /"
         static let passwordLength = "Your password must be 6 or more characters."
         static let usernameLength = "Your username must be 4 or more valid characters."
