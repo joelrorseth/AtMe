@@ -130,6 +130,8 @@ class SettingsViewController: UITableViewController, AlertController {
             } catch let error as NSError {
                 print("AT.ME:: \(error.localizedDescription)")
             }
+            
+            // TODO: Remove ALL observers
         }))
         
         // Present the alert

@@ -8,6 +8,7 @@
 
 import UIKit
 
+// Protocol defines methods that will be called in response to certain actions within PromptView
 protocol PromptViewDelegate {
     func didCommitChange(value: String)
     func didCancelChange()
@@ -17,32 +18,33 @@ class PromptView: UIView {
     
     var promptDelegate: PromptViewDelegate?
     
+    // Keep track of which attribute is being changed within the prompt view
     var changingAttribute: Constants.UserAttribute = .none
     var changingAttributeName: String = ""
     
+    // Easily accessible references to important PromptView elements
     var textField: UITextField!
     var label: UILabel!
     
+    
     // MARK: Initialization
-    // ==========================================
-    // ==========================================
+    /** View frame initializer override */
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         self.backgroundColor = UIColor.clear
         
-        
         // Dimmed view appears on top of self.view, but under popup view
         let dimmedView = UIView(frame: CGRect(x: 0, y: 0, width: frame.width, height: frame.height))
-        dimmedView.alpha = 0.8  // change back
+        dimmedView.alpha = 0.8
         dimmedView.backgroundColor = UIColor.black
         dimmedView.tag = 2000
         
-        // Custom view to contain the popup             // 3000
+        // Custom view to contain the popup
         let popupView = UIView(frame: CGRect(x: 20, y: frame.height / 4, width: frame.width - 40, height: 220))
         popupView.layer.cornerRadius = 5
         popupView.layer.opacity = 1.0
-        popupView.alpha = 1.0       // change back
+        popupView.alpha = 1.0
         popupView.backgroundColor = UIColor.white
         popupView.tag = 1000
         
@@ -58,10 +60,10 @@ class PromptView: UIView {
         textField.placeholder = "Tap to type"
         textField.font = Constants.Fonts.regularText
         textField.tag = 4000
-        textField.spellCheckingType = .no
-        textField.autocorrectionType = .no
-        textField.autocapitalizationType = .none
-        textField.borderStyle = .roundedRect
+        textField.spellCheckingType = UITextSpellCheckingType.no
+        textField.autocorrectionType = UITextAutocorrectionType.no
+        textField.autocapitalizationType = UITextAutocapitalizationType.none
+        textField.borderStyle = UITextBorderStyle.roundedRect
         textField.backgroundColor = Constants.Colors.primaryAccent
         textField.layer.cornerRadius = Constants.Radius.regularRadius
         textField.textColor = Constants.Colors.primaryDark
@@ -89,16 +91,15 @@ class PromptView: UIView {
         self.addSubview(popupView)
     }
 
-    // ==========================================
-    // ==========================================
+    
+    /** Required view initializer */
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
     
-    // MARKL: Protocol / PromptViewDelegate
-    // ==========================================
-    // ==========================================
+    // MARK: PromptViewDelegate
+    /** Handles pressing the button to confirm changes in the PromptView */
     func changeCommitted() {
         dismissKeyboard()
         
@@ -107,21 +108,20 @@ class PromptView: UIView {
         }
     }
     
-    // ==========================================
-    // ==========================================
-    func setLabel(label: String) {
-        self.label.text = "Enter a new " + label
-    }
     
-    // ==========================================
-    // ==========================================
+    /** Dismisses the keyboard and tells the PromptViewDelegate that the change was cancelled */
     func dismissPopup() {
         dismissKeyboard()
         promptDelegate?.didCancelChange()
     }
     
-    // ==========================================
-    // ==========================================
+    /** Sets the PromptView label with the given text, properly formatted */
+    func setLabel(label: String) {
+        self.label.text = "Enter a new " + label
+    }
+    
+    
+    /** Dismisses the keyboard presented to type into the PromptView text field */
     func dismissKeyboard() {
         self.viewWithTag(4000)?.resignFirstResponder()
     }
