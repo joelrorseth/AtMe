@@ -194,13 +194,13 @@
 		5D1C704E1E58C68A00FEDEC3 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				5D2B625F1EC909A300B8363E /* PromptViewController.swift */,
 				5D197AA01E58CE1900C9CB52 /* SignInViewController.swift */,
 				5DAFF1611E72FD02008DE303 /* SignUpViewController.swift */,
 				5D04E9891E58DD0C006D8CD5 /* ChatListViewController.swift */,
 				5D04E98B1E58E24E006D8CD5 /* ConvoViewController.swift */,
 				5D3DDA391E6248DA00B6FBB7 /* NewConvoViewController.swift */,
 				5D0B5AB71E668EFB0077BE46 /* SettingsViewController.swift */,
+				5D2B625F1EC909A300B8363E /* PromptViewController.swift */,
 				5DE764EF1F00814900E483C6 /* UserSetupViewController.swift */,
 			);
 			name = Controllers;

@@ -21,6 +21,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     @IBOutlet weak var usersSearchBar: UISearchBar!
     @IBOutlet weak var usersTableView: UITableView!
     
+    internal let databaseManager = DatabaseController()
     var searchResults: [UserProfile] = []
     
     // ==========================================
@@ -96,7 +97,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         
         // Download image into cell using DatabaseController (this facilitates automatic caching)
         let displayPictureRef = self.userDisplayPictureRef.child("\(uid)/\(uid).JPG")
-        DatabaseController.downloadImage(into: cell.displayImage, from: displayPictureRef, completion: { error in
+        databaseManager.downloadImage(into: cell.displayImage, from: displayPictureRef, completion: { error in
             
             if let error = error {
                 print("At.ME:: An error has occurred, but image data was detected. \(error)")
@@ -125,7 +126,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         
         if let selectedUserUid = cell.uid, let selectedUserUsername = cell.username {
         
-            DatabaseController.doesConversationExistWith(username: selectedUserUsername, completion: { exists in
+            databaseManager.doesConversationExistWith(username: selectedUserUsername, completion: { exists in
                 
                 if (!exists) {
                     

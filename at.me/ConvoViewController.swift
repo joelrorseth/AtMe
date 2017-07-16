@@ -50,6 +50,8 @@ class ConvoViewController: UITableViewController, AlertController {
     // Firebase handles
     private var newMessageRefHandle: DatabaseHandle?
     
+    internal let databaseManager = DatabaseController()
+    
     // MARK: Storyboard
     @IBOutlet var chatInputAccessoryView: ChatInputAccessoryView!
     
@@ -145,8 +147,8 @@ class ConvoViewController: UITableViewController, AlertController {
     // ==========================================
     override func viewDidLoad() {
         
-        self.tableView.backgroundColor = UIColor.groupTableViewBackground
-        self.tableView.allowsSelection = false
+        tableView.backgroundColor = UIColor.groupTableViewBackground
+        tableView.allowsSelection = false
         
         addKeyboardObservers()
     }
@@ -178,14 +180,9 @@ class ConvoViewController: UITableViewController, AlertController {
         updateLastSeenTimestamp(convoID: convoId)
         
         // Ask NotificationController to send this message as a push notification
-        
         for notificationID in notificationIDs {
             NotificationsController.send(to: notificationID, title: message.sender, message: message.text ?? "Picture message")
         }
-        
-        // TODO: Look into solution to avoid loading sent messages from server (no point in that?)
-        // Potentially keep boolean for each user in chat saying if chat has changed since, or
-        // even most recent cached message
     }
     
     // ==========================================
@@ -201,6 +198,7 @@ class ConvoViewController: UITableViewController, AlertController {
         self.tableView.endUpdates()
         
         // TODO: Fix animation for initial message loading. Animation is kinda choppy
+        print("Scrolling to row \(IndexPath.init(row: messages.count - 1, section: 0))")
         self.tableView.scrollToRow(at: IndexPath.init(row: messages.count - 1, section: 0) , at: .bottom, animated: true)
     }
     
@@ -243,7 +241,7 @@ class ConvoViewController: UITableViewController, AlertController {
     
     
     /**
-     Observes all existing and new UIDs and notification IDs for the current conversation.
+     Observe all existing and new UIDs and notification IDs for the current conversation.
      */
     private func observeNotificationIDs() {
         
@@ -322,7 +320,7 @@ extension ConvoViewController: UIImagePickerControllerDelegate, UINavigationCont
         if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
             if let data = convertImageToData(image: image) {
                 
-                DatabaseController.uploadImage(data: data, to: pictureRef.child(path), completion: { (error) in
+                databaseManager.uploadImage(data: data, to: pictureRef.child(path), completion: { (error) in
                     if let error = error {
                         print("AT.ME:: Error uploading picture message to Firebase. \(error.localizedDescription)")
                         return
@@ -391,7 +389,9 @@ extension ConvoViewController {
     // ==========================================
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        //print("AT.ME:: cellForRow(\(indexPath.row)) called")
+        // TODO: In the future, this cell configuration code should take place in the MessageCell
+        // class. However, only so much can be done there since initializer will not know if message
+        // is sent or received
         
         // Dequeue a custom cell for collection view
         let cell = tableView.dequeueReusableCell(withIdentifier: Constants.Storyboard.messageId, for: indexPath) as! MessageCell
@@ -414,11 +414,11 @@ extension ConvoViewController {
         
         // Picture Message
         if let imageURL = message.imageURL {
-            
+            print("This message has a url! \(imageURL)... loading now")
             messageSize = CGSize(width: 200, height: 200)
             messageContentReference = cell.messageImageView
             
-            DatabaseController.downloadImage(into: cell.messageImageView, from: Storage.storage().reference().child(imageURL), completion: { (error) in
+            databaseManager.downloadImage(into: cell.messageImageView, from: Storage.storage().reference().child(imageURL), completion: { (error) in
                 
                 if let localError = error { print("AT.ME Error:: Did not recieve downloaded UIImage. \(localError)"); return }
                 print("AT.ME:: Successfully loaded picture into message")

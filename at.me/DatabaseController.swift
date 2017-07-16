@@ -12,11 +12,11 @@ import Kingfisher
 class DatabaseController {
     
     // FIXME: Refactor this class and NotificationsController to be non static
-    private static var userConversationListRef: DatabaseReference = Database.database().reference().child("userConversationList")
+    private var userConversationListRef: DatabaseReference = Database.database().reference().child("userConversationList")
     
     // ==========================================
     // ==========================================
-    public static func downloadImage(into destination: UIImageView, from location: StorageReference, completion: @escaping (Error?)->()){
+    public func downloadImage(into destination: UIImageView, from location: StorageReference, completion: @escaping (Error?)->()){
 
         if (ImageCache.default.isImageCached(forKey: location.fullPath).cached) {
             
@@ -48,7 +48,7 @@ class DatabaseController {
     
     // ==========================================
     // ==========================================
-    public static func uploadImage(data: Data, to location: StorageReference, completion: @escaping (Error?)->()) {
+    public func uploadImage(data: Data, to location: StorageReference, completion: @escaping (Error?)->()) {
         var localError: Error?
         
         // Use put() to upload photo using a Data object
@@ -61,7 +61,7 @@ class DatabaseController {
     
     // ==========================================
     // ==========================================
-    public static func clearCachedImages() {
+    public func clearCachedImages() {
         
         // Clear memory cache right away.
         ImageCache.default.clearMemoryCache()
@@ -83,7 +83,7 @@ class DatabaseController {
         - completion: Asynchronously return boolean value representing conversation existence
             - exists: A boolean which is true if current user has existing conversation record with specified user
      */
-    public static func doesConversationExistWith(username: String, completion: @escaping (Bool) -> Void) {
+    public func doesConversationExistWith(username: String, completion: @escaping (Bool) -> Void) {
         
         
         // Query conversation record for the current user('s uid)

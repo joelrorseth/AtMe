@@ -25,7 +25,8 @@ class UserSetupViewController: UIViewController, AlertController {
     var selectedDisplayPictureData: Data? = nil
     
     // FIXME: Pass around one AuthController if possible between SignIn and SignUp
-    let authController = AuthController()
+    internal let authController = AuthController()
+    internal let databaseManager = DatabaseController()
 
     // ==========================================
     // ==========================================
@@ -63,7 +64,7 @@ class UserSetupViewController: UIViewController, AlertController {
                     
                     // Let the Database Controller take care of upoading using this general display picture URL
                     let path = "\(uid)/\(uid).JPG"
-                    DatabaseController.uploadImage(data: data, to: self.userDisplayPictureRef.child(path), completion: { (error) in
+                    self.databaseManager.uploadImage(data: data, to: self.userDisplayPictureRef.child(path), completion: { (error) in
                         if let error = error {
                             print("AT.ME:: Error uploading display picture to Firebase. \(error.localizedDescription)")
                             return

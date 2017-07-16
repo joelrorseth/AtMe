@@ -18,6 +18,8 @@ class ChatListViewController: UITableViewController {
     lazy var rootDatabaseRef: DatabaseReference = Database.database().reference()
     lazy var userDisplayPictureRef: StorageReference = Storage.storage().reference().child("displayPictures")
     
+    internal let databaseManager = DatabaseController()
+    
     // Firebase handles
     private var messageHandles: [DatabaseHandle] = []
     
@@ -450,7 +452,7 @@ extension ChatListViewController {
         if let uid = conversations[indexPath.row].memberUIDs.first {
             let path = "\(uid)/\(uid).JPG"
             
-            DatabaseController.downloadImage(into: cell.userDisplayImageView, from: self.userDisplayPictureRef.child(path) , completion: { error in
+            databaseManager.downloadImage(into: cell.userDisplayImageView, from: self.userDisplayPictureRef.child(path) , completion: { error in
                 
                 if let downloadError = error {
                     print("At.ME:: An error has occurred, but image data was detected. \(downloadError)")

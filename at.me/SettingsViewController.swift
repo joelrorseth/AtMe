@@ -15,6 +15,8 @@ class SettingsViewController: UITableViewController, AlertController {
     lazy var userInformationRef: DatabaseReference = Database.database().reference().child("userInformation")
     lazy var userDisplayPictureRef: StorageReference = Storage.storage().reference().child("displayPictures")
     
+    internal let databaseManager = DatabaseController()
+    
     var currentAttributeChanging: Constants.UserAttribute = Constants.UserAttribute.none
     var attributePrompt: String = ""
 
@@ -77,7 +79,7 @@ class SettingsViewController: UITableViewController, AlertController {
         // Display picture may very well be nil if not set or loaded yet
         // This is because display pictures are loaded asynchronously at launch
         
-        DatabaseController.downloadImage(into: userPictureImageView,
+        databaseManager.downloadImage(into: userPictureImageView,
             from: self.userDisplayPictureRef.child(picture), completion: { error in
                                             
             if error != nil { return }
@@ -177,7 +179,7 @@ extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationC
         if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
             if let data = convertImageToData(image: image) {
                 
-                DatabaseController.uploadImage(data: data, to: userDisplayPictureRef.child(path), completion: { (error) in
+                databaseManager.uploadImage(data: data, to: userDisplayPictureRef.child(path), completion: { (error) in
                     if let error = error {
                         print("AT.ME:: Error uploading display picture to Firebase. \(error.localizedDescription)")
                         return
@@ -218,7 +220,7 @@ extension SettingsViewController {
         // Handle cache removal request
         if (indexPath.section == 3) {
             if (indexPath.row == 0) {
-                DatabaseController.clearCachedImages()
+                databaseManager.clearCachedImages()
             }
         }
         
