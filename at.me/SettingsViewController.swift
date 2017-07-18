@@ -172,7 +172,7 @@ extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationC
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
         let uid = UserState.currentUser.uid
-        let path = "displayPictures\(uid)/\(uid).JPG"
+        let path = "displayPictures/\(uid)/\(uid).JPG"
         
         // Extract the image after editing, upload to database as Data object
         if let image = info[UIImagePickerControllerEditedImage] as? UIImage {

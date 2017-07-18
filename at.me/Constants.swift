@@ -9,6 +9,10 @@
 import UIKit
 struct Constants {
     
+    struct Assets {
+        static let purpleUserImage = "user_purple"
+    }
+    
     struct Colors {
         static let tableViewBackground = UIColor(red: 250/255, green: 250/255, blue: 250/255, alpha: 1.0)
         static let primaryLight = UIColor(red: 180/255, green: 93/255, blue: 231/255, alpha: 1)

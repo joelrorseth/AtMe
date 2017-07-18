@@ -432,6 +432,7 @@ extension ChatListViewController {
         formatConversationCell(cell: cell)
 
         // Update the sender, newest message, and timestamp from this conversation
+        cell.userDisplayImageView.image = UIImage(named: Constants.Assets.purpleUserImage)
         cell.nameLabel.text = conversations[indexPath.row].name
         cell.recentMessageLabel.text = conversations[indexPath.row].newestMessage
         cell.recentMessageTimeStampLabel.text = conversations[indexPath.row].newestMessageTimestamp

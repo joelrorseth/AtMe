@@ -315,8 +315,6 @@ extension ConvoViewController: UIImagePickerControllerDelegate, UINavigationCont
     // ==========================================
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
-        // TODO: Sending picture message bug, tapping message bar after makes it disapear
-        
         if convoId == "" { dismiss(animated: true, completion: nil) }
         let path = "conversations/\(convoId)/images/\(Int(Date.timeIntervalSinceReferenceDate * 1000)).jpg"
         
