@@ -19,15 +19,9 @@ class ChatListViewController: UITableViewController {
     
     internal let databaseManager = DatabaseController()
     
-    // Firebase handles
-    private var messageHandles: [DatabaseHandle] = []
-    
     // Local Conversation cache
     var conversations: [Conversation] = []
     var conversationIndexes: [String : Int] = [:]
-    
-    //var convoLastSeen: [String : Date] = [:]
-    //var memberNotificationIDsByConvo = [String : [String: String]]()
     
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -37,25 +31,21 @@ class ChatListViewController: UITableViewController {
         return formatter
     }()
     
-    
-    // FIXME: Sort conversations newest at the top
+    // TODO: In future update, sort conversations newest at the top
     
     // MARK: View
-    // ==========================================
-    // ==========================================
+    /** Overridden method called after view controller's view is loaded into memory */
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
         setupView()
-        self.setNeedsStatusBarAppearanceUpdate()
         
         // Start the observers
         observeUserConversations()
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Overridden method called when view controller is soon to be added to view hierarchy */
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -66,8 +56,8 @@ class ChatListViewController: UITableViewController {
         tableView.reloadData()
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Overridden method called when view controller is soon to be removed from view hierarchy */
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
@@ -75,8 +65,8 @@ class ChatListViewController: UITableViewController {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Set up the look and feel of this view controller and related views */
     private func setupView() {
         
         // Set translucent navigation bar with color
@@ -88,7 +78,7 @@ class ChatListViewController: UITableViewController {
         
         // Set background color appearing behind the cells
         self.tableView.backgroundColor = Constants.Colors.tableViewBackground
-        
+        self.setNeedsStatusBarAppearanceUpdate()
         
         // Establish bar button items in conversations view
         let settingsIcon = UIImage(named: "settings")
@@ -99,20 +89,16 @@ class ChatListViewController: UITableViewController {
         self.navigationItem.title = "@Me"
     }
     
-    // ==========================================
-    // ==========================================
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
-    }
-    
-    
     
     // MARK: Formatting
-    // ==========================================
-    // ==========================================
+    /** 
+     Format a ConversationCell (Note: Should be moved to ConversationCell.swift in future)
+     - parameters:
+        - cell: The ConversationCell object to be formatted
+     */
     func formatConversationCell(cell: ConversationCell) {
         
-        // TODO: Refactor shadown code to use shadowPath (more efficient)
+        // TODO: In future update, refactor shadown code to use shadowPath (more efficient)
 //        // Draw shadow behind nested view to give cells some depth
 //        let shadowSize : CGFloat = 3.0
 //        let shadowPath = UIBezierPath(
@@ -139,8 +125,7 @@ class ChatListViewController: UITableViewController {
     
     
     // MARK: Observers
-    // ==========================================
-    // ==========================================
+    /** Register this view controller to be an observer for new conversations */
     private func observeUserConversations() {
         
         let uid = UserState.currentUser.uid
@@ -165,18 +150,22 @@ class ChatListViewController: UITableViewController {
                 
                 self.observeLastSeen(convoID: convoID)
                 self.observeMembers(convoID: convoID)
-                self.observeMessages(convoId: convoID, with: otherUsername)
+                self.observeMessages(convoID: convoID, with: otherUsername)
             }
         })
     }
     
     
-    // ==========================================
-    // ==========================================
-    private func observeMessages(convoId: String, with username: String) {
+    /** 
+     Register this view controller to be an observer for the most recent message of observed of a given conversation
+     - parameters:
+        - convoID: The conversation ID of the conversation to observe the most recent message(s) from
+        - username: The username of the user with whom the conversation is with
+     */
+    private func observeMessages(convoID: String, with username: String) {
         
         // Retrieve a snapshot for the most recent message record in this conversation
-        conversationsRef.child("\(convoId)/messages").queryLimited(toLast: 1).observe(DataEventType.childAdded, with: { snapshot in
+        conversationsRef.child("\(convoID)/messages").queryLimited(toLast: 1).observe(DataEventType.childAdded, with: { snapshot in
             
             var unseenMessages = false
             var timestamp: Date = Date()
@@ -187,7 +176,7 @@ class ChatListViewController: UITableViewController {
                 // If this message was sent after last time user viewed conversation, mark unseen as true
                 // This will be used to set the unseen messages indicator in the conversation cell
                 
-                if let lastDateSeen = self.conversations[self.conversationIndexes[convoId]!].lastSeenByCurrentUser {
+                if let lastDateSeen = self.conversations[self.conversationIndexes[convoID]!].lastSeenByCurrentUser {
                     if lastDateSeen < timestamp { unseenMessages = true }
                 }
             }
@@ -216,15 +205,19 @@ class ChatListViewController: UITableViewController {
                             self.updateRecentMessage(at: currentIndexPath.row, message: message, timestamp: timestamp, unseen: unseenMessages)
                             self.moveConversation(from: currentIndexPath, to: IndexPath(row: 0, section: 0))
                         
-                        } else { print("Error: Couldn't find location of cell for convo \(convoId)") }
+                        } else { print("Error: Couldn't find location of cell for convo \(convoID)") }
                     } else { print("Error: No match") }
                 }
             }
         })
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** 
+     Register this view controller to be an observer for the members of a given conversation
+     - parameters:
+        - convoID: The conversation ID of the conversation to observe the members of
+     */
     private func observeMembers(convoID: String) {
         
         conversationsRef.child("\(convoID)/activeMembers/").observe(DataEventType.childAdded, with: { snapshot in
@@ -247,8 +240,12 @@ class ChatListViewController: UITableViewController {
         })
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /**
+     Register this view controller to be an observer for the 'last seen' timestamp record
+     - parameters:
+        - convoID: The conversation ID of the conversation to observe the last seen timestamps
+     */
     private func observeLastSeen(convoID: String) {
         
         conversationsRef.child("\(convoID)/lastSeen/\(UserState.currentUser.uid)").observe(DataEventType.value, with: { snapshot in
@@ -257,7 +254,7 @@ class ChatListViewController: UITableViewController {
             // This will change often, and must be updated to determine if we should display new message indicator
             
             if let interval = snapshot.value as? Double, let index = self.conversationIndexes[convoID] {
-            
+
                 // Store this date directly in the conversation, reload cell to update with new info
                 self.conversations[index].lastSeenByCurrentUser = Date(timeIntervalSince1970: interval)
                 self.reloadConversation(at: index)
@@ -267,8 +264,14 @@ class ChatListViewController: UITableViewController {
     }
     
     
-    // ==========================================
-    // ==========================================
+    /**
+     Update the conversations array, stored locally
+     - parameters:
+        - index: Index of conversation to change
+        - message: The newest message in conversation
+        - timestamp: The timestamp from the newest message
+        - unseen: A boolean determining if conversation has been seen  ( deprecated )
+     */
     func updateRecentMessage(at index: Int, message: String, timestamp: Date, unseen: Bool) {
         
         // Set properties of the conversation, specifically the ones we need to show in cell!
@@ -316,19 +319,6 @@ class ChatListViewController: UITableViewController {
     @objc private func didTapSettings() {
         performSegue(withIdentifier: Constants.Segues.settingsSegue, sender: nil)
     }
-    
-    // ==========================================
-    // ==========================================
-    deinit {
-        
-        // For each handle, remove observer for incoming messages
-        // TODO: Refactor for neat method of removing all observers added
-        
-        for handle in messageHandles {
-            conversationsRef.removeObserver(withHandle: handle)
-            print("AT.ME:: Removed observer with handle \(handle) in ChatListViewController")
-        }
-    }
 }
 
 
@@ -345,14 +335,17 @@ extension ChatListViewController: EmptyChatListDelegate {
 // MARK: Table View
 extension ChatListViewController {
     
-    // ==========================================
-    // ==========================================
+    /**
+     Insert a new conversation into the data source and associated table view
+     - parameters:
+        - conversation: The constructed Conversation object to be inserted
+     */
     func insertConversation(conversation: Conversation) {
         
         // Append conversation to data source, maintain the index lookup
         conversationIndexes[conversation.convoID] = self.conversations.count
         conversations.append(conversation)
-        
+                
         // Efficiently update by updating / inserting only the cells that need to be
         self.tableView.beginUpdates()
         self.tableView.insertRows(at: [IndexPath(row: self.conversations.count - 1, section: 0)], with: .left)
@@ -360,20 +353,22 @@ extension ChatListViewController {
     }
 
     
-    // ==========================================
-    // ==========================================
+    /**
+     Move a conversation (data source and location in table) from an old index path to a new one. This method will
+     rearrange the other elements by collapsing them to fill empty array positions
+     - parameters:
+        - source: The index path of the element (conversation) to be moved
+        - destination: The index path to move the source element to
+     */
     func moveConversation(from source: IndexPath, to destination: IndexPath) {
         
         // First update data source by removing element at source index, placing at the front
         let element = conversations.remove(at: source.row)
         conversations.insert(element, at: 0)
         
-        // Go through every conversation, use their convoIDs to increment index of all other
-        // conversations except one we moved to top. This is necessarry to maintain the index lookup
-        
-        for convo in conversations {
-            if (convo.convoID != element.convoID) { conversationIndexes[convo.convoID]? += 1 }
-            else { conversationIndexes[convo.convoID] = 0 }
+        // Update the stored indexes (map) for each conversation, now that they have been rearranged
+        for (index, convo) in conversations.enumerated() {
+            conversationIndexes[convo.convoID] = index
         }
         
         // TODO: In future update, iOS 11 introduces and recommends performBatchUpdates() for UITableView
@@ -388,8 +383,11 @@ extension ChatListViewController {
         self.tableView.reloadRows(at: [destination], with: UITableViewRowAnimation.none)
     }
     
-    // ==========================================
-    // ==========================================
+    /**
+     Reload the conversation cell located at a particular row
+     - parameters:
+        - row: The row to reload in the table view
+     */
     func reloadConversation(at row: Int) {
         
         self.tableView.beginUpdates()
@@ -432,12 +430,12 @@ extension ChatListViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChatListCell", for: indexPath) as! ConversationCell
         
         formatConversationCell(cell: cell)
-        
+
         // Update the sender, newest message, and timestamp from this conversation
         cell.nameLabel.text = conversations[indexPath.row].name
         cell.recentMessageLabel.text = conversations[indexPath.row].newestMessage
         cell.recentMessageTimeStampLabel.text = conversations[indexPath.row].newestMessageTimestamp
-        
+
         // If timestamp has been read for most recent message, and we obtained most recent convo viewing,
         // we can safely update the new message indicator based on the relative time difference
         

@@ -154,22 +154,20 @@ class ConvoViewController: UITableViewController, AlertController {
         addKeyboardObservers()
     }
     
+    // ==========================================
+    // ==========================================
     override func viewDidDisappear(_ animated: Bool) {
         
         
-//        if let handle = messagesHandle, let ref = messagesRef?.queryLimited(toLast: 25) {
-//            ref.removeObserver(withHandle: handle)
-//        } else { print("Error: No observer to remove") }
-//        
-//        if let handle = activeMembersHandle, let ref = conversationRef?.child("activeMembers") {
-//            ref.removeObserver(withHandle: handle)
-//        } else { print("Error: No observer to remove") }
+        if let handle = messagesHandle, let ref = messagesRef?.queryLimited(toLast: 25) {
+            ref.removeObserver(withHandle: handle)
+        } else { print("Error: No observer to remove") }
         
-        print("Disappeared")
-    }
-    
-    deinit {
-        print("DEINIT!!!!!")
+        if let handle = activeMembersHandle, let ref = conversationRef?.child("activeMembers") {
+            ref.removeObserver(withHandle: handle)
+        } else { print("Error: No observer to remove") }
+        
+        print("ConvoViewController did disappear. Database references deallocated.")
     }
     
     
@@ -234,8 +232,9 @@ class ConvoViewController: UITableViewController, AlertController {
     // ==========================================
     private func observeReceivedMessages() {
         
-        messagesRef?.keepSynced(true)
+        
         let messagesQuery = messagesRef?.queryLimited(toLast: 25)
+        messagesQuery?.keepSynced(true)
         
         // This closure is triggered once for every existing record found, and for each record added here
         messagesHandle = messagesQuery?.observe(DataEventType.childAdded, with: { snapshot in
