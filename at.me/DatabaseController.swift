@@ -11,20 +11,27 @@ import Kingfisher
 
 class DatabaseController {
     
-    // FIXME: Refactor this class and NotificationsController to be non static
-    private var userConversationListRef: DatabaseReference = Database.database().reference().child("userConversationList")
+    private lazy var userConversationListRef: DatabaseReference = Database.database().reference().child("userConversationList")
     
-    // ==========================================
-    // ==========================================
+    
+    /**
+     Downloads an image (from a location in the database) into a specified UIImageView.
+     - parameters:
+        - destination: The UIImageView that, if successful, will be given the downloaded image
+        - location: A path to the image being search for, relative to the root of the storage database
+        - completion: Function called when finished, passing back an optional Error object when unsuccessful
+            - error: An Error object created and returned if unsuccesful for any reason
+     */
     public func downloadImage(into destination: UIImageView, from location: String, completion: @escaping (Error?)->()){
         let store = Storage.storage().reference(withPath: location)
         
+        // Check for image saved in cache, load image from disk if possible
+        // If it is, proceed with extracting it from cache instead
         if (ImageCache.default.isImageCached(forKey: store.fullPath).cached) {
-            
-            // Check for image saved in cache, load image from disk if possible
+        
             ImageCache.default.retrieveImage(forKey: store.fullPath, options: nil) { (image, cacheType) in
                 if let image = image {
-                    print("AT.ME:: Image was retrieved from cache at: \(store.fullPath)")
+                    print("Image was retrieved from cache at: \(store.fullPath)")
                     destination.image = image
                 }
                 
@@ -37,7 +44,7 @@ class DatabaseController {
             store.downloadURL(completion: { (url, error) in
                 guard let url = url else { return }
                 
-                print("AT.ME:: Image was not found in cache, downloading and caching now...")
+                print("Image was not found in cache, downloading and caching now...")
                 destination.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: { _ in
                     ImageCache.default.store(destination.image!, forKey: store.fullPath)
                 })
@@ -47,8 +54,15 @@ class DatabaseController {
         }
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /**
+     Uploads an image (in the form of a Data object) to a specified location in the database.
+     - parameters:
+        - data: The Data object holding the image information to store in the database
+        - location: A path for the image data to be saved to, relative to the root of the storage database
+        - completion: Function called when finished, passing back an optional Error object when unsuccessful
+            - error: An Error object created and returned if unsuccesful for any reason
+     */
     public func uploadImage(data: Data, to location: String, completion: @escaping (Error?)->()) {
         var localError: Error?
         let store = Storage.storage().reference(withPath: location)
@@ -61,8 +75,8 @@ class DatabaseController {
         }
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Clear all images currently cached by the database on disk or memory */
     public func clearCachedImages() {
         
         // Clear memory cache right away.
@@ -77,6 +91,7 @@ class DatabaseController {
         print("Image cache cleared from disk and memory")
         ImageCache.default.calculateDiskCacheSize { (size) in print("Used disk size by bytes: \(size)") }
     }
+    
     
     /**
      Determines if a conversation record currently exists between the current user and specified user
