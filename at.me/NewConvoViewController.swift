@@ -16,7 +16,6 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     private lazy var userConversationListRef: DatabaseReference = Database.database().reference().child("userConversationList")
     private lazy var userInformationRef: DatabaseReference = Database.database().reference().child("userInformation")
     private lazy var conversationsRef: DatabaseReference = Database.database().reference().child("conversations")
-    lazy var userDisplayPictureRef: StorageReference = Storage.storage().reference().child("displayPictures")
     
     @IBOutlet weak var usersSearchBar: UISearchBar!
     @IBOutlet weak var usersTableView: UITableView!
@@ -96,8 +95,8 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         cell.username = searchResults[indexPath.row].username
         
         // Download image into cell using DatabaseController (this facilitates automatic caching)
-        let displayPictureRef = self.userDisplayPictureRef.child("\(uid)/\(uid).JPG")
-        databaseManager.downloadImage(into: cell.displayImage, from: displayPictureRef, completion: { error in
+        let path = "displayPictures/\(uid)/\(uid).JPG"
+        databaseManager.downloadImage(into: cell.displayImage, from: path, completion: { error in
             
             if let error = error {
                 print("At.ME:: An error has occurred, but image data was detected. \(error)")

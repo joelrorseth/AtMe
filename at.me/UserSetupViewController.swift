@@ -11,8 +11,6 @@ import Firebase
 
 class UserSetupViewController: UIViewController, AlertController {
     
-    lazy var userDisplayPictureRef: StorageReference = Storage.storage().reference().child("displayPictures")
-
     @IBOutlet var usernameTextField: UITextField!
     @IBOutlet var displayPictureImageView: UIImageView!
     @IBOutlet var createAccountButton: UIButton!
@@ -63,8 +61,8 @@ class UserSetupViewController: UIViewController, AlertController {
                 if let data = self.selectedDisplayPictureData, let uid = uid {
                     
                     // Let the Database Controller take care of upoading using this general display picture URL
-                    let path = "\(uid)/\(uid).JPG"
-                    self.databaseManager.uploadImage(data: data, to: self.userDisplayPictureRef.child(path), completion: { (error) in
+                    let path = "displayPictures\(uid)/\(uid).JPG"
+                    self.databaseManager.uploadImage(data: data, to: path, completion: { error in
                         if let error = error {
                             print("AT.ME:: Error uploading display picture to Firebase. \(error.localizedDescription)")
                             return

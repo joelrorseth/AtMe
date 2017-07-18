@@ -16,7 +16,6 @@ class ChatListViewController: UITableViewController {
     lazy var userConversationListRef: DatabaseReference = Database.database().reference().child("userConversationList")
     lazy var conversationsRef: DatabaseReference = Database.database().reference().child("conversations")
     lazy var rootDatabaseRef: DatabaseReference = Database.database().reference()
-    lazy var userDisplayPictureRef: StorageReference = Storage.storage().reference().child("displayPictures")
     
     internal let databaseManager = DatabaseController()
     
@@ -450,9 +449,9 @@ extension ChatListViewController {
         // Take first (only) member UID and download image for the convo cell (fail safe if not provided)
         
         if let uid = conversations[indexPath.row].memberUIDs.first {
-            let path = "\(uid)/\(uid).JPG"
+            let path = "displayPictures/\(uid)/\(uid).JPG"
             
-            databaseManager.downloadImage(into: cell.userDisplayImageView, from: self.userDisplayPictureRef.child(path) , completion: { error in
+            databaseManager.downloadImage(into: cell.userDisplayImageView, from: path , completion: { error in
                 
                 if let downloadError = error {
                     print("At.ME:: An error has occurred, but image data was detected. \(downloadError)")

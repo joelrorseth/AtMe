@@ -13,7 +13,6 @@ import Firebase
 class SettingsViewController: UITableViewController, AlertController {
     
     lazy var userInformationRef: DatabaseReference = Database.database().reference().child("userInformation")
-    lazy var userDisplayPictureRef: StorageReference = Storage.storage().reference().child("displayPictures")
     
     internal let databaseManager = DatabaseController()
     
@@ -80,7 +79,7 @@ class SettingsViewController: UITableViewController, AlertController {
         // This is because display pictures are loaded asynchronously at launch
         
         databaseManager.downloadImage(into: userPictureImageView,
-            from: self.userDisplayPictureRef.child(picture), completion: { error in
+            from: "displayPictures/\(picture)", completion: { error in
                                             
             if error != nil { return }
             else { self.tableView.reloadData() }
@@ -173,13 +172,13 @@ extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationC
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
         let uid = UserState.currentUser.uid
-        let path = "\(uid)/\(uid).JPG"
+        let path = "displayPictures\(uid)/\(uid).JPG"
         
         // Extract the image after editing, upload to database as Data object
         if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
             if let data = convertImageToData(image: image) {
                 
-                databaseManager.uploadImage(data: data, to: userDisplayPictureRef.child(path), completion: { (error) in
+                databaseManager.uploadImage(data: data, to: path, completion: { (error) in
                     if let error = error {
                         print("AT.ME:: Error uploading display picture to Firebase. \(error.localizedDescription)")
                         return

@@ -13,7 +13,6 @@ class SignInViewController: UIViewController, AlertController {
     
     // Firebase references
     private lazy var userInformationRef: DatabaseReference = Database.database().reference().child("userInformation")
-    private lazy var userDisplayPictureRef: StorageReference = Storage.storage().reference().child("displayPictures")
     
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var passwordField: UITextField!

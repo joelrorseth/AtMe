@@ -43,28 +43,30 @@ class ChatInputAccessoryView: UIInputView {
 class ConvoViewController: UITableViewController, AlertController {
     
     // Firebase references
-    lazy var conversationsRef: DatabaseReference = Database.database().reference().child("conversations")
+    var conversationRef: DatabaseReference?
     var messagesRef: DatabaseReference? = nil
-    var pictureMessagesRef: StorageReference? = nil
     
     // Firebase handles
-    private var newMessageRefHandle: DatabaseHandle?
+    private var messagesHandle: DatabaseHandle?
+    private var activeMembersHandle: DatabaseHandle?
     
     internal let databaseManager = DatabaseController()
     
     // MARK: Storyboard
-    @IBOutlet var chatInputAccessoryView: ChatInputAccessoryView!
+    @IBOutlet weak var chatInputAccessoryView: ChatInputAccessoryView!
     
     var observingMessages = false
     var messages: [Message] = []
     var notificationIDs: [String] = []
     
     
+    
     // FIXME: This needs to be refactored, along with prepareForSegue in ChatList
     var convoId: String = "" {
         didSet {
+            conversationRef = Database.database().reference().child("conversations/\(convoId)")
             messagesRef = Database.database().reference().child("conversations/\(convoId)/messages/")
-            pictureMessagesRef = Storage.storage().reference().child("conversations/\(convoId)/images/")
+            //pictureMessagesRef = Storage.storage().reference().child("conversations/\(convoId)/images/")
             observeNotificationIDs()
             if (!observingMessages) { observeReceivedMessages(); observingMessages = true }
         }
@@ -153,6 +155,14 @@ class ConvoViewController: UITableViewController, AlertController {
         addKeyboardObservers()
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        print("Disappeared")
+    }
+    
+    deinit {
+        print("DEINIT!!!!!")
+    }
+    
     
     // MARK: Managing messages
     // ==========================================
@@ -206,7 +216,7 @@ class ConvoViewController: UITableViewController, AlertController {
     // ==========================================
     private func updateLastSeenTimestamp(convoID: String) {
         
-        conversationsRef.child("\(convoID)/lastSeen/\(UserState.currentUser.uid)").setValue(Date().timeIntervalSince1970)
+        conversationRef?.child("lastSeen/\(UserState.currentUser.uid)").setValue(Date().timeIntervalSince1970)
     }
     
     
@@ -219,7 +229,7 @@ class ConvoViewController: UITableViewController, AlertController {
         let messagesQuery = messagesRef!.queryLimited(toLast: 25)
         
         // This closure is triggered once for every existing record found, and for each record added here
-        newMessageRefHandle = messagesQuery.observe(DataEventType.childAdded, with: { snapshot in
+        messagesHandle = messagesQuery.observe(DataEventType.childAdded, with: { snapshot in
                         
             var imageURL: String?
             var text: String?
@@ -240,12 +250,10 @@ class ConvoViewController: UITableViewController, AlertController {
     }
     
     
-    /**
-     Observe all existing and new UIDs and notification IDs for the current conversation.
-     */
+    /** Observe all existing and new notification IDs for the current conversation. */
     private func observeNotificationIDs() {
         
-        conversationsRef.child(convoId).child("activeMembers").observe(DataEventType.childAdded, with: { snapshot in
+        activeMembersHandle = conversationRef?.child("activeMembers").observe(DataEventType.childAdded, with: { snapshot in
             
             // Each member in activeMembers stores key-value pairs, specifically  (UID: notificationID) for active users
             // Firebase will take snapshot of each existing and new notificationID, store in property for push notifications later
@@ -266,10 +274,8 @@ class ConvoViewController: UITableViewController, AlertController {
     
     
     // MARK: Keyboard Handling
-    // ==========================================
-    // ==========================================
+    /** Add gesture recognizer to track dismiss keyboard area */
     private func addKeyboardObservers() {
-        
         
         // Add gesture recognizer to handle tapping outside of keyboard
         let dismissKeyboardTap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -277,8 +283,7 @@ class ConvoViewController: UITableViewController, AlertController {
     }
     
     
-    // ==========================================
-    // ==========================================
+    /** Dismiss the custom keyboard (the input accessory) */
     func dismissKeyboard() {
         chatInputAccessoryView.expandingTextView.resignFirstResponder()
     }
@@ -292,15 +297,6 @@ class ConvoViewController: UITableViewController, AlertController {
     func getCurrentTimestamp() -> TimeInterval {
         return Date().timeIntervalSince1970
     }
-    
-    // ==========================================
-    // ==========================================
-    deinit {
-        if let handle = newMessageRefHandle {
-            messagesRef?.removeObserver(withHandle: handle)
-            print("AT.ME:: Removed observer with handle \(handle) in ConvoViewController")
-        }
-    }
 }
 
 
@@ -313,23 +309,23 @@ extension ConvoViewController: UIImagePickerControllerDelegate, UINavigationCont
         
         // TODO: Sending picture message bug, tapping message bar after makes it disapear
         
-        guard let pictureRef = pictureMessagesRef else { return }
-        let path = "\(Int(Date.timeIntervalSinceReferenceDate * 1000)).jpg"
+        if convoId == "" { dismiss(animated: true, completion: nil) }
+        let path = "conversations/\(convoId)/images/\(Int(Date.timeIntervalSinceReferenceDate * 1000)).jpg"
         
         // Extract the image after editing, upload to database as Data object
         if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
             if let data = convertImageToData(image: image) {
                 
-                databaseManager.uploadImage(data: data, to: pictureRef.child(path), completion: { (error) in
+                databaseManager.uploadImage(data: data, to: path, completion: { (error) in
                     if let error = error {
                         print("AT.ME:: Error uploading picture message to Firebase. \(error.localizedDescription)")
                         return
                     }
                     
                     // Now that image has uploaded, officially send the message record to the database with storage URL
-                    print("AT.ME:: Image uploaded successfully to \(pictureRef.child(path).fullPath)")
+                    print("AT.ME:: Image uploaded successfully to \(path)")
                     self.send(message: Message(
-                        imageURL: pictureRef.child(path).fullPath,
+                        imageURL: path,
                         sender: UserState.currentUser.username,
                         text: nil,
                         timestamp: Date()))
@@ -414,11 +410,11 @@ extension ConvoViewController {
         
         // Picture Message
         if let imageURL = message.imageURL {
-            print("This message has a url! \(imageURL)... loading now")
+            
             messageSize = CGSize(width: 200, height: 200)
             messageContentReference = cell.messageImageView
             
-            databaseManager.downloadImage(into: cell.messageImageView, from: Storage.storage().reference().child(imageURL), completion: { (error) in
+            databaseManager.downloadImage(into: cell.messageImageView, from: imageURL, completion: { (error) in
                 
                 if let localError = error { print("AT.ME Error:: Did not recieve downloaded UIImage. \(localError)"); return }
                 print("AT.ME:: Successfully loaded picture into message")

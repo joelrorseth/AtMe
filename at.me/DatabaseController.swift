@@ -16,14 +16,15 @@ class DatabaseController {
     
     // ==========================================
     // ==========================================
-    public func downloadImage(into destination: UIImageView, from location: StorageReference, completion: @escaping (Error?)->()){
-
-        if (ImageCache.default.isImageCached(forKey: location.fullPath).cached) {
+    public func downloadImage(into destination: UIImageView, from location: String, completion: @escaping (Error?)->()){
+        let store = Storage.storage().reference(withPath: location)
+        
+        if (ImageCache.default.isImageCached(forKey: store.fullPath).cached) {
             
             // Check for image saved in cache, load image from disk if possible
-            ImageCache.default.retrieveImage(forKey: location.fullPath, options: nil) { (image, cacheType) in
+            ImageCache.default.retrieveImage(forKey: store.fullPath, options: nil) { (image, cacheType) in
                 if let image = image {
-                    print("AT.ME:: Image was retrieved from cache at: \(location.fullPath)")
+                    print("AT.ME:: Image was retrieved from cache at: \(store.fullPath)")
                     destination.image = image
                 }
                 
@@ -33,12 +34,12 @@ class DatabaseController {
         } else {
             
             // Otherwise, asynchronously download the file data stored at location and store it for later
-            location.downloadURL(completion: { (url, error) in
+            store.downloadURL(completion: { (url, error) in
                 guard let url = url else { return }
                 
                 print("AT.ME:: Image was not found in cache, downloading and caching now...")
                 destination.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: { _ in
-                    ImageCache.default.store(destination.image!, forKey: location.fullPath)
+                    ImageCache.default.store(destination.image!, forKey: store.fullPath)
                 })
                 
                 completion(error)
@@ -48,11 +49,12 @@ class DatabaseController {
     
     // ==========================================
     // ==========================================
-    public func uploadImage(data: Data, to location: StorageReference, completion: @escaping (Error?)->()) {
+    public func uploadImage(data: Data, to location: String, completion: @escaping (Error?)->()) {
         var localError: Error?
+        let store = Storage.storage().reference(withPath: location)
         
         // Use put() to upload photo using a Data object
-        location.putData(data, metadata: nil) { (metadata, error) in
+        store.putData(data, metadata: nil) { (metadata, error) in
             
             if let error = error { localError = error }
             completion(localError)

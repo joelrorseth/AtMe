@@ -39,19 +39,17 @@ class MessageCell: UITableViewCell {
         textView.font = Constants.Fonts.regularText
         textView.isEditable = false
         textView.isScrollEnabled = false
-        textView.backgroundColor = UIColor.clear       // Change back to clear
+        textView.backgroundColor = UIColor.clear
         textView.textContainer.lineFragmentPadding = 0
         textView.textContainerInset = UIEdgeInsets.zero
         return textView
     }()
     
-    // TODO: Figure out a better way to clip to a mask (bubbleView)
     let messageImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = UIViewContentMode.scaleAspectFit
         imageView.layer.cornerRadius = 12
         imageView.layer.masksToBounds = true
-        //imageView.backgroundColor = UIColor.blue    // Remove later
         return imageView
     }()
     
@@ -80,7 +78,6 @@ class MessageCell: UITableViewCell {
     func setupViews() {
         
         // The message and bubble view are subviews of cell
-        //self.layer.masksToBounds = true
         self.addSubview(bubbleView)
         self.addSubview(messageTextView)
         self.addSubview(messageImageView)
