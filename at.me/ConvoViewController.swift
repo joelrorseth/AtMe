@@ -66,7 +66,6 @@ class ConvoViewController: UITableViewController, AlertController {
         didSet {
             conversationRef = Database.database().reference().child("conversations/\(convoId)")
             messagesRef = Database.database().reference().child("conversations/\(convoId)/messages/")
-            //pictureMessagesRef = Storage.storage().reference().child("conversations/\(convoId)/images/")
             observeNotificationIDs()
             if (!observingMessages) { observeReceivedMessages(); observingMessages = true }
         }
@@ -156,6 +155,16 @@ class ConvoViewController: UITableViewController, AlertController {
     }
     
     override func viewDidDisappear(_ animated: Bool) {
+        
+        
+//        if let handle = messagesHandle, let ref = messagesRef?.queryLimited(toLast: 25) {
+//            ref.removeObserver(withHandle: handle)
+//        } else { print("Error: No observer to remove") }
+//        
+//        if let handle = activeMembersHandle, let ref = conversationRef?.child("activeMembers") {
+//            ref.removeObserver(withHandle: handle)
+//        } else { print("Error: No observer to remove") }
+        
         print("Disappeared")
     }
     
@@ -209,7 +218,7 @@ class ConvoViewController: UITableViewController, AlertController {
         
         // TODO: Fix animation for initial message loading. Animation is kinda choppy
         print("Scrolling to row \(IndexPath.init(row: messages.count - 1, section: 0))")
-        self.tableView.scrollToRow(at: IndexPath.init(row: messages.count - 1, section: 0) , at: .bottom, animated: true)
+        self.tableView.scrollToRow(at: IndexPath.init(row: messages.count - 1, section: 0) , at: .bottom, animated: false)
     }
     
     // ==========================================
@@ -226,10 +235,10 @@ class ConvoViewController: UITableViewController, AlertController {
     private func observeReceivedMessages() {
         
         messagesRef?.keepSynced(true)
-        let messagesQuery = messagesRef!.queryLimited(toLast: 25)
+        let messagesQuery = messagesRef?.queryLimited(toLast: 25)
         
         // This closure is triggered once for every existing record found, and for each record added here
-        messagesHandle = messagesQuery.observe(DataEventType.childAdded, with: { snapshot in
+        messagesHandle = messagesQuery?.observe(DataEventType.childAdded, with: { snapshot in
                         
             var imageURL: String?
             var text: String?

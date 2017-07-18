@@ -68,7 +68,7 @@ class SettingsViewController: UITableViewController, AlertController {
         
         // Should never happen, app blocks until these have been set at login
         userDisplayNameLabel.text = UserState.currentUser.name
-        usernameLabel.text = UserState.currentUser.username
+        usernameLabel.text = "@" + UserState.currentUser.username
         
         guard let picture = UserState.currentUser.displayPicture else {
             presentSimpleAlert(title: "Could Not Set Picture", message: Constants.Errors.displayPictureMissing, completion: nil)
