@@ -125,7 +125,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         
             // Create the conversation (or even reuse old existing one), then exit this view
             databaseManager.createConversationWith(user: selectedUserUsername, withID: selectedUserUid, completion: {
-                self.dismiss(animated: true, completion: nil)
+                self.navigationController?.popViewController(animated: true)
             })
         
         } else { presentSimpleAlert(title: "Error creating conversation", message: Constants.Errors.createConversationError, completion: nil) }
