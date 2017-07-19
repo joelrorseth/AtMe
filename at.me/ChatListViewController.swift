@@ -14,6 +14,7 @@ class ChatListViewController: UITableViewController {
     
     // Firebase references are used for read/write at referenced location
     lazy var userConversationListRef: DatabaseReference = Database.database().reference().child("userConversationList")
+    lazy var userInactiveConversationsRef: DatabaseReference = Database.database().reference().child("userInactiveConversations")
     lazy var conversationsRef: DatabaseReference = Database.database().reference().child("conversations")
     lazy var rootDatabaseRef: DatabaseReference = Database.database().reference()
     
@@ -477,30 +478,38 @@ extension ChatListViewController {
         
         if (editingStyle == UITableViewCellEditingStyle.delete) {
             
-            // Update records in Firebase
-            // Delete current user's reference to convo, then decrement number of members in convo
-            
-            userConversationListRef.child(UserState.currentUser.uid).child(conversations[indexPath.row].name).removeValue()
-            
             // Extract conversation unique id and Firebase ref to activeMembers record
-            let convoId = conversations[indexPath.row].convoID
-            let activeMembersRef = conversationsRef.child("\(convoId)/activeMembers")
+            let username = conversations[indexPath.row].name
+            let convoID = conversations[indexPath.row].convoID
+            //let activeMembersRef = conversationsRef.child("\(convoID)/activeMembers")
             
             
-            activeMembersRef.observeSingleEvent(of: .value, with: { snapshot in
-                
-                // Remove current user from members list in database
-                // If current user was the last member, the conversation will delete entirely
-                
-                var members = snapshot.value as? [String: String]
-                members?.removeValue(forKey: UserState.currentUser.uid)
-                
-                if (members?.count == 0) {
-                    self.conversationsRef.child(convoId).removeValue()
-                } else {
-                    activeMembersRef.setValue(members)
-                }
-            })
+            // Delete conversation record from current conversations, add it to inactive conversations
+            // These must be separate in database because an observer will detect all entries in active list
+            
+            // TODO: Refactor into database controller class
+            
+            userConversationListRef.child(UserState.currentUser.uid).child(username).removeValue()
+            userInactiveConversationsRef.child(UserState.currentUser.uid).child(username).setValue(convoID)
+            
+        
+            // MARK: Most likely will delete this. We are, from this point on, assuming only one convo
+            // record will ever exist between two users, and should thus always be reused when rekindled.
+            
+//            activeMembersRef.observeSingleEvent(of: .value, with: { snapshot in
+//                
+//                // Remove current user from members list in database
+//                // If current user was the last member, the conversation will delete entirely
+//                
+//                var members = snapshot.value as? [String: String]
+//                members?.removeValue(forKey: UserState.currentUser.uid)
+//                
+//                if (members?.count == 0) {
+//                    self.conversationsRef.child(convoID).removeValue()
+//                } else {
+//                    activeMembersRef.setValue(members)
+//                }
+//            })
             
             
             // Also remove records from local table view data source

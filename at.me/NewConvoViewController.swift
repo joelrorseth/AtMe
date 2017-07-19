@@ -15,7 +15,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     private lazy var registeredUsernamesRef: DatabaseReference = Database.database().reference().child("registeredUsernames")
     private lazy var userConversationListRef: DatabaseReference = Database.database().reference().child("userConversationList")
     private lazy var userInformationRef: DatabaseReference = Database.database().reference().child("userInformation")
-    private lazy var conversationsRef: DatabaseReference = Database.database().reference().child("conversations")
+    
     
     @IBOutlet weak var usersSearchBar: UISearchBar!
     @IBOutlet weak var usersTableView: UITableView!
@@ -43,8 +43,6 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         usersSearchBar.isTranslucent = false
         
         self.title = "New Conversation"
-        //self.navigationController?.title
-        //self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName : UIColor.white]
         
         // Little trick to hide empty cells from table view
         // TODO: Add suggestions to start a convo instead of a blank screen
@@ -125,39 +123,12 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         
         if let selectedUserUid = cell.uid, let selectedUserUsername = cell.username {
         
-            databaseManager.doesConversationExistWith(username: selectedUserUsername, completion: { exists in
-                
-                if (!exists) {
-                    
-                    // Generate unique conversation identifier
-                    let convoID = self.conversationsRef.childByAutoId().key
-                    
-                    // Establish the database record for this conversation
-                    self.userInformationRef.observeSingleEvent(of: DataEventType.value, with: { snapshot in
-                        
-                        // Store list of member uid's and their notificationIDs in conversation for quick lookup
-                        let selectedUserNotificationID = snapshot.childSnapshot(forPath: "\(selectedUserUid)/notificationID").value as? String
-                        let members = [UserState.currentUser.uid: UserState.currentUser.notificationID, selectedUserUid: selectedUserNotificationID!]
-                        let lastSeen = [UserState.currentUser.uid: Date().timeIntervalSince1970, selectedUserUid: Date().timeIntervalSinceNow]
-                        
-                        self.conversationsRef.child("\(convoID)/creator").setValue(UserState.currentUser.username)
-                        self.conversationsRef.child("\(convoID)/activeMembers").setValue(members)
-                        self.conversationsRef.child("\(convoID)/lastSeen").setValue(lastSeen)
-                        
-                        // For both users separately, record the convoId in a record identified by other user's username
-                        self.userConversationListRef.child(UserState.currentUser.uid).child(selectedUserUsername).setValue(convoID)
-                        self.userConversationListRef.child(selectedUserUid).child(UserState.currentUser.username).setValue(convoID)
-                    })
-                    
-                    // Dismiss view now that conversation has been created
-                    self.dismiss(animated: true, completion: nil)
-                
-                    
-                } else {
-                    self.presentSimpleAlert(title: "Conversation Already Exists", message: Constants.Errors.conversationAlreadyExists, completion: nil)
-                }
+            // Create the conversation (or even reuse old existing one), then exit this view
+            databaseManager.createConversationWith(user: selectedUserUsername, withID: selectedUserUid, completion: {
+                self.dismiss(animated: true, completion: nil)
             })
-        }
+        
+        } else { presentSimpleAlert(title: "Error creating conversation", message: Constants.Errors.createConversationError, completion: nil) }
     }
     
     
