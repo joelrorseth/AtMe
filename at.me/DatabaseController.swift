@@ -186,6 +186,20 @@ class DatabaseController {
                 })
             }
         })
-
+    }
+    
+    
+    /**
+     Removes the current user from a given conversation, thus archiving it and making it inactive.
+     - parameters:
+        - convoID: The conversation ID of the conversation the current user requests to leave
+        - username: The username of the user to with whom the conversation was with
+        - completion: A blank callback called when current user has been removed from conversation
+     */
+    public func leaveConversation(convoID: String, with username: String, completion: @escaping ()->()) {
+        
+        userConversationListRef.child(UserState.currentUser.uid).child(username).removeValue()
+        userInactiveConversationsRef.child(UserState.currentUser.uid).child(username).setValue(convoID)
+        completion()
     }
 }

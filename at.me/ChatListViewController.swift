@@ -473,51 +473,28 @@ extension ChatListViewController {
     // ==========================================
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         
-        // Handle the user deleting a conversation
-        // In Firebase, delete only the current users record of being in this conversation
+        // Handle conversation deletion - in this app, conversations are persisted forever, but regardless,
+        // the user and their convoIDs are recorded either in the active or inactive convo database records
         
         if (editingStyle == UITableViewCellEditingStyle.delete) {
             
             // Extract conversation unique id and Firebase ref to activeMembers record
             let username = conversations[indexPath.row].name
             let convoID = conversations[indexPath.row].convoID
-            //let activeMembersRef = conversationsRef.child("\(convoID)/activeMembers")
             
             
             // Delete conversation record from current conversations, add it to inactive conversations
             // These must be separate in database because an observer will detect all entries in active list
             
-            // TODO: Refactor into database controller class
-            
-            userConversationListRef.child(UserState.currentUser.uid).child(username).removeValue()
-            userInactiveConversationsRef.child(UserState.currentUser.uid).child(username).setValue(convoID)
-            
-        
-            // MARK: Most likely will delete this. We are, from this point on, assuming only one convo
-            // record will ever exist between two users, and should thus always be reused when rekindled.
-            
-//            activeMembersRef.observeSingleEvent(of: .value, with: { snapshot in
-//                
-//                // Remove current user from members list in database
-//                // If current user was the last member, the conversation will delete entirely
-//                
-//                var members = snapshot.value as? [String: String]
-//                members?.removeValue(forKey: UserState.currentUser.uid)
-//                
-//                if (members?.count == 0) {
-//                    self.conversationsRef.child(convoID).removeValue()
-//                } else {
-//                    activeMembersRef.setValue(members)
-//                }
-//            })
-            
-            
-            // Also remove records from local table view data source
-            conversations.remove(at: indexPath.row)
-            
-            // Delete row in tableView
-            tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.right)
-            tableView.reloadData()
+            databaseManager.leaveConversation(convoID: convoID, with: username, completion: {
+                
+                // Remove records from local table view data source
+                self.conversations.remove(at: indexPath.row)
+                
+                // Delete row in tableView
+                tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.right)
+                tableView.reloadData()
+            })
         }
     }
 }
