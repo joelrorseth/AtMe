@@ -122,12 +122,19 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         // This should only be done if a conversation does not already exist
         
         if let selectedUserUid = cell.uid, let selectedUserUsername = cell.username {
-        
+            
             // Create the conversation (or even reuse old existing one), then exit this view
-            databaseManager.createConversationWith(user: selectedUserUsername, withID: selectedUserUid, completion: {
-                self.navigationController?.popViewController(animated: true)
+            self.databaseManager.createConversationWith(user: selectedUserUsername, withID: selectedUserUid, completion: { success in
+                
+                // If successful, exit. If unsuccessful, present alert so user is informed of preexisting conversation
+                if (success) {
+                    self.navigationController?.popViewController(animated: true)
+                
+                } else {
+                    self.presentSimpleAlert(title: "Conversation already exists", message: Constants.Errors.conversationAlreadyExists, completion: nil)
+                }
             })
-        
+            
         } else { presentSimpleAlert(title: "Error creating conversation", message: Constants.Errors.createConversationError, completion: nil) }
     }
     
