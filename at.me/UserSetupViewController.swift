@@ -61,7 +61,7 @@ class UserSetupViewController: UIViewController, AlertController {
                 if let data = self.selectedDisplayPictureData, let uid = uid {
                     
                     // Let the Database Controller take care of upoading using this general display picture URL
-                    let path = "displayPictures\(uid)/\(uid).JPG"
+                    let path = "displayPictures/\(uid)/\(uid).JPG"
                     self.databaseManager.uploadImage(data: data, to: path, completion: { error in
                         if let error = error {
                             print("AT.ME:: Error uploading display picture to Firebase. \(error.localizedDescription)")
