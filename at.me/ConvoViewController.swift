@@ -59,7 +59,7 @@ class ConvoViewController: UITableViewController, AlertController {
     var messages: [Message] = []
     var notificationIDs: [String] = []
     
-    
+    var currentMessageCountLimit = Constants.Limits.messageCountStandardLimit
     
     // FIXME: This needs to be refactored, along with prepareForSegue in ChatList
     var convoId: String = "" {
@@ -67,7 +67,7 @@ class ConvoViewController: UITableViewController, AlertController {
             conversationRef = Database.database().reference().child("conversations/\(convoId)")
             messagesRef = Database.database().reference().child("conversations/\(convoId)/messages/")
             observeNotificationIDs()
-            if (!observingMessages) { observeReceivedMessages(); observingMessages = true }
+            if (!observingMessages) { observeReceivedMessages(count: currentMessageCountLimit); observingMessages = true }
         }
     }
     
@@ -151,6 +151,10 @@ class ConvoViewController: UITableViewController, AlertController {
         tableView.backgroundColor = UIColor.groupTableViewBackground
         tableView.allowsSelection = false
         
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(reloadWithMoreMessages), for: UIControlEvents.valueChanged)
+        tableView.refreshControl = refreshControl
+        
         addKeyboardObservers()
     }
     
@@ -228,12 +232,16 @@ class ConvoViewController: UITableViewController, AlertController {
     
     
     // MARK: Observers
-    // ==========================================
-    // ==========================================
-    private func observeReceivedMessages() {
+    /**
+     Observe the messages of the current conversation. Initially, a given number of messages will be
+     observed, along with each newly added value afterwards.
+     - parameters:
+        - count: The number of most recent messages to load when the method is first called
+    */
+    private func observeReceivedMessages(count: Int) {
         
         
-        let messagesQuery = messagesRef?.queryLimited(toLast: 25)
+        let messagesQuery = messagesRef?.queryLimited(toLast: UInt(count))
         messagesQuery?.keepSynced(true)
         
         // This closure is triggered once for every existing record found, and for each record added here
@@ -278,7 +286,29 @@ class ConvoViewController: UITableViewController, AlertController {
     }
     
     
-    
+    /**
+     Reload this conversation entirely, this time loading in a larger number of recent messages.
+     The current implementation scraps the message observer, and adds a new one querying more messages initially.
+     */
+    @objc private func reloadWithMoreMessages() {
+        
+        // Remove the messages observer to start over and query a larger amount
+        if let handle = messagesHandle, let ref = messagesRef {
+            ref.removeObserver(withHandle: handle)
+            
+            // Remove data from data source
+            messages.removeAll()
+            tableView.reloadData()
+            
+            // Increase number of messages to load by a constant factor
+            currentMessageCountLimit += Constants.Limits.messageCountIncreaseLimit
+            observeReceivedMessages(count: currentMessageCountLimit)
+            
+        } else { print("Error: Could not unwrap handle or database ref to start the reload") }
+        
+        // Stop the reloading animation
+        tableView.refreshControl?.endRefreshing()
+    }
     
     
     // MARK: Keyboard Handling

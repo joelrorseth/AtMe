@@ -40,6 +40,11 @@ struct Constants {
         static let regularText = UIFont(name: "AvenirNext-Regular", size: 14)!
     }
     
+    struct Limits {
+        static let messageCountStandardLimit = 25
+        static let messageCountIncreaseLimit = 25
+    }
+    
     struct Radius {
         static let regularRadius = CGFloat(12)
     }
