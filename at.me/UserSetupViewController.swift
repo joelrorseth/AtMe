@@ -101,10 +101,12 @@ class UserSetupViewController: UIViewController, AlertController {
         }
     }
     
+    // MARK: View
     // ==========================================
     // ==========================================
     override func viewDidLoad() {
         super.viewDidLoad()
+        addKeyboardObservers()
         
         setupView()
         
@@ -130,6 +132,21 @@ class UserSetupViewController: UIViewController, AlertController {
         displayPictureImageView.layer.cornerRadius = displayPictureImageView.frame.width / 2
         displayPictureImageView.layer.borderColor = UIColor.white.cgColor
         displayPictureImageView.layer.borderWidth = 1.3
+    }
+    
+    // MARK: Keyboard Handling
+    /** Add gesture recognizer to the view to allow keyboard dismiss */
+    private func addKeyboardObservers() {
+        
+        // Add gesture recognizer to handle tapping outside of keyboard
+        let dismissKeyboardTap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(dismissKeyboardTap)
+    }
+    
+    
+    /** Dismiss the keyboard */
+    func dismissKeyboard() {
+        usernameTextField.resignFirstResponder()
     }
     
     // ==========================================

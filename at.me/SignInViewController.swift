@@ -57,6 +57,7 @@ class SignInViewController: UIViewController, AlertController {
     // ==========================================
     override func viewDidLoad() {
         super.viewDidLoad()
+        addKeyboardObservers()
         
         // Set background gradient
         self.view.layer.insertSublayer(self.renderGradientLayer(), at: 0)
@@ -95,6 +96,22 @@ class SignInViewController: UIViewController, AlertController {
     // ==========================================
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
+    }
+    
+    // MARK: Keyboard Handling
+    /** Add gesture recognizer to the view to allow keyboard dismiss */
+    private func addKeyboardObservers() {
+        
+        // Add gesture recognizer to handle tapping outside of keyboard
+        let dismissKeyboardTap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        self.view.addGestureRecognizer(dismissKeyboardTap)
+    }
+    
+    
+    /** Dismiss the keyboard */
+    func dismissKeyboard() {
+        emailField.resignFirstResponder()
+        passwordField.resignFirstResponder()
     }
     
     
