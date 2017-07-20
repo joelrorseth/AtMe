@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		32EE3B9DC05BF5B806403E62 /* Pods_AtMe.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99B5DE5445FDCD9AF52D3D1D /* Pods_AtMe.framework */; };
 		5D04E98A1E58DD0C006D8CD5 /* ChatListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D04E9891E58DD0C006D8CD5 /* ChatListViewController.swift */; };
 		5D04E98C1E58E24E006D8CD5 /* ConvoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D04E98B1E58E24E006D8CD5 /* ConvoViewController.swift */; };
 		5D07CAB21E752C0100316D75 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D07CAB11E752C0100316D75 /* UserProfile.swift */; };
@@ -21,6 +22,8 @@
 		5D323B721F107C3E00853EDE /* EmptyChatListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D323B711F107C3E00853EDE /* EmptyChatListView.swift */; };
 		5D3DDA381E62469000B6FBB7 /* UserInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3DDA371E62469000B6FBB7 /* UserInfoCell.swift */; };
 		5D3DDA3A1E6248DA00B6FBB7 /* NewConvoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3DDA391E6248DA00B6FBB7 /* NewConvoViewController.swift */; };
+		5D5A13021F2177C400D54109 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5D5A13011F2177C400D54109 /* GoogleService-Info.plist */; };
+		5D5A13031F2177C400D54109 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5D5A13011F2177C400D54109 /* GoogleService-Info.plist */; };
 		5D5D67761ED1E90200FF8F2A /* DatabaseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D5D67751ED1E90200FF8F2A /* DatabaseController.swift */; };
 		5D5EDF851EC3D14C00F7FC44 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D5EDF841EC3D14C00F7FC44 /* Extensions.swift */; };
 		5D65EBF61EFA1798009F512E /* NotificationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D65EBF51EFA1798009F512E /* NotificationsController.swift */; };
@@ -64,6 +67,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		29D4B591C398C0A7B3F6A7B5 /* Pods-AtMe.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AtMe.release.xcconfig"; path = "Pods/Target Support Files/Pods-AtMe/Pods-AtMe.release.xcconfig"; sourceTree = "<group>"; };
 		35C46A6FC6AE91CBE6FB594D /* Pods-at.me.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-at.me.release.xcconfig"; path = "Pods/Target Support Files/Pods-at.me/Pods-at.me.release.xcconfig"; sourceTree = "<group>"; };
 		3D296102BA5B8EB197C8D7AB /* libPods-OneSignalNotificationServiceExtension.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OneSignalNotificationServiceExtension.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		56057E6D4B4C34B0688A9645 /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.release.xcconfig"; sourceTree = "<group>"; };
@@ -84,6 +88,7 @@
 		5D3DDA371E62469000B6FBB7 /* UserInfoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoCell.swift; sourceTree = "<group>"; };
 		5D3DDA391E6248DA00B6FBB7 /* NewConvoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewConvoViewController.swift; sourceTree = "<group>"; };
 		5D43855F1EEC4D8F0005D7CD /* AtMe.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AtMe.entitlements; sourceTree = "<group>"; };
+		5D5A13011F2177C400D54109 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5D5D67751ED1E90200FF8F2A /* DatabaseController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseController.swift; sourceTree = "<group>"; };
 		5D5EDF841EC3D14C00F7FC44 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		5D65EBF51EFA1798009F512E /* NotificationsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationsController.swift; sourceTree = "<group>"; };
@@ -99,7 +104,9 @@
 		5DE764EF1F00814900E483C6 /* UserSetupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserSetupViewController.swift; sourceTree = "<group>"; };
 		5DF36ED81EB3D35400346868 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		5DFC7F3C1E7A27CF003C6594 /* ConversationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationCell.swift; sourceTree = "<group>"; };
+		69840318970422441CC7E5EA /* Pods-AtMe.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AtMe.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AtMe/Pods-AtMe.debug.xcconfig"; sourceTree = "<group>"; };
 		997179A80F10509A4302F162 /* Pods_at_me.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_at_me.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		99B5DE5445FDCD9AF52D3D1D /* Pods_AtMe.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AtMe.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9EE8D20090D5CD1754DCC1E5 /* Pods-at.me.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-at.me.debug.xcconfig"; path = "Pods/Target Support Files/Pods-at.me/Pods-at.me.debug.xcconfig"; sourceTree = "<group>"; };
 		A63264150F7E7CD1F8CE05E7 /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -110,6 +117,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CBD13E33FC5A083122B9E03C /* Pods_at_me.framework in Frameworks */,
+				32EE3B9DC05BF5B806403E62 /* Pods_AtMe.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -131,6 +139,8 @@
 				35C46A6FC6AE91CBE6FB594D /* Pods-at.me.release.xcconfig */,
 				A63264150F7E7CD1F8CE05E7 /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */,
 				56057E6D4B4C34B0688A9645 /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */,
+				69840318970422441CC7E5EA /* Pods-AtMe.debug.xcconfig */,
+				29D4B591C398C0A7B3F6A7B5 /* Pods-AtMe.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -166,6 +176,7 @@
 				5D1C70421E58C64A00FEDEC3 /* Assets.xcassets */,
 				5D1C703F1E58C64A00FEDEC3 /* Main.storyboard */,
 				5D1C70441E58C64A00FEDEC3 /* LaunchScreen.storyboard */,
+				5D5A13011F2177C400D54109 /* GoogleService-Info.plist */,
 				5D1C70471E58C64A00FEDEC3 /* Info.plist */,
 			);
 			path = AtMe;
@@ -236,6 +247,7 @@
 			children = (
 				997179A80F10509A4302F162 /* Pods_at_me.framework */,
 				3D296102BA5B8EB197C8D7AB /* libPods-OneSignalNotificationServiceExtension.a */,
+				99B5DE5445FDCD9AF52D3D1D /* Pods_AtMe.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -342,6 +354,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5D1C70461E58C64A00FEDEC3 /* LaunchScreen.storyboard in Resources */,
+				5D5A13021F2177C400D54109 /* GoogleService-Info.plist in Resources */,
 				5D1C70431E58C64A00FEDEC3 /* Assets.xcassets in Resources */,
 				5D1C70411E58C64A00FEDEC3 /* Main.storyboard in Resources */,
 			);
@@ -351,6 +364,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5D5A13031F2177C400D54109 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -399,7 +413,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-at.me/Pods-at.me-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AtMe/Pods-AtMe-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		96315511593CD5686B8E8EDF /* [CP] Copy Pods Resources */ = {
@@ -414,7 +428,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-at.me/Pods-at.me-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AtMe/Pods-AtMe-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		C0DC64C8614A4BEA299F4EA2 /* [CP] Check Pods Manifest.lock */ = {
@@ -596,7 +610,7 @@
 		};
 		5D1C704B1E58C64A00FEDEC3 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9EE8D20090D5CD1754DCC1E5 /* Pods-at.me.debug.xcconfig */;
+			baseConfigurationReference = 69840318970422441CC7E5EA /* Pods-AtMe.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -613,7 +627,7 @@
 		};
 		5D1C704C1E58C64A00FEDEC3 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 35C46A6FC6AE91CBE6FB594D /* Pods-at.me.release.xcconfig */;
+			baseConfigurationReference = 29D4B591C398C0A7B3F6A7B5 /* Pods-AtMe.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
