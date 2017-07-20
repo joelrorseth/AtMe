@@ -214,13 +214,13 @@ class ConvoViewController: UITableViewController, AlertController {
         messages.append(message)
         
         // Efficiently update by updating / inserting only the cells that need to be
-        self.tableView.beginUpdates()
-        self.tableView.insertRows(at: [IndexPath(row: messages.count - 1, section: 0)], with: .left)
-        self.tableView.endUpdates()
+        //self.tableView.beginUpdates()
+        self.tableView.insertRows(at: [IndexPath(row: messages.count - 1, section: 0)], with: .none)
+        self.tableView.scrollToRow(at: IndexPath.init(row: messages.count - 1, section: 0) , at: .bottom, animated: false)
+        //self.tableView.endUpdates()
         
         // TODO: Fix animation for initial message loading. Animation is kinda choppy
-        print("Scrolling to row \(IndexPath.init(row: messages.count - 1, section: 0))")
-        self.tableView.scrollToRow(at: IndexPath.init(row: messages.count - 1, section: 0) , at: .bottom, animated: false)
+        //print("Scrolling to row \(IndexPath.init(row: messages.count - 1, section: 0))")
     }
     
     // ==========================================
