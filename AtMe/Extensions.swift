@@ -35,7 +35,9 @@ extension AlertController where Self:UIViewController {
     func presentPhotoSelectionPrompt(completion: ((UIImagePickerControllerSourceType) -> Void)?) {
         
         let controller = UIAlertController(title: "Change Profile Picture", message: "Where do you want to take your picture?", preferredStyle: UIAlertControllerStyle.actionSheet)
+        controller.view.tintColor = Constants.Colors.primaryDark
 
+        // Add camera option (if available)
         if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera)) {
             controller.addAction(UIAlertAction(title: "Camera", style: UIAlertActionStyle.default, handler: { _ in
  
@@ -43,14 +45,14 @@ extension AlertController where Self:UIViewController {
             }))
         }
         
+        // Add photo library option
         controller.addAction(UIAlertAction(title: "Photo Library", style: UIAlertActionStyle.default, handler: { _ in
             completion!(UIImagePickerControllerSourceType.photoLibrary)
         }))
         
+        // Present the action sheet
         controller.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: nil))
-        
         self.present(controller, animated: true, completion: nil)
-        
     }
 }
 

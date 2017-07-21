@@ -134,6 +134,12 @@ class UserSetupViewController: UIViewController, AlertController {
         displayPictureImageView.layer.borderWidth = 1.3
     }
     
+    // ==========================================
+    // ==========================================
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
     // MARK: Keyboard Handling
     /** Add gesture recognizer to the view to allow keyboard dismiss */
     private func addKeyboardObservers() {

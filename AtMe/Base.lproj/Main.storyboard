@@ -15,7 +15,7 @@
         <!--Sign In View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="SignInViewController" customModule="at_me" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="SignInViewController" customModule="AtMe" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -110,7 +110,7 @@
         <!--Sign Up View Controller-->
         <scene sceneID="qaW-rQ-CSu">
             <objects>
-                <viewController id="cE4-CE-511" customClass="SignUpViewController" customModule="at_me" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="cE4-CE-511" customClass="SignUpViewController" customModule="AtMe" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="C0A-SG-aVb"/>
                         <viewControllerLayoutGuide type="bottom" id="xgb-Vu-NxH"/>
@@ -233,7 +233,7 @@
         <!--User Setup View Controller-->
         <scene sceneID="5z5-IT-WXy">
             <objects>
-                <viewController id="gWN-xG-q04" customClass="UserSetupViewController" customModule="at_me" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="gWN-xG-q04" customClass="UserSetupViewController" customModule="AtMe" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="p4T-1X-fnQ"/>
                         <viewControllerLayoutGuide type="bottom" id="cRq-Hz-zUy"/>
@@ -243,7 +243,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="@" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j9z-as-Bwf">
-                                <rect key="frame" x="22" y="291" width="30" height="44"/>
+                                <rect key="frame" x="22" y="279" width="30" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="30" id="JlU-7n-C1I"/>
                                     <constraint firstAttribute="height" constant="44" id="eaD-A6-zf5"/>
@@ -253,13 +253,13 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="username" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xyY-XS-X24">
-                                <rect key="frame" x="60" y="291" width="293" height="44"/>
+                                <rect key="frame" x="60" y="279" width="293" height="44"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="30"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="w6V-nX-crj">
-                                <rect key="frame" x="37" y="372" width="300" height="60"/>
+                                <rect key="frame" x="37" y="360" width="300" height="60"/>
                                 <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="60" id="A3g-67-8KY"/>
@@ -274,7 +274,7 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Choose a username" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lv1-Fe-sEQ">
-                                <rect key="frame" x="22" y="262" width="331" height="21"/>
+                                <rect key="frame" x="22" y="250" width="331" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="ZqA-pG-oNX"/>
                                 </constraints>
@@ -283,7 +283,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Click me!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SUN-SJ-NMj">
-                                <rect key="frame" x="143" y="207" width="88" height="21"/>
+                                <rect key="frame" x="143" y="195" width="88" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="hV6-dO-BNi"/>
                                     <constraint firstAttribute="width" constant="88" id="wED-7I-cj1"/>
@@ -293,8 +293,11 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user" translatesAutoresizingMaskIntoConstraints="NO" id="HTK-vC-Kgk">
-                                <rect key="frame" x="117" y="59" width="140" height="140"/>
+                                <rect key="frame" x="123" y="59" width="128" height="128"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="HTK-vC-Kgk" secondAttribute="height" multiplier="1:1" id="VSa-si-axN"/>
+                                </constraints>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Rc7-vz-Bge">
                                 <rect key="frame" x="16" y="35" width="30" height="30"/>
@@ -324,7 +327,7 @@
                             <constraint firstItem="j9z-as-Bwf" firstAttribute="bottom" secondItem="xyY-XS-X24" secondAttribute="bottom" id="5bi-cX-3iy"/>
                             <constraint firstItem="HTK-vC-Kgk" firstAttribute="centerX" secondItem="SUN-SJ-NMj" secondAttribute="centerX" id="BjA-8q-8Va"/>
                             <constraint firstItem="Lv1-Fe-sEQ" firstAttribute="centerX" secondItem="w6V-nX-crj" secondAttribute="centerX" id="Jju-1o-of0"/>
-                            <constraint firstItem="HTK-vC-Kgk" firstAttribute="leading" secondItem="Rc7-vz-Bge" secondAttribute="trailing" constant="71" id="QT9-bk-buZ"/>
+                            <constraint firstItem="HTK-vC-Kgk" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Rc7-vz-Bge" secondAttribute="trailing" constant="71" id="QT9-bk-buZ"/>
                             <constraint firstItem="Lv1-Fe-sEQ" firstAttribute="trailing" secondItem="xyY-XS-X24" secondAttribute="trailing" id="WTJ-Te-6VB"/>
                             <constraint firstItem="SUN-SJ-NMj" firstAttribute="top" secondItem="HTK-vC-Kgk" secondAttribute="bottom" constant="8" symbolic="YES" id="bwj-7a-RRO"/>
                             <constraint firstItem="Lv1-Fe-sEQ" firstAttribute="top" secondItem="SUN-SJ-NMj" secondAttribute="bottom" constant="34" id="c1z-YS-Iod"/>
@@ -333,7 +336,7 @@
                             <constraint firstItem="HTK-vC-Kgk" firstAttribute="top" secondItem="p4T-1X-fnQ" secondAttribute="bottom" constant="39" id="f8G-5s-jlX"/>
                             <constraint firstItem="SUN-SJ-NMj" firstAttribute="centerX" secondItem="Lv1-Fe-sEQ" secondAttribute="centerX" id="fPM-Ba-FYW"/>
                             <constraint firstItem="Lv1-Fe-sEQ" firstAttribute="leading" secondItem="j9z-as-Bwf" secondAttribute="leading" id="gZZ-eT-dlh"/>
-                            <constraint firstItem="cRq-Hz-zUy" firstAttribute="top" secondItem="w6V-nX-crj" secondAttribute="bottom" constant="235" id="hHt-do-ccU"/>
+                            <constraint firstItem="cRq-Hz-zUy" firstAttribute="top" relation="greaterThanOrEqual" secondItem="w6V-nX-crj" secondAttribute="bottom" constant="235" id="hHt-do-ccU"/>
                             <constraint firstItem="w6V-nX-crj" firstAttribute="top" secondItem="j9z-as-Bwf" secondAttribute="bottom" constant="37" id="j82-MV-qUX"/>
                             <constraint firstItem="Rc7-vz-Bge" firstAttribute="leading" secondItem="bUR-YU-LPD" secondAttribute="leadingMargin" id="rUi-lc-Pm3"/>
                             <constraint firstItem="j9z-as-Bwf" firstAttribute="top" secondItem="Lv1-Fe-sEQ" secondAttribute="bottom" constant="8" symbolic="YES" id="y1s-v4-seC"/>
@@ -341,6 +344,7 @@
                             <constraint firstItem="Rc7-vz-Bge" firstAttribute="top" secondItem="p4T-1X-fnQ" secondAttribute="bottom" constant="15" id="zt2-i9-5Vt"/>
                         </constraints>
                     </view>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <connections>
                         <outlet property="createAccountButton" destination="w6V-nX-crj" id="sJv-s0-SN9"/>
                         <outlet property="displayPictureImageView" destination="HTK-vC-Kgk" id="ydh-iJ-Vic"/>
@@ -355,7 +359,7 @@
         <!--Settings-->
         <scene sceneID="FcA-yU-P8S">
             <objects>
-                <tableViewController title="Settings" id="TfL-yf-bTj" customClass="SettingsViewController" customModule="at_me" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController title="Settings" id="TfL-yf-bTj" customClass="SettingsViewController" customModule="AtMe" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="none" sectionIndexMinimumDisplayRowCount="-1" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="TlC-cN-WdA">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -551,7 +555,7 @@
         <!--Prompt View Controller-->
         <scene sceneID="GLR-pK-3YY">
             <objects>
-                <viewController storyboardIdentifier="PromptViewControllerID" useStoryboardIdentifierAsRestorationIdentifier="YES" id="PUW-Nl-gDK" customClass="PromptViewController" customModule="at_me" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PromptViewControllerID" useStoryboardIdentifierAsRestorationIdentifier="YES" id="PUW-Nl-gDK" customClass="PromptViewController" customModule="AtMe" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="zUy-QA-poL"/>
                         <viewControllerLayoutGuide type="bottom" id="K5u-b3-LjA"/>
@@ -568,7 +572,7 @@
         <!--New Convo View Controller-->
         <scene sceneID="KIL-9c-Fgb">
             <objects>
-                <viewController id="W22-SC-qbt" customClass="NewConvoViewController" customModule="at_me" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="W22-SC-qbt" customClass="NewConvoViewController" customModule="AtMe" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="LAV-4Z-IEe"/>
                         <viewControllerLayoutGuide type="bottom" id="gXa-I9-X7E"/>
@@ -590,7 +594,7 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="sectionIndexBackgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="UserInfoCell" rowHeight="74" id="gPK-Lk-nby" customClass="UserInfoCell" customModule="at_me" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="UserInfoCell" rowHeight="74" id="gPK-Lk-nby" customClass="UserInfoCell" customModule="AtMe" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="74"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="gPK-Lk-nby" id="wof-y7-ZYH">
@@ -667,13 +671,13 @@
         <!--Root View Controller-->
         <scene sceneID="Qpj-BD-wvM">
             <objects>
-                <tableViewController id="AW7-DM-mNt" customClass="ChatListViewController" customModule="at_me" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="AW7-DM-mNt" customClass="ChatListViewController" customModule="AtMe" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="94" sectionHeaderHeight="28" sectionFooterHeight="28" id="TM1-qq-Y2h">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ChatListCell" rowHeight="94" id="RQK-Tm-HT6" customClass="ConversationCell" customModule="at_me" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ChatListCell" rowHeight="94" id="RQK-Tm-HT6" customClass="ConversationCell" customModule="AtMe" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="375" height="94"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="RQK-Tm-HT6" id="VB3-B0-OEO">
@@ -784,7 +788,7 @@
         <!--Convo View Controller-->
         <scene sceneID="0b3-eW-LCc">
             <objects>
-                <viewController id="UWH-2D-z4o" customClass="ConvoViewController" customModule="at_me" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="UWH-2D-z4o" customClass="ConvoViewController" customModule="AtMe" customModuleProvider="target" sceneMemberID="viewController">
                     <connections>
                         <outlet property="chatInputAccessoryView" destination="JUJ-kh-fr0" id="idE-pY-0wS"/>
                         <outlet property="view" destination="GcX-v7-cKB" id="pnY-0F-gyZ"/>
@@ -796,7 +800,7 @@
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <prototypes>
-                        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="messageId" id="QG2-8N-TpN" customClass="MessageCell" customModule="at_me" customModuleProvider="target">
+                        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="messageId" id="QG2-8N-TpN" customClass="MessageCell" customModule="AtMe" customModuleProvider="target">
                             <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                             <autoresizingMask key="autoresizingMask"/>
                             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="QG2-8N-TpN" id="nJv-gQ-4Eu">
@@ -811,7 +815,7 @@
                         <outlet property="delegate" destination="UWH-2D-z4o" id="LXm-Do-R49"/>
                     </connections>
                 </tableView>
-                <view opaque="NO" contentMode="scaleToFill" id="JUJ-kh-fr0" customClass="ChatInputAccessoryView" customModule="at_me" customModuleProvider="target">
+                <view opaque="NO" contentMode="scaleToFill" id="JUJ-kh-fr0" customClass="ChatInputAccessoryView" customModule="AtMe" customModuleProvider="target">
                     <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
