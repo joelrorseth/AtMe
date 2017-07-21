@@ -68,7 +68,8 @@ class SignInViewController: UIViewController, AlertController {
     
     
     /** Overridden method called when view controller is soon to be added to view hierarchy. */
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
         if let user = Auth.auth().currentUser {
             print("Auth detected a user already signed into the application")
@@ -81,7 +82,7 @@ class SignInViewController: UIViewController, AlertController {
                 // Successful configuration allows segue to next view without having to type anything!
                 if (configured) {
                     self.performSegue(withIdentifier: Constants.Segues.signInSuccessSegue, sender: nil)
-                
+                    
                 } else {
                     
                     print("Error: Could not obtain information from database about previously authorized user")
