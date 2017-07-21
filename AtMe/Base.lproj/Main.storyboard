@@ -8,7 +8,6 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
-        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -594,7 +593,7 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="sectionIndexBackgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="UserInfoCell" rowHeight="74" id="gPK-Lk-nby" customClass="UserInfoCell" customModule="AtMe" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="UserInfoCell" id="gPK-Lk-nby" customClass="UserInfoCell" customModule="AtMe" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="74"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="gPK-Lk-nby" id="wof-y7-ZYH">
@@ -602,36 +601,35 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user_purple" translatesAutoresizingMaskIntoConstraints="NO" id="bSv-Nu-AGp">
-                                                    <rect key="frame" x="18" y="12" width="48" height="48"/>
+                                                    <rect key="frame" x="18" y="10" width="52" height="52"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" secondItem="bSv-Nu-AGp" secondAttribute="height" multiplier="1:1" id="BYC-lP-eLM"/>
+                                                        <constraint firstAttribute="width" secondItem="bSv-Nu-AGp" secondAttribute="height" multiplier="1:1" id="i4Z-dA-wAS"/>
                                                     </constraints>
                                                 </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="John Smith" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LWv-K7-TAL">
+                                                    <rect key="frame" x="83" y="25" width="93" height="25"/>
+                                                    <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="18"/>
+                                                    <color key="textColor" red="0.34901960780000002" green="0.18823529410000001" blue="0.90588235289999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="@john_smith" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2dw-Ko-P3j">
                                                     <rect key="frame" x="264" y="25" width="93" height="22"/>
                                                     <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="16"/>
                                                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="John Smith" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LWv-K7-TAL">
-                                                    <rect key="frame" x="80" y="23.5" width="93" height="25"/>
-                                                    <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="18"/>
-                                                    <color key="textColor" red="0.34901960780000002" green="0.18823529410000001" blue="0.90588235289999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
                                             </subviews>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
-                                                <constraint firstItem="bSv-Nu-AGp" firstAttribute="centerY" secondItem="wof-y7-ZYH" secondAttribute="centerY" id="98T-o1-LCn"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="2dw-Ko-P3j" secondAttribute="trailing" constant="10" id="9Qg-Y7-7qi"/>
-                                                <constraint firstItem="LWv-K7-TAL" firstAttribute="leading" secondItem="bSv-Nu-AGp" secondAttribute="trailing" constant="14" id="RhX-1C-Ie4"/>
-                                                <constraint firstItem="LWv-K7-TAL" firstAttribute="centerY" secondItem="bSv-Nu-AGp" secondAttribute="centerY" id="WvW-hC-cgX"/>
-                                                <constraint firstAttribute="bottomMargin" relation="greaterThanOrEqual" secondItem="bSv-Nu-AGp" secondAttribute="bottom" constant="4" id="aQ2-cq-Phj"/>
-                                                <constraint firstItem="bSv-Nu-AGp" firstAttribute="top" relation="greaterThanOrEqual" secondItem="wof-y7-ZYH" secondAttribute="topMargin" constant="4" id="fBY-G2-3hr"/>
-                                                <constraint firstItem="bSv-Nu-AGp" firstAttribute="height" secondItem="wof-y7-ZYH" secondAttribute="height" multiplier="0.8" priority="750" id="uPX-Jv-cZi"/>
-                                                <constraint firstItem="bSv-Nu-AGp" firstAttribute="leading" secondItem="wof-y7-ZYH" secondAttribute="leadingMargin" constant="10" id="ufC-gC-VYM"/>
-                                                <constraint firstItem="2dw-Ko-P3j" firstAttribute="centerY" secondItem="LWv-K7-TAL" secondAttribute="centerY" id="vRh-YD-og7"/>
+                                                <constraint firstItem="LWv-K7-TAL" firstAttribute="leading" secondItem="bSv-Nu-AGp" secondAttribute="trailing" constant="13" id="Q57-Si-hCA"/>
+                                                <constraint firstItem="LWv-K7-TAL" firstAttribute="centerY" secondItem="wof-y7-ZYH" secondAttribute="centerY" id="T84-XZ-g0K"/>
+                                                <constraint firstItem="2dw-Ko-P3j" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="LWv-K7-TAL" secondAttribute="trailing" constant="60" id="TYc-tf-Bqz"/>
+                                                <constraint firstItem="bSv-Nu-AGp" firstAttribute="centerY" secondItem="wof-y7-ZYH" secondAttribute="centerY" id="VMU-0t-EkI"/>
+                                                <constraint firstItem="bSv-Nu-AGp" firstAttribute="top" relation="greaterThanOrEqual" secondItem="wof-y7-ZYH" secondAttribute="topMargin" constant="2" id="ahw-kO-efC"/>
+                                                <constraint firstItem="bSv-Nu-AGp" firstAttribute="leading" secondItem="wof-y7-ZYH" secondAttribute="leadingMargin" constant="10" id="bzS-TM-bb2"/>
+                                                <constraint firstItem="2dw-Ko-P3j" firstAttribute="centerY" secondItem="wof-y7-ZYH" secondAttribute="centerY" id="eoL-St-Inc"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="2dw-Ko-P3j" secondAttribute="trailing" constant="10" id="nVk-GR-Sit"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -666,7 +664,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x2k-00-XCM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3721" y="-483"/>
+            <point key="canvasLocation" x="3720.8000000000002" y="-483.50824587706148"/>
         </scene>
         <!--Root View Controller-->
         <scene sceneID="Qpj-BD-wvM">

@@ -64,12 +64,6 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     
     // ==========================================
     // ==========================================
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return CGFloat(80)
-    }
-    
-    // ==========================================
-    // ==========================================
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return searchResults.count
     }
