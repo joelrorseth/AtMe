@@ -147,17 +147,11 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         clearResults()
         guard let text = searchBar.text else { return }
         
-        // Look inside registeredUsernames, determine if username is registered or not
-        // Extract the uid recorded here if found, then use it to find user details
-        
-        // Must make end query upper bound include the searched text
-        // We accomplish this by adding a letter, eg. bill < billz and is thus included in query range below
-        
-        var end = text.characters.dropLast(0)
-        end.append("z")
-        
         // Find all usernames containing search text
-        registeredUsernamesRef.queryOrderedByKey().queryStarting(atValue: text).queryEnding(atValue: String(end)).queryLimited(toFirst: 20).observeSingleEvent(of: DataEventType.value, with: { snapshot in
+        // Order record by key (which are the usernames), then query for string bounded in range [text, text]
+        
+        registeredUsernamesRef.queryOrderedByKey().queryStarting(atValue: text).queryEnding(atValue: "\(text)\u{f8ff}")
+            .queryLimited(toFirst: Constants.Limits.resultsCount).observeSingleEvent(of: DataEventType.value, with: { snapshot in
             
             // Parse results as dictionary of username/uid pairs
             if var results = snapshot.value as? [String : String] {
