@@ -27,7 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Init OneSignal
         OneSignal.initWithLaunchOptions(launchOptions,
-                                        appId: "95927b83-b066-4bdd-ba05-82d774af3b08",
+                                        appId: Constants.App.oneSignalAppId,
                                         handleNotificationAction: nil,
                                         settings: onesignalInitSettings)
         

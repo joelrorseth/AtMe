@@ -9,6 +9,10 @@
 import UIKit
 struct Constants {
     
+    struct App {
+        static let oneSignalAppId = "cb614488-c9c3-4e6b-bc5b-6d92a415025d"
+    }
+    
     struct Assets {
         static let purpleUserImage = "user_purple"
     }
