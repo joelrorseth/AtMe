@@ -17,6 +17,12 @@ class ChatInputAccessoryView: UIInputView {
     @IBOutlet weak var expandingTextView: UITextView!
     
     
+    /** Overridden variable which determines if current view contrller can become first responder. */
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
+    
+    
     /** Asks the view to calculate and return the size that best fits the specified size. */
     override func sizeThatFits(_ size: CGSize) -> CGSize {
         return CGSize(width: size.width, height: ChatInputAccessoryView.preferredHeight)
@@ -59,6 +65,13 @@ class ConvoViewController: UITableViewController, AlertController {
     var notificationIDs: [String] = []
     var currentMessageCountLimit = Constants.Limits.messageCountStandardLimit
     
+    
+    /** Overridden variable which determines if current view contrller can become first responder. */
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
+    
+    
     // MARK: Storyboard
     @IBOutlet weak var chatInputAccessoryView: ChatInputAccessoryView!
     
@@ -94,12 +107,6 @@ class ConvoViewController: UITableViewController, AlertController {
         // Return our custom input accessory view controller. You could also just return a UIView with
         // override func inputAccessoryView()
         return chatInputAccessoryViewController
-    }
-    
-    
-    /** Overridden variable which determines if current view contrller can become first responder. */
-    override var canBecomeFirstResponder: Bool {
-        return true
     }
     
     
@@ -211,6 +218,7 @@ class ConvoViewController: UITableViewController, AlertController {
         
         // Update data source
         messages.append(message)
+        print("\t\tJust added a message")
         
         // Efficiently update by updating / inserting only the cells that need to be
         //self.tableView.beginUpdates()
@@ -331,6 +339,7 @@ class ConvoViewController: UITableViewController, AlertController {
     /** Dismiss the custom keyboard (the input accessory) */
     func dismissKeyboard() {
         chatInputAccessoryView.expandingTextView.resignFirstResponder()
+        self.becomeFirstResponder()
     }
     
     
@@ -362,22 +371,22 @@ extension ConvoViewController: UIImagePickerControllerDelegate, UINavigationCont
                 databaseManager.uploadImage(data: data, to: path, completion: { (error) in
                     if let error = error {
                         print("AtMe:: Error uploading picture message to Firebase. \(error.localizedDescription)")
+                        self.dismiss(animated: true)
                         return
                     }
                     
                     // Now that image has uploaded, officially send the message record to the database with storage URL
-                    print("AtMe:: Image uploaded successfully to \(path)")
+                    print("AtMe:: Uploaded image to: \(path)")
                     self.send(message: Message(
                         imageURL: path,
                         sender: UserState.currentUser.username,
                         text: nil,
                         timestamp: Date()))
+                    self.dismiss(animated: true)
                 })
                 
             } else { print("AtMe:: Error extracting image from source") }
         } else { print("AtMe:: Error extracting edited UIImage from info dictionary") }
-        
-        dismiss(animated: true)
     }
     
     
@@ -391,6 +400,9 @@ extension ConvoViewController: UITextViewDelegate {
     
     /** Delegate method which fires when the specified text view has begun editing. */
     func textViewDidBeginEditing(_ textView: UITextView) {
+        
+        print("Set input accessory view!")
+        textView.inputAccessoryView = chatInputAccessoryView
         
         self.chatInputAccessoryView.expandingTextView.textColor = UIColor.darkGray
         
