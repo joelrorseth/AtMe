@@ -13,7 +13,9 @@ class SettingsViewController: UITableViewController, AlertController {
     
     lazy var userInformationRef: DatabaseReference = Database.database().reference().child("userInformation")
     
-    internal let databaseManager = DatabaseController()
+    lazy var databaseManager = DatabaseController()
+    lazy var authManager = AuthController()
+    
     
     var currentAttributeChanging: Constants.UserAttribute = Constants.UserAttribute.none
     var attributePrompt: String = ""
@@ -128,6 +130,9 @@ class SettingsViewController: UITableViewController, AlertController {
                 try Auth.auth().signOut()
                 
                 // At this point, signOut() succeeded by not throwing any errors
+                // Let AuthController perform account sign out maintenance
+                
+                self.authManager.signOut()
                 self.performSegue(withIdentifier: Constants.Segues.unwindToSignInSegue, sender: self)
                 
             } catch let error as NSError {

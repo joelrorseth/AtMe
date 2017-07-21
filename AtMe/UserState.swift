@@ -20,9 +20,20 @@ struct UserState {
     var displayPicture: String?     // You will not have a display picture until set
     var email: String
     var name: String
-    var notificationID: String
+    var notificationID: String?     // User may have opted out, this is okay b/c we always query database for this
     var uid: String
     var username: String
+    
+    
+    static func resetCurrentUser() {
+        currentUser.displayPicture = nil
+        currentUser.email = ""
+        currentUser.name = ""
+        currentUser.notificationID = nil
+        currentUser.uid = ""
+        currentUser.username = ""
+        
+    }
     
     /*
     init(displayPicture: String, email: String, name: String, notificationID: String, uid: String, username: String) {

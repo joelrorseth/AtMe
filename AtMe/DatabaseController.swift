@@ -231,6 +231,16 @@ class DatabaseController {
     }
     
     
+    /** Unsubscribe the specified user from push notifications by removing their notification ID from the database. */
+    public func unsubscribeUserFromNotifications(uid: String) {
+        
+        // Remove the user's notification ID from the database (stop receiving push notifications)
+        // This is the only location that a user's notification ID is stored
+        
+        userInformationRef.child("\(uid)/notificationID").removeValue()
+    }
+    
+    
     /** Removes the current user from a given conversation, thus archiving it and making it inactive.
      - parameters:
         - convoID: The conversation ID of the conversation the current user requests to leave

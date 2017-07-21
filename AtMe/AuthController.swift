@@ -15,6 +15,8 @@ class AuthController {
     private lazy var userInformationRef: DatabaseReference = Database.database().reference().child("userInformation")
     private lazy var registeredUsernamesRef: DatabaseReference = Database.database().reference().child("registeredUsernames")
     
+    private lazy var databaseManager = DatabaseController()
+    
     
     /**
      Asynchronously attempts to create an @Me account
@@ -84,6 +86,13 @@ class AuthController {
     }
     
     
+    public func signOut() {
+        
+        databaseManager.unsubscribeUserFromNotifications(uid: UserState.currentUser.uid)
+        UserState.resetCurrentUser()
+    }
+    
+    
     /**
      Asynchronously determines if a given username has been taken in the current database
      - parameters:
@@ -118,26 +127,22 @@ class AuthController {
             guard let email = user.email,
                 let username = snapshot.childSnapshot(forPath: "\(user.uid)/username").value as? String,
                 let first = snapshot.childSnapshot(forPath: "\(user.uid)/firstName").value as? String,
-                let last = snapshot.childSnapshot(forPath: "\(user.uid)/lastName").value as? String,
-                let notificationID = snapshot.childSnapshot(forPath: "\(user.uid)/notificationID").value as? String
+                let last = snapshot.childSnapshot(forPath: "\(user.uid)/lastName").value as? String
                 else { completion(false); return }
             
-            if let deviceNotificationID = NotificationsController.currentDeviceNotificationID() {
-                if deviceNotificationID != notificationID {
-                    
-                    // If the user has signed in on a new device, the notification ID may have changed
-                    // This needs to be checked and updated at every sign in, update database if changed
-                    
-                    print("New device detected, updating the current user's notification ID")
-                    self.userInformationRef.child("\(user.uid)/notificationID").setValue(deviceNotificationID)
-                }
+            // Obtain current notification ID, update it 
+            // Notification ID must always be optional, because users may not allow for it, and also because
+            // notification id is removed from database at sign out (and will thus be empty at sign in)
+            
+            if let notificationID = NotificationsController.currentDeviceNotificationID() {
+                self.userInformationRef.child("\(user.uid)/notificationID").setValue(notificationID)
+                UserState.currentUser.notificationID = notificationID
             }
             
             // Set all properties of currentUser now that they have been unwrapped if needed
             UserState.currentUser.displayPicture = "\(user.uid)/\(user.uid).JPG"
             UserState.currentUser.email = email
             UserState.currentUser.name = first + " " + last
-            UserState.currentUser.notificationID = notificationID
             UserState.currentUser.uid = user.uid
             UserState.currentUser.username = username
             
