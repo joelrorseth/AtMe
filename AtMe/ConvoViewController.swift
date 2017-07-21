@@ -171,18 +171,24 @@ class ConvoViewController: UITableViewController, AlertController {
     }
     
     
-    /** Overridden method called when view controller has been removed from view hierarchy. */
-    override func viewDidDisappear(_ animated: Bool) {
+    
+    /** Overridden method called when view controller will been removed from view hierarchy. */
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         
-        if let handle = messagesHandle, let ref = messagesRef?.queryLimited(toLast: 25) {
-            ref.removeObserver(withHandle: handle)
-        } else { print("Error: No observer to remove") }
+        // If this view controller is being popped off navigation stack, then we can remove observers
+        // If we remove if when something is pushed, observers will be dead when you come back!
         
-        if let handle = activeMembersHandle, let ref = conversationRef?.child("activeMembers") {
-            ref.removeObserver(withHandle: handle)
-        } else { print("Error: No observer to remove") }
-        
-        print("ConvoViewController did disappear. Database references deallocated.")
+        if self.isMovingFromParentViewController {
+            
+            if let handle = messagesHandle, let ref = messagesRef?.queryLimited(toLast: 25) {
+                ref.removeObserver(withHandle: handle)
+            } else { print("Error: No observer to remove") }
+            
+            if let handle = activeMembersHandle, let ref = conversationRef?.child("activeMembers") {
+                ref.removeObserver(withHandle: handle)
+            } else { print("Error: No observer to remove") }
+        }
     }
     
     

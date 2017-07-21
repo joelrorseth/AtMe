@@ -34,7 +34,6 @@ class DatabaseController {
         
             ImageCache.default.retrieveImage(forKey: store.fullPath, options: nil) { (image, cacheType) in
                 if let image = image {
-                    print("Image was retrieved from cache at: \(store.fullPath)")
                     destination.image = image
                 }
                 
