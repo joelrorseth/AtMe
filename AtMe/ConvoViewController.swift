@@ -94,7 +94,7 @@ class ConvoViewController: UITableViewController, AlertController {
     }()
     
     // Wrapper view controller for the custom input accessory view
-    private let chatInputAccessoryViewController = UIInputViewController()
+    let chatInputAccessoryViewController = UIInputViewController()
     
     
     /** Overridden variable which sets the UIInputViewController input accessory for this view controller. */
@@ -136,6 +136,8 @@ class ConvoViewController: UITableViewController, AlertController {
     /** Action method which fires when the user taps the camera icon. */
     @IBAction func didPressCameraIcon(_ sender: Any) {
         
+        //chatInputAccessoryView.expandingTextView.resignFirstResponder()
+        
         // Create picker, and set this controller as delegate
         let picker = UIImagePickerController()
         picker.delegate = self
@@ -155,6 +157,8 @@ class ConvoViewController: UITableViewController, AlertController {
     // MARK: View
     /** Overridden method called after view controller's view is loaded into memory. */
     override func viewDidLoad() {
+        
+        chatInputAccessoryView.expandingTextView.inputAccessoryView = chatInputAccessoryView
         
         tableView.backgroundColor = UIColor.groupTableViewBackground
         tableView.allowsSelection = false
@@ -218,7 +222,6 @@ class ConvoViewController: UITableViewController, AlertController {
         
         // Update data source
         messages.append(message)
-        print("\t\tJust added a message")
         
         // Efficiently update by updating / inserting only the cells that need to be
         //self.tableView.beginUpdates()
@@ -338,8 +341,8 @@ class ConvoViewController: UITableViewController, AlertController {
     
     /** Dismiss the custom keyboard (the input accessory) */
     func dismissKeyboard() {
+        
         chatInputAccessoryView.expandingTextView.resignFirstResponder()
-        self.becomeFirstResponder()
     }
     
     
@@ -376,12 +379,8 @@ extension ConvoViewController: UIImagePickerControllerDelegate, UINavigationCont
                     }
                     
                     // Now that image has uploaded, officially send the message record to the database with storage URL
-                    print("AtMe:: Uploaded image to: \(path)")
-                    self.send(message: Message(
-                        imageURL: path,
-                        sender: UserState.currentUser.username,
-                        text: nil,
-                        timestamp: Date()))
+                    let message = Message(imageURL: path, sender: UserState.currentUser.username, text: nil, timestamp: Date())
+                    self.send(message: message)
                     self.dismiss(animated: true)
                 })
                 
@@ -401,7 +400,6 @@ extension ConvoViewController: UITextViewDelegate {
     /** Delegate method which fires when the specified text view has begun editing. */
     func textViewDidBeginEditing(_ textView: UITextView) {
         
-        print("Set input accessory view!")
         textView.inputAccessoryView = chatInputAccessoryView
         
         self.chatInputAccessoryView.expandingTextView.textColor = UIColor.darkGray
@@ -420,6 +418,7 @@ extension ConvoViewController: UITextViewDelegate {
     /** Delegate method which fires when the specified text view has ended editing. */
     func textViewDidEndEditing(_ textView: UITextView) {
         self.chatInputAccessoryView.expandingTextView.textColor = UIColor.gray
+        self.chatInputAccessoryViewController.dismissKeyboard()
         
         if (self.chatInputAccessoryView.expandingTextView.text == "") {
             self.chatInputAccessoryView.expandingTextView.text = "Enter a message"
@@ -490,7 +489,7 @@ extension ConvoViewController {
             databaseManager.downloadImage(into: cell.messageImageView, from: imageURL, completion: { (error) in
                 
                 if let localError = error { print("AtMe Error:: Did not recieve downloaded UIImage. \(localError)"); return }
-                print("AtMe:: Successfully loaded picture into message")
+                print("AtMe:: Loaded an image for a message cell")
             })
         }
 
