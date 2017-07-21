@@ -181,7 +181,7 @@ class DatabaseController {
                     self.userConversationListRef.child(UserState.currentUser.uid).child(username).setValue(convoID)
                     
                     // Establish current user as an active member
-                    self.conversationsRef.child("\(convoID)/activeMembers/\(UserState.currentUser.uid)").setValue(UserState.currentUser.notificationID)
+                    self.conversationsRef.child("\(convoID)/activeMembers/\(UserState.currentUser.uid)").setValue(UserState.currentUser.username)
                     
                     completion(true)
                 }
@@ -196,10 +196,14 @@ class DatabaseController {
                     // Establish the database record for this conversation
                     self.userInformationRef.observeSingleEvent(of: DataEventType.value, with: { snapshot in
                         
-                        // Store list of member uid's and their notificationIDs in conversation for quick lookup
-                        let selectedUserNotificationID = snapshot.childSnapshot(forPath: "\(uid)/notificationID").value as? String
-                        let members = [UserState.currentUser.uid: UserState.currentUser.notificationID, uid: selectedUserNotificationID!]
+                        // Store list of each member's uid and username for quick lookup
+                        // More importantly, this is stored to track who is active and should receive push notifications
+
+                        let members = [UserState.currentUser.uid: UserState.currentUser.username, uid: username]
                         let lastSeen = [UserState.currentUser.uid: Date().timeIntervalSince1970, uid: Date().timeIntervalSinceNow]
+                        
+                        //let selectedUserNotificationID = snapshot.childSnapshot(forPath: "\(uid)/notificationID").value as? String
+                        //let members = [UserState.currentUser.uid: UserState.currentUser.notificationID, uid: selectedUserNotificationID!]
                         
                         self.conversationsRef.child("\(convoID)/creator").setValue(UserState.currentUser.username)
                         self.conversationsRef.child("\(convoID)/activeMembers").setValue(members)
@@ -215,6 +219,24 @@ class DatabaseController {
             })
         })
     }
+    
+    
+    /**
+     Retrieve details for current user from the database. User must be authorized already.
+     - parameters:
+     - user: The current user, which should be authorized at this point
+     - completion:Callback that fires when function has finished
+     - configured: A boolean representing if the current user object could be configured (required)
+     */
+    public func notificationIDForUser(with uid: String, completion: @escaping (String?) -> ()) {
+     
+        userInformationRef.child("\(uid)/notificationID").observeSingleEvent(of: DataEventType.value, with: { snapshot in
+            
+            // Pass notification id to completion handler, will pass nil if empty
+            completion( snapshot.value as? String )
+        })
+    }
+    
     
     
     /**

@@ -34,7 +34,7 @@ class NotificationsController {
     
     
     /** Obtain the notificationID of the current authorized user */
-    public static func currentUserNotificationsID() -> String? {
+    public static func currentDeviceNotificationID() -> String? {
         
         let status: OSPermissionSubscriptionState = OneSignal.getPermissionSubscriptionState()
 

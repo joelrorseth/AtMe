@@ -15,6 +15,7 @@ class AuthController {
     private lazy var userInformationRef: DatabaseReference = Database.database().reference().child("userInformation")
     private lazy var registeredUsernamesRef: DatabaseReference = Database.database().reference().child("registeredUsernames")
     
+    
     /**
      Asynchronously attempts to create an @Me account
      - parameters:
@@ -48,7 +49,7 @@ class AuthController {
                 ["email" : email,
                  "firstName" : firstName,
                  "lastName" : lastName,
-                 "notificationID": NotificationsController.currentUserNotificationsID() ?? nil]
+                 "notificationID": NotificationsController.currentDeviceNotificationID() ?? nil]
             )
             
             completion(error, user?.uid)
@@ -118,8 +119,19 @@ class AuthController {
                 let username = snapshot.childSnapshot(forPath: "\(user.uid)/username").value as? String,
                 let first = snapshot.childSnapshot(forPath: "\(user.uid)/firstName").value as? String,
                 let last = snapshot.childSnapshot(forPath: "\(user.uid)/lastName").value as? String,
-                let notificationID = NotificationsController.currentUserNotificationsID()
+                let notificationID = snapshot.childSnapshot(forPath: "\(user.uid)/notificationID").value as? String
                 else { completion(false); return }
+            print("================ stored \(notificationID)")
+            if let deviceNotificationID = NotificationsController.currentDeviceNotificationID() {
+                if deviceNotificationID != notificationID {
+                    print("================ stored \(notificationID), now \(deviceNotificationID) =================")
+                    // If the user has signed in on a new device, the notification ID may have changed
+                    // This needs to be checked and updated at every sign in, update database if changed
+                    
+                    print("New device detected, updating the current user's notification ID")
+                    self.userInformationRef.child("\(user.uid)/notificationID").setValue(deviceNotificationID)
+                }
+            }
             
             // Set all properties of currentUser now that they have been unwrapped if needed
             UserState.currentUser.displayPicture = "\(user.uid)/\(user.uid).JPG"

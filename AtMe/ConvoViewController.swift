@@ -202,6 +202,7 @@ class ConvoViewController: UITableViewController, AlertController {
         
         // Ask NotificationController to send this message as a push notification
         for notificationID in notificationIDs {
+            print("====================]]]]] Sent to notif id \(notificationID)")
             NotificationsController.send(to: notificationID, title: message.sender, message: message.text ?? "Picture message")
         }
     }
@@ -266,22 +267,31 @@ class ConvoViewController: UITableViewController, AlertController {
     }
     
     
-    /** Observe all existing and new notification IDs for the current conversation. */
+    /** 
+     Observe all existing and new notification IDs for the current conversation.
+     Instead of observing them directly, we observe existing and new members, then retrieve their latest stored notification id
+     */
     private func observeNotificationIDs() {
         
         activeMembersHandle = conversationRef?.child("activeMembers").observe(DataEventType.childAdded, with: { snapshot in
             
-            // Each member in activeMembers stores key-value pairs, specifically  (UID: notificationID) for active users
+            // Each member in activeMembers stores key-value pairs, specifically  (uid: username) for all *active* users
             // Firebase will take snapshot of each existing and new notificationID, store in property for push notifications later
             
-            if let notificationID = snapshot.value as? String {
-                
-                // Avoid adding current user to notification list. We do not want notifications for our own messages
-                if (notificationID != UserState.currentUser.notificationID) {
-                    self.notificationIDs.append(notificationID)
+            let uid = snapshot.key
+            if (uid == UserState.currentUser.uid) { return }
+
+            // Ask database manager for the *current* notification ID of every observed member
+            self.databaseManager.notificationIDForUser(with: uid, completion: { notificationID in
+              
+                if let id = notificationID {
+                    
+                    print("=============== Observed notif id for \(uid):  \(id)")
+                    
+                    // Add to local copy, but write it back to database as well
+                    self.notificationIDs.append(id)
                 }
-                
-            } else { print("Error: Active member could not be converted into tuple during notificationID loading") }
+            })
         })
     }
     

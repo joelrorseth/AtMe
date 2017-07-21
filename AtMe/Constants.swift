@@ -10,7 +10,7 @@ import UIKit
 struct Constants {
     
     struct App {
-        static let oneSignalAppId = "cb614488-c9c3-4e6b-bc5b-6d92a415025d"
+        static let oneSignalAppId = "8bf018c1-5a99-4ab8-8652-70a4fc149019"
     }
     
     struct Assets {
