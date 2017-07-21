@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Photos
 import Firebase
 
 class SettingsViewController: UITableViewController, AlertController {
@@ -25,8 +24,7 @@ class SettingsViewController: UITableViewController, AlertController {
     @IBOutlet weak var logoutCell: UITableViewCell!
     
     
-    // ==========================================
-    // ==========================================
+    /** Overridden method called after view controller's view is loaded into memory. */
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -37,8 +35,8 @@ class SettingsViewController: UITableViewController, AlertController {
         userPictureImageView.isUserInteractionEnabled = true
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Overridden method called when view controller is soon to be added to view hierarchy. */
     override func viewWillAppear(_ animated: Bool) {
         loadCurrentUserInformation()
         
@@ -48,8 +46,12 @@ class SettingsViewController: UITableViewController, AlertController {
         userPictureImageView.layer.cornerRadius = userPictureImageView.frame.size.width / 2
     }
     
-    // ==========================================
-    // ==========================================
+    
+    // TODO: In future update, refactor into DatabaseController
+    /** Updates the UserState and database stored record of the current user's display picture (url). 
+     - parameters:
+        - image: The UIImage being set as new display picture
+     */
     func updateUserDisplayPicture(image: UIImage) {
         
         let uid = UserState.currentUser.uid
@@ -62,8 +64,8 @@ class SettingsViewController: UITableViewController, AlertController {
         loadCurrentUserInformation()
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Loads information about the current user into the view. */
     private func loadCurrentUserInformation() {
         
         // Should never happen, app blocks until these have been set at login
@@ -86,8 +88,8 @@ class SettingsViewController: UITableViewController, AlertController {
         })
     }
     
-    // ==========================================
-    // ==========================================
+    // TODO: In future update, this can maybe be refactored into custom UIImageView
+    /** Selector method which triggers a prompt for a UIImagePickerController. */
     func promptImageSelection() {
      
         // Create picker, and set this controller as delegate
@@ -105,14 +107,14 @@ class SettingsViewController: UITableViewController, AlertController {
         })
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Dismiss the keyboard from screen if currently displayed. */
     func dismissKeyboard() {
         self.view.endEditing(true)
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Determines actions to perform when a user chooses to logout. */
     func logout() {
         
         // Present a confirmation dialog to logout
@@ -139,8 +141,8 @@ class SettingsViewController: UITableViewController, AlertController {
         self.present(ac, animated: true, completion: nil)
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Overridden method providing an opportunity for data transfer to destination view controller before segueing to it. */
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == Constants.Segues.showPromptSegue {
@@ -167,8 +169,8 @@ class SettingsViewController: UITableViewController, AlertController {
 // MARK: Image Picker Delegate Methods
 extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    // ==========================================
-    // ==========================================
+    // TODO: In future update, refactor
+    /** Called when media has been selected by the user in the image picker. */
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
         let uid = UserState.currentUser.uid
@@ -193,8 +195,8 @@ extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationC
         dismiss(animated: true)
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Called if and when the user has cancelled the image picking operation. */
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         dismiss(animated: true)
     }
@@ -205,8 +207,7 @@ extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationC
 // MARK: Table View
 extension SettingsViewController {
     
-    // ==========================================
-    // ==========================================
+    /** Called when a given row / index path is selected in the table view. */
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         // Opting to change editable user attributes prompts PromptViewController

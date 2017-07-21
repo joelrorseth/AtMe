@@ -17,8 +17,6 @@ class MessageCell: UITableViewCell {
     public static let verticalBubbleSpacing: CGFloat = 8
     
     // MARK: Lazy properties for UI message elements
-    // ==========================================
-    // ==========================================
     // UIView for outside chat bubble
     let bubbleView: UIView = {
         let view = UIView()
@@ -32,7 +30,6 @@ class MessageCell: UITableViewCell {
         return view
     }()
     
-    
     // Text view for message content
     let messageTextView: UITextView = {
         let textView = UITextView()
@@ -45,6 +42,7 @@ class MessageCell: UITableViewCell {
         return textView
     }()
     
+    // Image view for picture messages
     let messageImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = UIViewContentMode.scaleAspectFit
@@ -55,26 +53,23 @@ class MessageCell: UITableViewCell {
     
     
     // MARK: Initializers
-    // ==========================================
-    // Seems to be called after view is loaded
-    // ==========================================
+    /** Cell initializer override */
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         setupViews()
     }
     
-    // ==========================================
-    // Seems to be called when view is first loaded
-    // ==========================================
+    
+    /** Required initializer */
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
         setupViews()
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Set up the look and feel of this cell and related views. */
     func setupViews() {
         
         // The message and bubble view are subviews of cell

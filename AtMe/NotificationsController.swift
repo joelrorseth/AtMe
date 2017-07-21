@@ -10,7 +10,6 @@ import OneSignal
 
 class NotificationsController {
     
-    
     /**
      Send a push notification to a specified user
      - parameters:
@@ -33,29 +32,13 @@ class NotificationsController {
     }
     
     
-    /** Obtain the notificationID of the current authorized user */
+    /** Obtain the notificationID of the current authorized user 
+     - returns: An optional String representation of the current user's notification ID, if found
+     */
     public static func currentDeviceNotificationID() -> String? {
         
         let status: OSPermissionSubscriptionState = OneSignal.getPermissionSubscriptionState()
-
-//        let hasPrompted = status.permissionStatus.hasPrompted
-//        print("hasPrompted = \(hasPrompted)")
-//        
-//        let userStatus = status.permissionStatus.status
-//        print("userStatus = \(userStatus)")
-//        
-//        let isSubscribed = status.subscriptionStatus.subscribed
-//        print("isSubscribed = \(isSubscribed)")
-//        
-//        let userSubscriptionSetting = status.subscriptionStatus.userSubscriptionSetting
-//        print("userSubscriptionSetting = \(userSubscriptionSetting)")
-        
         let userID = status.subscriptionStatus.userId
-        
-//        print("userID = \(userID ?? "Not set")")
-//
-//        let pushToken = status.subscriptionStatus.pushToken
-//        print("pushToken = \(pushToken ?? "Not set")")
 
         return userID
     }

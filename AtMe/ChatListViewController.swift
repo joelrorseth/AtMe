@@ -8,7 +8,6 @@
 
 import UIKit
 import Firebase
-import Kingfisher
 
 class ChatListViewController: UITableViewController {
     
@@ -20,7 +19,7 @@ class ChatListViewController: UITableViewController {
     
     internal let databaseManager = DatabaseController()
     
-    // Local Conversation cache
+    // Local conversation data source
     var conversations: [Conversation] = []
     var conversationIndexes: [String : Int] = [:]
     
@@ -32,7 +31,6 @@ class ChatListViewController: UITableViewController {
         return formatter
     }()
     
-    // TODO: In future update, sort conversations newest at the top
     
     // MARK: View
     /** Overridden method called after view controller's view is loaded into memory */
@@ -42,11 +40,12 @@ class ChatListViewController: UITableViewController {
         setupView()
         
         // Start the observers
+        // TODO: In future update, sort conversations newest at the top
         observeUserConversations()
     }
     
     
-    /** Overridden method called when view controller is soon to be added to view hierarchy */
+    /** Overridden method called when view controller is soon to be added to view hierarchy. */
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -58,7 +57,7 @@ class ChatListViewController: UITableViewController {
     }
     
     
-    /** Overridden method called when view controller is soon to be removed from view hierarchy */
+    /** Overridden method called when view controller is soon to be removed from view hierarchy. */
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
@@ -67,7 +66,7 @@ class ChatListViewController: UITableViewController {
     }
     
     
-    /** Set up the look and feel of this view controller and related views */
+    /** Set up the look and feel of this view controller and related views. */
     private func setupView() {
         
         // Set translucent navigation bar with color
@@ -284,8 +283,7 @@ class ChatListViewController: UITableViewController {
     
     
     // MARK: Segue
-    // ==========================================
-    // ==========================================
+    /** Overridden method providing an opportunity for data transfer to destination view controller before segueing to it. */
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if (segue.identifier == Constants.Segues.loadConvoSegue) {
@@ -315,8 +313,7 @@ class ChatListViewController: UITableViewController {
     
     
     // MARK: Functionality
-    // ==========================================
-    // ==========================================
+    /** Selector method used in the event that the settings icon is tapped. */
     @objc private func didTapSettings() {
         performSegue(withIdentifier: Constants.Segues.settingsSegue, sender: nil)
     }
@@ -326,11 +323,11 @@ class ChatListViewController: UITableViewController {
 // MARK: Empty Chat List Delegate
 extension ChatListViewController: EmptyChatListDelegate {
     
+    /** Delegate method implementation which fires when user selects '@Somebody' in an EmptyChatListView */
     func didTapChatSomebody() {
         performSegue(withIdentifier: Constants.Segues.newConvoSegue, sender: nil)
     }
 }
-
 
 
 // MARK: Table View
@@ -384,6 +381,7 @@ extension ChatListViewController {
         self.tableView.reloadRows(at: [destination], with: UITableViewRowAnimation.none)
     }
     
+    
     /**
      Reload the conversation cell located at a particular row
      - parameters:
@@ -396,20 +394,20 @@ extension ChatListViewController {
         self.tableView.endUpdates()
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Sets the number of sections to display in the table view. */
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Determines the height of the table view cell at specified index path. */
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return CGFloat(94)
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Sets the number of rows to render for a given section in the table view. */
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         // A custom view should display only when no conversations can be displayed
@@ -418,15 +416,13 @@ extension ChatListViewController {
             empty.emptyChatDelegate = self
             tableView.backgroundView = empty
         
-        } else {
-            tableView.backgroundView = nil
-        }
+        } else { tableView.backgroundView = nil }
         
         return conversations.count
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Determines the content of the table view cell at specified index path. */
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChatListCell", for: indexPath) as! ConversationCell
         
@@ -463,14 +459,14 @@ extension ChatListViewController {
         return cell
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Determines if the user can edit the table view. */
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Determines course of action to take when user edits the table view, depending on the type of edit being requested. */
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         
         // Handle conversation deletion - in this app, conversations are persisted forever, but regardless,

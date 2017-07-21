@@ -30,8 +30,11 @@ extension AlertController where Self:UIViewController {
         self.present(controller, animated: true, completion: nil)
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Presents a UIAlertController to prompt for location to choose asset from. 
+     - parameters:
+        - completion: A completion callback which fires when a UIAlertAction is trigger via selecting an option on the UIAlertController
+     */
     func presentPhotoSelectionPrompt(completion: ((UIImagePickerControllerSourceType) -> Void)?) {
         
         let controller = UIAlertController(title: "Change Profile Picture", message: "Where do you want to take your picture?", preferredStyle: UIAlertControllerStyle.actionSheet)
@@ -58,8 +61,10 @@ extension AlertController where Self:UIViewController {
 
 extension UIImage {
     
-    // ==========================================
-    // ==========================================
+    /** Create a 1x1 image consisting of a given color. 
+     - parameters:
+        color: The UIColor object to populate the UIImage with
+     */
     static func imageFromColor(color: UIColor) -> UIImage {
         let rect = CGRect(x: 0, y: 0, width: 1, height: 1)
         
@@ -77,18 +82,18 @@ extension UIImage {
 
 extension UIImagePickerControllerDelegate {
     
-    // ==========================================
-    // ==========================================
+    /** Convert a UIImage into a Data object, if possible. 
+     - parameters:
+        image: The UIImage to convert
+     */
     func convertImageToData(image: UIImage) -> Data? {
         return UIImageJPEGRepresentation(image, 0.8)
     }
 }
 
-
 extension UIViewController {
     
-    // ==========================================
-    // ==========================================
+    /** Render a CAGradientLayer gradient using the app's two primary colors. */
     func renderGradientLayer() -> CAGradientLayer {
         let gradient = CAGradientLayer()
         gradient.frame = UIScreen.main.bounds

@@ -8,33 +8,33 @@
 
 import UIKit
 
+// MARK: EmptyChatListDelegate
+// Protocol which defines methods to handle events that happen in an EmptyChatListView
 protocol EmptyChatListDelegate {
     func didTapChatSomebody()
 }
 
+
+// MARK: EmptyChatListView class
 class EmptyChatListView: UIView {
 
     var emptyChatDelegate: EmptyChatListDelegate?
     
-    /**
-     The primary init method for creating this specialized view
-     */
+    /** The primary init method for creating this specialized view */
     override init(frame: CGRect) {
         super.init(frame: frame)
         initSubviews()
     }
     
-    /**
-     The required init method for creating this specialized view
-     */
+    
+    /** The required init method for creating this specialized view */
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         initSubviews()
     }
 
-    /**
-     A subview initializer method that establishes all other views in this view
-     */
+    
+    /** A subview initializer method that establishes all other views in this view */
     private func initSubviews() {
         
         self.backgroundColor = Constants.Colors.tableViewBackground
@@ -76,7 +76,7 @@ class EmptyChatListView: UIView {
         somebodyButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10).isActive = true
         somebodyButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10).isActive = true
         
-        // TODO: Future update
+        // TODO: Possible future update
 //        // Random chat button setup
 //        randomButton.titleLabel?.font = UIFont(name: "Avenir Next Demi Bold", size: 18)
 //        randomButton.setTitleColor(UIColor.darkGray, for: .normal)
@@ -93,9 +93,8 @@ class EmptyChatListView: UIView {
 //        randomButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10).isActive = true
     }
     
-    /**
-     A convenience method that will attempt to call the delegate implementation of didTapChatSomebody()
-     */
+    
+    /** A convenience method that will attempt to call the delegate implementation of didTapChatSomebody() */
     func chatSomebodyTapped() {
         emptyChatDelegate?.didTapChatSomebody()
     }

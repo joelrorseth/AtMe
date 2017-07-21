@@ -16,20 +16,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     
-    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
         UINavigationBar.appearance().barStyle = UIBarStyle.black
         
-        
         let onesignalInitSettings = [kOSSettingsKeyAutoPrompt: false]
         
         // Init OneSignal
-        OneSignal.initWithLaunchOptions(launchOptions,
-                                        appId: Constants.App.oneSignalAppId,
-                                        handleNotificationAction: nil,
-                                        settings: onesignalInitSettings)
+        OneSignal.initWithLaunchOptions(launchOptions, appId: Constants.App.oneSignalAppId,
+            handleNotificationAction: nil, settings: onesignalInitSettings)
         
         OneSignal.inFocusDisplayType = OSNotificationDisplayType.notification
         
@@ -38,15 +34,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             print("AtMe:: User accepted notifications: \(accepted)")
         })
         
-                
-        // Sync hashed email if you have a login system or collect it.
-        //   Will be used to reach the user at the most optimal time of day.
-        // OneSignal.syncHashedEmail(userEmail)
-        
-        
         // Enable offline data persistence to cache selected observed data and authenticated user
         FirebaseApp.configure()
         Database.database().isPersistenceEnabled = true
+        
         return true
     }
     

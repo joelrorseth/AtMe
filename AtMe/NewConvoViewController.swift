@@ -23,16 +23,15 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     internal let databaseManager = DatabaseController()
     var searchResults: [UserProfile] = []
     
-    // ==========================================
-    // ==========================================
+    
+    /** Action method which fires when the 'Cancel' button was tapped. */
     @IBAction func cancelButtonPressed(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
     
     
-    // MARK: View Lifecycle
-    // ==========================================
-    // ==========================================
+    // MARK: View
+    /** Overridden method called after view controller's view is loaded into memory. */
     override func viewDidLoad() {
         
         // Set up search bar, ask keyboard to appear when view is loaded
@@ -56,20 +55,19 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
 
     
     // MARK: Table View
-    // ==========================================
-    // ==========================================
+    /** Sets the number of sections to display in the table view. */
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Sets the number of rows to render for a given section in the table view. */
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return searchResults.count
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Determines the content of the table view cell at specified index path. */
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         // Populate table with results from lookup
@@ -105,12 +103,11 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         return cell
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Called when a given row / index path is selected in the table view. */
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         let cell = tableView.cellForRow(at: indexPath) as! UserInfoCell
-        
         
         // Retrieve uid of selected user, create conversation record in Firebase
         // This should only be done if a conversation does not already exist
@@ -134,8 +131,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     
     
     // MARK: Search Bar + Results
-    // ==========================================
-    // ==========================================
+    /** Delegate method which fires when the Search button on the specified UISearchBar was tapped. */
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
         clearResults()
@@ -161,16 +157,19 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         })
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Clears the table view (results) and associated data source. */
     private func clearResults() {
         
         searchResults.removeAll()
         usersTableView.reloadData()
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Inserts a given UserProfile into the table view, done efficiently by only inserting what it needs to. 
+     - parameters:
+        user: The UserProfile object of the user requested for insertion
+     */
     private func insertResult(user: UserProfile) {
         
         // Update data source, then insert row
@@ -180,8 +179,14 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     
     
     // MARK: Database Retrieval Functions
-    // ==========================================
-    // ==========================================
+    
+    // TODO: In future update, refactor into DatabaseController
+    /** Finds details for specified users, then returns a UserProfile for each found via a completion callback. 
+     - parameters:
+        - results: A dictionary containing [username: uid] pairs for users
+        - completion: A completion callback invoked each time details are found for a user
+            profile: The UserProfile object representing and holding the details found for a specific user
+     */
     private func findDetailsForUsers(results: [String : String], completion: @escaping (UserProfile) -> Void) {
         
         // For each result found, observe the user's full name and pass back as a UserProfile object
@@ -201,9 +206,9 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         }
     }
     
+    
     // MARK: Additional Functions
-    // ==========================================
-    // ==========================================
+    /** Dismiss the keyboard from screen if currently displayed. */
     func dismissKeyboard() {
         self.view.endEditing(true)
     }

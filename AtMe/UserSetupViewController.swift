@@ -26,18 +26,18 @@ class UserSetupViewController: UIViewController, AlertController {
     internal let authController = AuthController()
     internal let databaseManager = DatabaseController()
 
-    // ==========================================
-    // ==========================================
+    
+    /** Action method which fires when the user taps the 'Back' button. */
     @IBAction func didTapBackButton(_ sender: Any) {
         navigationController?.popViewController(animated: true)
     }
     
+    
     // TODO: This is kinda a nightmare. Should refactor to try and avoid callback hell
     // However, Firebase doesn't really provide 'completion' callbacks with their own functions :(
-    // Signup was a bit slow, particularily after account creation
-    
-    // ==========================================
-    // ==========================================
+    // Signup was a bit slow, particularily after account creation, but this is small inconvenience
+
+    /** Action method which fires when the user presses the finish button. */
     @IBAction func didPressFinish(_ sender: Any) {
         
         if (validateInput()) {
@@ -101,9 +101,9 @@ class UserSetupViewController: UIViewController, AlertController {
         }
     }
     
+    
     // MARK: View
-    // ==========================================
-    // ==========================================
+    /** Overridden method called after view controller's view is loaded into memory. */
     override func viewDidLoad() {
         super.viewDidLoad()
         addKeyboardObservers()
@@ -117,8 +117,8 @@ class UserSetupViewController: UIViewController, AlertController {
         displayPictureImageView.isUserInteractionEnabled = true
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Set up the look and feel of this view controller and related views. */
     private func setupView() {
         
         // Set background gradient
@@ -134,14 +134,15 @@ class UserSetupViewController: UIViewController, AlertController {
         displayPictureImageView.layer.borderWidth = 1.3
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Overridden variable which will determine the style of this view controller's status bar (eg. dark or light). */
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
     
+    
     // MARK: Keyboard Handling
-    /** Add gesture recognizer to the view to allow keyboard dismiss */
+    /** Add gesture recognizer to the view to allow keyboard dismiss. */
     private func addKeyboardObservers() {
         
         // Add gesture recognizer to handle tapping outside of keyboard
@@ -150,13 +151,15 @@ class UserSetupViewController: UIViewController, AlertController {
     }
     
     
-    /** Dismiss the keyboard */
+    /** Dismiss the keyboard from screen if currently displayed. */
     func dismissKeyboard() {
         usernameTextField.resignFirstResponder()
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Determines if the input entered in the view controller is valid, and can be used to create account. 
+    - returns: True if input is valid, false otherwise
+     */
     private func validateInput() -> Bool {
         
         if let username = usernameTextField.text {
@@ -182,8 +185,8 @@ class UserSetupViewController: UIViewController, AlertController {
     }
     
     
-    // ==========================================
-    // ==========================================
+    // TODO: In future update, this can maybe be refactored into custom UIImageView
+    /** Selector method which triggers a prompt for a UIImagePickerController. */
     func promptImageSelection() {
         
         // Create picker, and set this controller as delegate
@@ -206,9 +209,8 @@ class UserSetupViewController: UIViewController, AlertController {
 // MARK: Image Picker Delegate Methods
 extension UserSetupViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    // TODO: Refactor this method and near identical copy in SettingsViewController into one
-    // ==========================================
-    // ==========================================
+    // TODO: In future update, refactor
+    /** Called when media has been selected by the user in the image picker. */
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
         // Extract the image after editing, upload to database as Data object
@@ -227,8 +229,8 @@ extension UserSetupViewController: UIImagePickerControllerDelegate, UINavigation
 
     }
 
-    // ==========================================
-    // ==========================================
+    
+    /** Called if and when the user has cancelled the image picking operation. */
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         dismiss(animated: true)
     }

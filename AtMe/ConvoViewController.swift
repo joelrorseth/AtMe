@@ -8,23 +8,22 @@
 
 import UIKit
 import Firebase
-import Kingfisher
 
-// MARK: Input View for message bar
+
+// MARK: ChatInputAccessoryView class (Input View for message bar)
 class ChatInputAccessoryView: UIInputView {
     
     private static let preferredHeight: CGFloat = 24.0
     @IBOutlet weak var expandingTextView: UITextView!
     
-    // ==========================================
-    // ==========================================
+    
+    /** Asks the view to calculate and return the size that best fits the specified size. */
     override func sizeThatFits(_ size: CGSize) -> CGSize {
         return CGSize(width: size.width, height: ChatInputAccessoryView.preferredHeight)
     }
     
-    // ==========================================
-    // Set the natural size to contain all contents in this view
-    // ==========================================
+    
+    /** Set the natural size to contain all contents in this view */
     override var intrinsicContentSize: CGSize {
         var newSize = bounds.size
         
@@ -35,11 +34,14 @@ class ChatInputAccessoryView: UIInputView {
         if newSize.height < ChatInputAccessoryView.preferredHeight || newSize.height > 120.0 {
             newSize.height = ChatInputAccessoryView.preferredHeight
         }
+        
         return newSize
     }
 }
 
 
+
+// MARK: ConvoViewController Class
 class ConvoViewController: UITableViewController, AlertController {
     
     // Firebase references
@@ -52,14 +54,13 @@ class ConvoViewController: UITableViewController, AlertController {
     
     internal let databaseManager = DatabaseController()
     
-    // MARK: Storyboard
-    @IBOutlet weak var chatInputAccessoryView: ChatInputAccessoryView!
-    
     var observingMessages = false
     var messages: [Message] = []
     var notificationIDs: [String] = []
-    
     var currentMessageCountLimit = Constants.Limits.messageCountStandardLimit
+    
+    // MARK: Storyboard
+    @IBOutlet weak var chatInputAccessoryView: ChatInputAccessoryView!
     
     // FIXME: This needs to be refactored, along with prepareForSegue in ChatList
     var convoId: String = "" {
@@ -79,12 +80,13 @@ class ConvoViewController: UITableViewController, AlertController {
         return formatter
     }()
     
-    
-    
     // Wrapper view controller for the custom input accessory view
     private let chatInputAccessoryViewController = UIInputViewController()
     
+    
+    /** Overridden variable which sets the UIInputViewController input accessory for this view controller. */
     override var inputAccessoryViewController: UIInputViewController? {
+        
         // Ensure our input accessory view controller has it's input view set
         chatInputAccessoryView.translatesAutoresizingMaskIntoConstraints = false
         chatInputAccessoryViewController.inputView = chatInputAccessoryView
@@ -94,16 +96,15 @@ class ConvoViewController: UITableViewController, AlertController {
         return chatInputAccessoryViewController
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Overridden variable which determines if current view contrller can become first responder. */
     override var canBecomeFirstResponder: Bool {
         return true
     }
     
     
     // MARK: IBAction methods
-    // ==========================================
-    // ==========================================
+    /** Action method which fires when the user taps 'Send'. */
     @IBAction func didPressSend(_ sender: Any) {
         
         if (chatInputAccessoryView.expandingTextView.text == "" ||
@@ -124,8 +125,8 @@ class ConvoViewController: UITableViewController, AlertController {
         chatInputAccessoryView.expandingTextView.resignFirstResponder()
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Action method which fires when the user taps the camera icon. */
     @IBAction func didPressCameraIcon(_ sender: Any) {
         
         // Create picker, and set this controller as delegate
@@ -143,9 +144,9 @@ class ConvoViewController: UITableViewController, AlertController {
         })
     }
     
+    
     // MARK: View
-    // ==========================================
-    // ==========================================
+    /** Overridden method called after view controller's view is loaded into memory. */
     override func viewDidLoad() {
         
         tableView.backgroundColor = UIColor.groupTableViewBackground
@@ -158,10 +159,9 @@ class ConvoViewController: UITableViewController, AlertController {
         addKeyboardObservers()
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Overridden method called when view controller has been removed from view hierarchy. */
     override func viewDidDisappear(_ animated: Bool) {
-        
         
         if let handle = messagesHandle, let ref = messagesRef?.queryLimited(toLast: 25) {
             ref.removeObserver(withHandle: handle)
@@ -176,8 +176,7 @@ class ConvoViewController: UITableViewController, AlertController {
     
     
     // MARK: Managing messages
-    // ==========================================
-    // ==========================================
+    /** Perform required actions to send a given Message. */
     func send(message: Message) {
         
         // Write the message to Firebase
@@ -202,13 +201,12 @@ class ConvoViewController: UITableViewController, AlertController {
         
         // Ask NotificationController to send this message as a push notification
         for notificationID in notificationIDs {
-            print("====================]]]]] Sent to notif id \(notificationID)")
             NotificationsController.send(to: notificationID, title: message.sender, message: message.text ?? "Picture message")
         }
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Adds a given Message to the table view (chat) by inserting only what it needs to. */
     private func addMessage(message: Message) {
         
         // Update data source
@@ -224,8 +222,9 @@ class ConvoViewController: UITableViewController, AlertController {
         //print("Scrolling to row \(IndexPath.init(row: messages.count - 1, section: 0))")
     }
     
-    // ==========================================
-    // ==========================================
+    
+    // TODO: In future update, refactor into DatabaseController
+    /** Update the current user's 'last seen timestamp' for a given conversation in the database. */
     private func updateLastSeenTimestamp(convoID: String) {
         
         conversationRef?.child("lastSeen/\(UserState.currentUser.uid)").setValue(Date().timeIntervalSince1970)
@@ -285,8 +284,6 @@ class ConvoViewController: UITableViewController, AlertController {
             self.databaseManager.notificationIDForUser(with: uid, completion: { notificationID in
               
                 if let id = notificationID {
-                    
-                    print("=============== Observed notif id for \(uid):  \(id)")
                     
                     // Add to local copy, but write it back to database as well
                     self.notificationIDs.append(id)
@@ -351,8 +348,8 @@ class ConvoViewController: UITableViewController, AlertController {
 // MARK: UIImagePickerControllerDelegate
 extension ConvoViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    // ==========================================
-    // ==========================================
+    // TODO: In future update, refactor
+    /** Called when media has been selected by the user in the image picker. */
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
         if convoId == "" { dismiss(animated: true, completion: nil) }
@@ -383,8 +380,8 @@ extension ConvoViewController: UIImagePickerControllerDelegate, UINavigationCont
         dismiss(animated: true)
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Called if and when the user has cancelled the image picking operation. */
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         dismiss(animated: true)
     }
@@ -392,8 +389,7 @@ extension ConvoViewController: UIImagePickerControllerDelegate, UINavigationCont
 
 extension ConvoViewController: UITextViewDelegate {
     
-    // ==========================================
-    // ==========================================
+    /** Delegate method which fires when the specified text view has begun editing. */
     func textViewDidBeginEditing(_ textView: UITextView) {
         
         self.chatInputAccessoryView.expandingTextView.textColor = UIColor.darkGray
@@ -408,8 +404,8 @@ extension ConvoViewController: UITextViewDelegate {
         }
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Delegate method which fires when the specified text view has ended editing. */
     func textViewDidEndEditing(_ textView: UITextView) {
         self.chatInputAccessoryView.expandingTextView.textColor = UIColor.gray
         
@@ -423,12 +419,31 @@ extension ConvoViewController: UITextViewDelegate {
 // MARK: Table View Delegate
 extension ConvoViewController {
     
+    /** Sets the number of sections to display in the table view. */
     override func numberOfSections(in tableView: UITableView) -> Int { return 1 }
+    
+    
+    /** Sets the number of rows to render for a given section in the table view. */
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { return messages.count }
     
     
-    // ==========================================
-    // ==========================================
+    /** Determines the height of the table view cell at specified index path. */
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        
+        if let text = messages[indexPath.row].text {
+            return sizeForString(text, maxWidth: tableView.bounds.width * 0.7, font: Constants.Fonts.regularText).height + (2 * MessageCell.verticalBubbleSpacing) + (2 * MessageCell.verticalInsetPadding)
+        }
+        
+        if let _ = messages[indexPath.row].imageURL {
+            return 200 + (2 * MessageCell.verticalBubbleSpacing) + (2 * MessageCell.verticalInsetPadding)
+            
+        }
+        
+        return 0
+    }
+    
+    
+    /** Determines the content of the table view cell at specified index path. */
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         // TODO: In the future, this cell configuration code should take place in the MessageCell
@@ -502,8 +517,8 @@ extension ConvoViewController {
         return cell
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Given a string, determine the CGSize that should be able to comfortably fit this when displayed in a given font. */
     func sizeForString(_ string: String, maxWidth: CGFloat, font: UIFont) -> CGSize {
         
         let storage = NSTextStorage(string: string)
@@ -521,21 +536,5 @@ extension ConvoViewController {
         
         //print("Size = \(size) > \t\t\"\(string)\"")
         return size
-    }
-    
-    // ==========================================
-    // ==========================================
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
-        if let text = messages[indexPath.row].text {
-            return sizeForString(text, maxWidth: tableView.bounds.width * 0.7, font: Constants.Fonts.regularText).height + (2 * MessageCell.verticalBubbleSpacing) + (2 * MessageCell.verticalInsetPadding)
-        }
-        
-        if let _ = messages[indexPath.row].imageURL {
-            return 200 + (2 * MessageCell.verticalBubbleSpacing) + (2 * MessageCell.verticalInsetPadding)
-            
-        }
-        
-        return 0
     }
 }

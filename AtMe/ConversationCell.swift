@@ -17,10 +17,15 @@ class ConversationCell: UITableViewCell {
     @IBOutlet weak var recentMessageTimeStampLabel: UILabel!
     @IBOutlet var newMessageIndicator: UIView!
     
+    
+    // MARK: Initializers
+    /** Cell initializer override */
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
     }
     
+    
+    /** Required initializer */
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }

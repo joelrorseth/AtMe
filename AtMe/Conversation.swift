@@ -22,6 +22,8 @@ public class Conversation {
     var memberUIDs = Set<String>()
     var memberNotificationIDs = Set<String>()
     
+    
+    /** Initializer */
     init(convoID: String, name: String, newestMessage: String, newestMessageTimestamp: String, unseenMessages: Bool) {
         self.convoID = convoID
         self.name = name

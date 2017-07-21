@@ -18,8 +18,7 @@ class DatabaseController {
     
     
     // MARK: Image Management
-    /**
-     Downloads an image (from a location in the database) into a specified UIImageView.
+    /** Downloads an image (from a location in the database) into a specified UIImageView.
      - parameters:
         - destination: The UIImageView that, if successful, will be given the downloaded image
         - location: A path to the image being search for, relative to the root of the storage database
@@ -59,8 +58,7 @@ class DatabaseController {
     }
     
     
-    /**
-     Uploads an image (in the form of a Data object) to a specified location in the database.
+    /** Uploads an image (in the form of a Data object) to a specified location in the database.
      - parameters:
         - data: The Data object holding the image information to store in the database
         - location: A path for the image data to be saved to, relative to the root of the storage database
@@ -98,8 +96,7 @@ class DatabaseController {
     
     
     // MARK: Conversation Management
-    /**
-     Determine if an active conversation record currently exists between the current user and specified user, and return convoID if so.
+    /** Determine if an active conversation record currently exists between the current user and specified user, and return convoID if so.
      - parameters:
         - username: Username to check for existence of conversation with current user
         - completion: Callback called when search has concluded
@@ -120,9 +117,7 @@ class DatabaseController {
     }
 
     
-    
-    /**
-     Determine if an inactive conversation record currently exists between the current user and specified user, and return convoID if so.
+    /** Determine if an inactive conversation record currently exists between the current user and specified user, and return convoID if so.
      - parameters:
         - username: Username to check for existence of conversation with current user
         - completion: Callback called at search end, passing back an optional string with convoID
@@ -221,12 +216,11 @@ class DatabaseController {
     }
     
     
-    /**
-     Retrieve details for current user from the database. User must be authorized already.
+    /** Retrieve details for current user from the database. User must be authorized already.
      - parameters:
-     - user: The current user, which should be authorized at this point
-     - completion:Callback that fires when function has finished
-     - configured: A boolean representing if the current user object could be configured (required)
+        - user: The current user, which should be authorized at this point
+        - completion:Callback that fires when function has finished
+            - configured: A boolean representing if the current user object could be configured (required)
      */
     public func notificationIDForUser(with uid: String, completion: @escaping (String?) -> ()) {
      
@@ -238,9 +232,7 @@ class DatabaseController {
     }
     
     
-    
-    /**
-     Removes the current user from a given conversation, thus archiving it and making it inactive.
+    /** Removes the current user from a given conversation, thus archiving it and making it inactive.
      - parameters:
         - convoID: The conversation ID of the conversation the current user requests to leave
         - username: The username of the user to with whom the conversation was with

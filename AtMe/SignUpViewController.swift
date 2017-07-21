@@ -25,8 +25,7 @@ class SignUpViewController: UIViewController, AlertController {
         
     
     // MARK: View
-    // ==========================================
-    // ==========================================
+    /** Overridden method called after view controller's view is loaded into memory. */
     override func viewDidLoad() {
         super.viewDidLoad()
         addKeyboardObservers()
@@ -41,11 +40,12 @@ class SignUpViewController: UIViewController, AlertController {
         createAccountButton.backgroundColor = Constants.Colors.primaryAccent
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Overridden variable which will determine the style of this view controller's status bar (eg. dark or light). */
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
+    
     
     // MARK: Keyboard Handling
     /** Add gesture recognizer to the view to allow keyboard dismiss */
@@ -66,16 +66,13 @@ class SignUpViewController: UIViewController, AlertController {
     
     
     // MARK: Button Handling
-    // ==========================================
-    // Go back (dismiss) to sign in controller
-    // ==========================================
+    /** Go back (dismiss) to sign in controller */
     @IBAction func transitionToSignIn(_ sender: Any) {
         self.dismiss(animated: false, completion: nil)
     }
     
     
-    // ==========================================
-    // ==========================================
+    /** Action method which fires when the user presses the 'Create Account' button. */
     @IBAction func didTapCreateAccount(_ sender: Any) {
         
         if (!fieldsAreFilled()) {
@@ -98,16 +95,15 @@ class SignUpViewController: UIViewController, AlertController {
     
     
     // MARK: Validation
-    // ==========================================
-    // ==========================================
+    /** Determine if all text fields in the view controller are filled in. */
     private func fieldsAreFilled() -> Bool {
         
         return emailTextField.text != "" && firstNameTextField.text != ""
             && lastNameTextField.text != "" && passwordTextField.text != ""
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Determine if the values entered by user are adequate to use when creating a user. */
     private func profileSettingsAreAdequate() -> Bool {
         
         // Prevent any further checking until we know all fields are non-nil
@@ -140,8 +136,7 @@ class SignUpViewController: UIViewController, AlertController {
     
     
     // MARK: Segue
-    // ==========================================
-    // ==========================================
+    /** Overridden method providing an opportunity for data transfer to destination view controller before segueing to it. */
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let userSetupVC = segue.destination as! UserSetupViewController
         

@@ -19,9 +19,7 @@ class PromptViewController: UIViewController, AlertController {
     var changingAttributeName: String = ""
     
     
-    /**
-     A function called right before the view lays out its subviews
-     */
+    /** An overridden method called right before the view lays out its subviews. */
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         
@@ -150,9 +148,7 @@ extension PromptViewController: PromptViewDelegate {
     }
     
     
-    /**
-     User tapped outside of prompt and wants to dismiss it
-     */
+    /** User tapped outside of prompt and wants to dismiss it. */
     func didCancelChange() {
         self.dismiss(animated: true, completion: nil)
     }

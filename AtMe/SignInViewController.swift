@@ -14,17 +14,16 @@ class SignInViewController: UIViewController, AlertController {
     // Firebase references
     private lazy var userInformationRef: DatabaseReference = Database.database().reference().child("userInformation")
     
+    let authController = AuthController()
+    
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
     @IBOutlet weak var signInButton: UIButton!
     @IBOutlet weak var signUpButton: UIButton!
     
-    let authController = AuthController()
-    
     
     // MARK: Buttons
-    // ==========================================
-    // ==========================================
+    /** Action method that fires when the 'Sign In' button is pressed. */
     @IBAction func didTapSignIn(_ sender: Any) {
         
         if (!fieldsAreFilled()) {
@@ -52,9 +51,9 @@ class SignInViewController: UIViewController, AlertController {
         })
     }
     
+    
     // MARK: View
-    // ==========================================
-    // ==========================================
+    /** Overridden method called after view controller's view is loaded into memory. */
     override func viewDidLoad() {
         super.viewDidLoad()
         addKeyboardObservers()
@@ -67,8 +66,8 @@ class SignInViewController: UIViewController, AlertController {
         signInButton.backgroundColor = Constants.Colors.primaryAccent
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Overridden method called when view controller is soon to be added to view hierarchy. */
     override func viewDidAppear(_ animated: Bool) {
         
         if let user = Auth.auth().currentUser {
@@ -92,11 +91,12 @@ class SignInViewController: UIViewController, AlertController {
         }
     }
     
-    // ==========================================
-    // ==========================================
+    
+    /** Overridden variable which will determine the style of this view controller's status bar (eg. dark or light). */
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
+    
     
     // MARK: Keyboard Handling
     /** Add gesture recognizer to the view to allow keyboard dismiss */
@@ -108,7 +108,7 @@ class SignInViewController: UIViewController, AlertController {
     }
     
     
-    /** Dismiss the keyboard */
+    /** Dismiss the keyboard from screen if currently displayed. */
     func dismissKeyboard() {
         emailField.resignFirstResponder()
         passwordField.resignFirstResponder()
@@ -116,14 +116,13 @@ class SignInViewController: UIViewController, AlertController {
     
     
     // MARK: Validation
-    // ==========================================
-    // ==========================================
+    /** Determine if all text fields in the view controller are filled in. */
     private func fieldsAreFilled() -> Bool {
         return emailField.text != "" && passwordField.text != ""
     }
     
+    
     // MARK: Segue
-    // ==========================================
-    // ==========================================
+    /** Method stub for unwind segue to this view controller from another. */
     @IBAction func unwindToSignIn(segue: UIStoryboardSegue) {}
 }

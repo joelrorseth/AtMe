@@ -121,10 +121,10 @@ class AuthController {
                 let last = snapshot.childSnapshot(forPath: "\(user.uid)/lastName").value as? String,
                 let notificationID = snapshot.childSnapshot(forPath: "\(user.uid)/notificationID").value as? String
                 else { completion(false); return }
-            print("================ stored \(notificationID)")
+            
             if let deviceNotificationID = NotificationsController.currentDeviceNotificationID() {
                 if deviceNotificationID != notificationID {
-                    print("================ stored \(notificationID), now \(deviceNotificationID) =================")
+                    
                     // If the user has signed in on a new device, the notification ID may have changed
                     // This needs to be checked and updated at every sign in, update database if changed
                     
@@ -146,12 +146,11 @@ class AuthController {
     }
     
     
-    
     /**
      Writes a user's username into their information record and usernames registry in the database
      - parameters:
-     - username: Username chosen by the current user
-     - completion: Callback that is called upon successful completion
+        - username: Username chosen by the current user
+        - completion: Callback that is called upon successful completion
      */
     public func setUsername(username: String, completion: (() -> ())) {
         
@@ -168,7 +167,7 @@ class AuthController {
     /**
      Writes the database storage path of an uploaded display picture to the current users information record
      - parameters:
-     - path: The path where the display picture has been successfully uploaded to
+        - path: The path where the display picture has been successfully uploaded to
      */
     public func setDisplayPicture(path: String) {
         
