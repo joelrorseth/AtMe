@@ -136,7 +136,7 @@ class ConvoViewController: UITableViewController, AlertController {
     /** Action method which fires when the user taps the camera icon. */
     @IBAction func didPressCameraIcon(_ sender: Any) {
         
-        //chatInputAccessoryView.expandingTextView.resignFirstResponder()
+        chatInputAccessoryView.expandingTextView.resignFirstResponder()
         
         // Create picker, and set this controller as delegate
         let picker = UIImagePickerController()
@@ -347,7 +347,7 @@ class ConvoViewController: UITableViewController, AlertController {
     
     /** Dismiss the custom keyboard (the input accessory) */
     func dismissKeyboard() {
-        
+        chatInputAccessoryViewController.dismissKeyboard()
         chatInputAccessoryView.expandingTextView.resignFirstResponder()
     }
     
@@ -489,9 +489,11 @@ extension ConvoViewController {
         // Picture Message
         if let imageURL = message.imageURL {
             
-            messageSize = CGSize(width: 200, height: 200)
+            messageSize = CGSize(width: Constants.Sizes.pictureMessageDefaultWidth, height: Constants.Sizes.pictureMessageDefaultHeight)
             messageContentReference = cell.messageImageView
             
+            // To fix weird bug where images would not remove from reused cells, we manually add and remove image view from cells
+            cell.addImageView()
             databaseManager.downloadImage(into: cell.messageImageView, from: imageURL, completion: { (error) in
                 
                 if let localError = error { print("AtMe Error:: Did not recieve downloaded UIImage. \(localError)"); return }

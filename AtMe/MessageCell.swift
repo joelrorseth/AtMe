@@ -48,6 +48,7 @@ class MessageCell: UITableViewCell {
         imageView.contentMode = UIViewContentMode.scaleAspectFit
         imageView.layer.cornerRadius = 12
         imageView.layer.masksToBounds = true
+        imageView.image = nil
         return imageView
     }()
     
@@ -72,9 +73,28 @@ class MessageCell: UITableViewCell {
     /** Set up the look and feel of this cell and related views. */
     func setupViews() {
         
+        messageImageView.tag = 1000
+        
         // The message and bubble view are subviews of cell
         self.addSubview(bubbleView)
         self.addSubview(messageTextView)
         self.addSubview(messageImageView)
+    }
+    
+    
+    /** Add the message image view into the cell (self) */
+    func addImageView() {
+        self.addSubview(messageImageView)
+    }
+    
+    
+    /** Called in preparation of a cell of this subclass being reused in a table view */
+    override func prepareForReuse() {
+        imageView?.image = nil
+        messageImageView.image = nil
+        
+        // Remove the image view entirely from this cell
+        // This is the only we I found to avoid zombie images in reused cells, so manually add/remove
+        viewWithTag(1000)?.removeFromSuperview()
     }
 }

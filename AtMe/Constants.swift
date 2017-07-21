@@ -65,12 +65,13 @@ struct Constants {
         static let unwindToSignInSegue = "UnwindToSignIn"
     }
     
-    struct Storyboard {
-        static let messageId = "messageId"
+    struct Sizes {
+        static let pictureMessageDefaultHeight = 200
+        static let pictureMessageDefaultWidth = 200
     }
     
-    struct Text {
-        static let defaultTextSize = 14
+    struct Storyboard {
+        static let messageId = "messageId"
     }
     
     enum UserAttribute: Int { case none = 0, firstName, lastName, email, password }
