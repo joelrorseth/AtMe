@@ -295,6 +295,7 @@ class ConvoViewController: UITableViewController, AlertController {
     /** Removes all database observers active in this view controller. */
     private func removeAllObservers() {
         
+        //messagesRef?.keepSynced(false)
         messagesRef?.removeAllObservers()
         conversationRef?.child("activeMembers").removeAllObservers()
     }

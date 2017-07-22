@@ -270,16 +270,20 @@ class ChatListViewController: UITableViewController {
     /** Removes all database observers active in this view controller. */
     internal func removeAllObservers() {
         
+        userConversationListRef.child(UserState.currentUser.uid).keepSynced(false)
+        conversationsRef.keepSynced(false)
+        userConversationListRef.removeAllObservers()
+        conversationsRef.removeAllObservers()
+        
         print("Removing chat list observers")
         for convo in conversations {
             
             // Remove all observers set up during lifetime
-            // TODO: user conversation list observer seems to not be working
-            userConversationListRef.removeAllObservers()
-            conversationsRef.removeAllObservers()
+            // TODO: Removing messages / user conversations observers seems to not be working
+            // However, Firebase states: Listener at <path> failed: permission_denied (probably okay?)
             
             userConversationListRef.child("\(UserState.currentUser.uid)/").removeAllObservers()
-            conversationsRef.child("\(convo.convoID)/messages/").removeAllObservers()
+            conversationsRef.child(convo.convoID).child("messages").removeAllObservers()
             
             conversationsRef.child("\(convo.convoID)/activeMembers/").removeAllObservers()
             conversationsRef.child("\(convo.convoID)/lastSeen/\(UserState.currentUser.uid)").removeAllObservers()
