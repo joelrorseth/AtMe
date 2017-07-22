@@ -15,10 +15,7 @@ class ChatListViewController: UITableViewController {
     lazy var userConversationListRef: DatabaseReference = Database.database().reference().child("userConversationList")
     lazy var userInactiveConversationsRef: DatabaseReference = Database.database().reference().child("userInactiveConversations")
     lazy var conversationsRef: DatabaseReference = Database.database().reference().child("conversations")
-    lazy var rootDatabaseRef: DatabaseReference = Database.database().reference()
-    
-    internal let databaseManager = DatabaseController()
-    
+        
     // Local conversation data source
     var conversations: [Conversation] = []
     var conversationIndexes: [String : Int] = [:]
@@ -38,6 +35,7 @@ class ChatListViewController: UITableViewController {
         super.viewDidLoad()
         
         setupView()
+        AuthController.authenticationDelegate = self
         
         // Start the observers
         // TODO: In future update, sort conversations newest at the top
@@ -57,12 +55,16 @@ class ChatListViewController: UITableViewController {
     }
     
     
-    /** Overridden method called when view controller is soon to be removed from view hierarchy. */
+    /** Overridden method called when view controller will been removed from view hierarchy. */
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         // Set the back button in the vc being pushed to have no text
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        
+        // If this view controller is being popped off navigation stack, then remove all observers
+        // TODO: Find a way to call removeObservers() when user signs out (unwind segue is skipping this in Settings)
+        if self.isMovingFromParentViewController { removeAllObservers() }
     }
     
     
@@ -132,6 +134,7 @@ class ChatListViewController: UITableViewController {
         
         // Call this closure once for every conversation record, and any time a record is added
         userConversationListRef.child(uid).keepSynced(true)
+        
         userConversationListRef.child(uid).observe(DataEventType.childAdded, with: { snapshot in
             
             let otherUsername = snapshot.key
@@ -264,6 +267,26 @@ class ChatListViewController: UITableViewController {
     }
     
     
+    /** Removes all database observers active in this view controller. */
+    internal func removeAllObservers() {
+        
+        print("Removing chat list observers")
+        for convo in conversations {
+            
+            // Remove all observers set up during lifetime
+            // TODO: user conversation list observer seems to not be working
+            userConversationListRef.removeAllObservers()
+            conversationsRef.removeAllObservers()
+            
+            userConversationListRef.child("\(UserState.currentUser.uid)/").removeAllObservers()
+            conversationsRef.child("\(convo.convoID)/messages/").removeAllObservers()
+            
+            conversationsRef.child("\(convo.convoID)/activeMembers/").removeAllObservers()
+            conversationsRef.child("\(convo.convoID)/lastSeen/\(UserState.currentUser.uid)").removeAllObservers()
+        }
+    }
+    
+    
     /**
      Update the conversations array, stored locally
      - parameters:
@@ -326,6 +349,19 @@ extension ChatListViewController: EmptyChatListDelegate {
     /** Delegate method implementation which fires when user selects '@Somebody' in an EmptyChatListView */
     func didTapChatSomebody() {
         performSegue(withIdentifier: Constants.Segues.newConvoSegue, sender: nil)
+    }
+}
+
+
+// MARK: AuthenticationDelegate
+extension ChatListViewController: AuthenticationDelegate {
+    
+    /** Handles the AuthenticationDelegate function called when the current user signs out */
+    func userDidSignOut() {
+        
+        // Upon sign out, we need to remove all observers in this view controller
+        // This has to be done using delegate, because unwind segue from Settings skips code in this controller
+        removeAllObservers()
     }
 }
 
@@ -447,7 +483,7 @@ extension ChatListViewController {
         if let uid = conversations[indexPath.row].memberUIDs.first {
             let path = "displayPictures/\(uid)/\(uid).JPG"
             
-            databaseManager.downloadImage(into: cell.userDisplayImageView, from: path , completion: { error in
+            DatabaseController.downloadImage(into: cell.userDisplayImageView, from: path , completion: { error in
                 
                 if let downloadError = error {
                     print("AtMe:: An error has occurred, but image data was detected. \(downloadError)")
@@ -482,7 +518,7 @@ extension ChatListViewController {
             // Delete conversation record from current conversations, add it to inactive conversations
             // These must be separate in database because an observer will detect all entries in active list
             
-            databaseManager.leaveConversation(convoID: convoID, with: username, completion: {
+            DatabaseController.leaveConversation(convoID: convoID, with: username, completion: {
                 
                 // Remove records from local table view data source
                 self.conversations.remove(at: indexPath.row)

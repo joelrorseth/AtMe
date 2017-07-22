@@ -11,12 +11,6 @@ import Firebase
 
 class SettingsViewController: UITableViewController, AlertController {
     
-    lazy var userInformationRef: DatabaseReference = Database.database().reference().child("userInformation")
-    
-    lazy var databaseManager = DatabaseController()
-    lazy var authManager = AuthController()
-    
-    
     var currentAttributeChanging: Constants.UserAttribute = Constants.UserAttribute.none
     var attributePrompt: String = ""
 
@@ -49,7 +43,6 @@ class SettingsViewController: UITableViewController, AlertController {
     }
     
     
-    // TODO: In future update, refactor into DatabaseController
     /** Updates the UserState and database stored record of the current user's display picture (url). 
      - parameters:
         - image: The UIImage being set as new display picture
@@ -59,8 +52,7 @@ class SettingsViewController: UITableViewController, AlertController {
         let uid = UserState.currentUser.uid
         let url = "\(uid)/\(uid).JPG"
         
-        UserState.currentUser.displayPicture = url
-        userInformationRef.child("\(uid)/displayPicture").setValue(url)
+        AuthController.setDisplayPicture(path: url)
         
         // Update current user stored display picture, reload image view
         loadCurrentUserInformation()
@@ -82,7 +74,7 @@ class SettingsViewController: UITableViewController, AlertController {
         // Display picture may very well be nil if not set or loaded yet
         // This is because display pictures are loaded asynchronously at launch
         
-        databaseManager.downloadImage(into: userPictureImageView,
+        DatabaseController.downloadImage(into: userPictureImageView,
             from: "displayPictures/\(picture)", completion: { error in
                                             
             if error != nil { return }
@@ -132,14 +124,12 @@ class SettingsViewController: UITableViewController, AlertController {
                 // At this point, signOut() succeeded by not throwing any errors
                 // Let AuthController perform account sign out maintenance
                 
-                self.authManager.signOut()
+                AuthController.signOut()
                 self.performSegue(withIdentifier: Constants.Segues.unwindToSignInSegue, sender: self)
                 
             } catch let error as NSError {
                 print("AtMe:: \(error.localizedDescription)")
             }
-            
-            // TODO: Remove ALL observers
         }))
         
         // Present the alert
@@ -185,7 +175,7 @@ extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationC
         if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
             if let data = convertImageToData(image: image) {
                 
-                databaseManager.uploadImage(data: data, to: path, completion: { (error) in
+                DatabaseController.uploadImage(data: data, to: path, completion: { (error) in
                     if let error = error {
                         print("AtMe:: Error uploading display picture to Firebase. \(error.localizedDescription)")
                         return
@@ -225,7 +215,7 @@ extension SettingsViewController {
         // Handle cache removal request
         if (indexPath.section == 3) {
             if (indexPath.row == 0) {
-                databaseManager.clearCachedImages()
+                DatabaseController.clearCachedImages()
             }
         }
         

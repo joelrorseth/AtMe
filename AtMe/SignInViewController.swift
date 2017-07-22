@@ -10,12 +10,7 @@ import UIKit
 import Firebase
 
 class SignInViewController: UIViewController, AlertController {
-    
-    // Firebase references
-    private lazy var userInformationRef: DatabaseReference = Database.database().reference().child("userInformation")
-    
-    let authController = AuthController()
-    
+            
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
     @IBOutlet weak var signInButton: UIButton!
@@ -33,7 +28,7 @@ class SignInViewController: UIViewController, AlertController {
         
         guard let email = emailField.text, let password = passwordField.text else { return }
         
-        authController.signIn(email: email, password: password, completion: { error, configured in
+        AuthController.signIn(email: email, password: password, completion: { error, configured in
             
             if let error = error {
                 self.presentSimpleAlert(title: "Could Not Sign In", message: error.localizedDescription, completion: nil)
@@ -77,7 +72,7 @@ class SignInViewController: UIViewController, AlertController {
             // Ask the Authorization Controller to use previously authorized User object to sign in
             // Will return bool to indicate if this autmatic login could be performed safely
             
-            authController.establishCurrentUser(user: user, completion: { configured in
+            AuthController.establishCurrentUser(user: user, completion: { configured in
                 
                 // Successful configuration allows segue to next view without having to type anything!
                 if (configured) {

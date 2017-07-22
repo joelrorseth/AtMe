@@ -53,13 +53,7 @@ class ConvoViewController: UITableViewController, AlertController {
     // Firebase references
     var conversationRef: DatabaseReference?
     var messagesRef: DatabaseReference? = nil
-    
-    // Firebase handles
-    private var messagesHandle: DatabaseHandle?
-    private var activeMembersHandle: DatabaseHandle?
-    
-    internal let databaseManager = DatabaseController()
-    
+        
     var observingMessages = false
     var messages: [Message] = []
     var notificationIDs: [String] = []
@@ -176,19 +170,8 @@ class ConvoViewController: UITableViewController, AlertController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        // If this view controller is being popped off navigation stack, then we can remove observers
-        // If we remove if when something is pushed, observers will be dead when you come back!
-        
-        if self.isMovingFromParentViewController {
-            
-            if let handle = messagesHandle, let ref = messagesRef?.queryLimited(toLast: 25) {
-                ref.removeObserver(withHandle: handle)
-            } else { print("Error: No observer to remove") }
-            
-            if let handle = activeMembersHandle, let ref = conversationRef?.child("activeMembers") {
-                ref.removeObserver(withHandle: handle)
-            } else { print("Error: No observer to remove") }
-        }
+        // If this view controller is being popped off navigation stack, then remove all observers
+        if self.isMovingFromParentViewController { removeAllObservers() }
     }
     
     
@@ -257,12 +240,11 @@ class ConvoViewController: UITableViewController, AlertController {
     */
     private func observeReceivedMessages(count: Int) {
         
-        
         let messagesQuery = messagesRef?.queryLimited(toLast: UInt(count))
         messagesQuery?.keepSynced(true)
         
         // This closure is triggered once for every existing record found, and for each record added here
-        messagesHandle = messagesQuery?.observe(DataEventType.childAdded, with: { snapshot in
+        messagesQuery?.observe(DataEventType.childAdded, with: { snapshot in
                         
             var imageURL: String?
             var text: String?
@@ -289,7 +271,7 @@ class ConvoViewController: UITableViewController, AlertController {
      */
     private func observeNotificationIDs() {
         
-        activeMembersHandle = conversationRef?.child("activeMembers").observe(DataEventType.childAdded, with: { snapshot in
+        conversationRef?.child("activeMembers").observe(DataEventType.childAdded, with: { snapshot in
             
             // Each member in activeMembers stores key-value pairs, specifically  (uid: username) for all *active* users
             // Firebase will take snapshot of each existing and new notificationID, store in property for push notifications later
@@ -298,7 +280,7 @@ class ConvoViewController: UITableViewController, AlertController {
             if (uid == UserState.currentUser.uid) { return }
 
             // Ask database manager for the *current* notification ID of every observed member
-            self.databaseManager.notificationIDForUser(with: uid, completion: { notificationID in
+            DatabaseController.notificationIDForUser(with: uid, completion: { notificationID in
               
                 if let id = notificationID {
                     
@@ -310,6 +292,14 @@ class ConvoViewController: UITableViewController, AlertController {
     }
     
     
+    /** Removes all database observers active in this view controller. */
+    private func removeAllObservers() {
+        
+        messagesRef?.removeAllObservers()
+        conversationRef?.child("activeMembers").removeAllObservers()
+    }
+    
+    
     /**
      Reload this conversation entirely, this time loading in a larger number of recent messages.
      The current implementation scraps the message observer, and adds a new one querying more messages initially.
@@ -317,8 +307,8 @@ class ConvoViewController: UITableViewController, AlertController {
     @objc private func reloadWithMoreMessages() {
         
         // Remove the messages observer to start over and query a larger amount
-        if let handle = messagesHandle, let ref = messagesRef {
-            ref.removeObserver(withHandle: handle)
+        if let ref = messagesRef {
+            ref.removeAllObservers()
             
             // Remove data from data source
             messages.removeAll()
@@ -377,7 +367,7 @@ extension ConvoViewController: UIImagePickerControllerDelegate, UINavigationCont
         if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
             if let data = convertImageToData(image: image) {
                 
-                databaseManager.uploadImage(data: data, to: path, completion: { (error) in
+                DatabaseController.uploadImage(data: data, to: path, completion: { (error) in
                     if let error = error {
                         print("AtMe:: Error uploading picture message to Firebase. \(error.localizedDescription)")
                         self.dismiss(animated: true)
@@ -494,7 +484,7 @@ extension ConvoViewController {
             
             // To fix weird bug where images would not remove from reused cells, we manually add and remove image view from cells
             cell.addImageView()
-            databaseManager.downloadImage(into: cell.messageImageView, from: imageURL, completion: { (error) in
+            DatabaseController.downloadImage(into: cell.messageImageView, from: imageURL, completion: { (error) in
                 
                 if let localError = error { print("AtMe Error:: Did not recieve downloaded UIImage. \(localError)"); return }
                 print("AtMe:: Loaded an image for a message cell")

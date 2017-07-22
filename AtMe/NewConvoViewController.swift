@@ -10,13 +10,7 @@ import UIKit
 import Firebase
 
 class NewConvoViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, AlertController {
-
-    // Firebase references
-    private lazy var registeredUsernamesRef: DatabaseReference = Database.database().reference().child("registeredUsernames")
-    private lazy var userConversationListRef: DatabaseReference = Database.database().reference().child("userConversationList")
-    private lazy var userInformationRef: DatabaseReference = Database.database().reference().child("userInformation")
-    
-    
+        
     @IBOutlet weak var usersSearchBar: UISearchBar!
     @IBOutlet weak var usersTableView: UITableView!
     
@@ -86,7 +80,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         
         // Download image into cell using DatabaseController (this facilitates automatic caching)
         let path = "displayPictures/\(uid)/\(uid).JPG"
-        databaseManager.downloadImage(into: cell.displayImage, from: path, completion: { error in
+        DatabaseController.downloadImage(into: cell.displayImage, from: path, completion: { error in
             
             if let error = error {
                 print("AtMe:: An error has occurred, but image data was detected. \(error)")
@@ -94,7 +88,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
             }
         })
         
-        // FIXME: Move circle frame code into Cell class (also applies to ChatListViewController)
+        // TODO: In future update, move circle frame code into Cell class (also applies to ChatListViewController)
         // Give display picture a circular mask
         cell.displayImage.layer.masksToBounds = true;
         cell.displayImage.clipsToBounds = true
@@ -115,7 +109,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         if let selectedUserUid = cell.uid, let selectedUserUsername = cell.username {
             
             // Create the conversation (or even reuse old existing one), then exit this view
-            self.databaseManager.createConversationWith(user: selectedUserUsername, withID: selectedUserUid, completion: { success in
+            DatabaseController.createConversationWith(user: selectedUserUsername, withID: selectedUserUid, completion: { success in
                 
                 // If successful, exit. If unsuccessful, present alert so user is informed of preexisting conversation
                 if (success) {
@@ -140,17 +134,13 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         // Find all usernames containing search text
         // Order record by key (which are the usernames), then query for string bounded in range [text, text]
         
-        registeredUsernamesRef.queryOrderedByKey().queryStarting(atValue: text).queryEnding(atValue: "\(text)\u{f8ff}")
-            .queryLimited(toFirst: Constants.Limits.resultsCount).observeSingleEvent(of: DataEventType.value, with: { snapshot in
+        
+        AuthController.searchForUsers(term: text, completion: { results in
             
-            // Parse results as dictionary of username/uid pairs
-            if var results = snapshot.value as? [String : String] {
-                
-                // Never allow option to start conversation with yourself!!
-                results.removeValue(forKey: UserState.currentUser.username)
+            if !results.isEmpty {
                 
                 // One by one, obtain details of each user, and insert the result into table with more info
-                self.findDetailsForUsers(results: results, completion: { user in
+                AuthController.findDetailsForUsers(results: results, completion: { user in
                     self.insertResult(user: user)
                 })
             }
@@ -175,35 +165,6 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         // Update data source, then insert row
         searchResults.append(user)
         usersTableView.insertRows(at: [IndexPath(row: searchResults.count - 1, section: 0)], with: .none)
-    }
-    
-    
-    // MARK: Database Retrieval Functions
-    
-    // TODO: In future update, refactor into DatabaseController
-    /** Finds details for specified users, then returns a UserProfile for each found via a completion callback. 
-     - parameters:
-        - results: A dictionary containing [username: uid] pairs for users
-        - completion: A completion callback invoked each time details are found for a user
-            profile: The UserProfile object representing and holding the details found for a specific user
-     */
-    private func findDetailsForUsers(results: [String : String], completion: @escaping (UserProfile) -> Void) {
-        
-        // For each result found, observe the user's full name and pass back as a UserProfile object
-        // Using this UserProfile, the table view can be updated with info by the caller!
-        
-        for (username, uid) in results {
-         
-            userInformationRef.child(uid).observeSingleEvent(of: DataEventType.value, with: { snapshot in
-            
-                // Read first and last name, pass back to caller using callback when done
-                let first = snapshot.childSnapshot(forPath: "firstName").value as? String ?? ""
-                let last = snapshot.childSnapshot(forPath: "lastName").value as? String ?? ""
-                    
-                let user = UserProfile(name: first + " " + last, uid: uid, username: username)
-                completion(user)
-            })
-        }
     }
     
     

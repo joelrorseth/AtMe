@@ -11,11 +11,11 @@ import Kingfisher
 
 class DatabaseController {
     
-    private lazy var userConversationListRef: DatabaseReference = Database.database().reference().child("userConversationList")
-    private lazy var userInactiveConversationsRef: DatabaseReference = Database.database().reference().child("userInactiveConversations")
-    private lazy var conversationsRef: DatabaseReference = Database.database().reference().child("conversations")
-    private lazy var userInformationRef: DatabaseReference = Database.database().reference().child("userInformation")
-    
+    static var userConversationListRef: DatabaseReference = Database.database().reference().child("userConversationList")
+    static var userInactiveConversationsRef: DatabaseReference = Database.database().reference().child("userInactiveConversations")
+    static var conversationsRef: DatabaseReference = Database.database().reference().child("conversations")
+    static var userInformationRef: DatabaseReference = Database.database().reference().child("userInformation")
+        
     
     // MARK: Image Management
     /** Downloads an image (from a location in the database) into a specified UIImageView.
@@ -25,7 +25,7 @@ class DatabaseController {
         - completion: Function called when finished, passing back an optional Error object when unsuccessful
             - error: An Error object created and returned if unsuccesful for any reason
      */
-    public func downloadImage(into destination: UIImageView, from location: String, completion: @escaping (Error?)->()){
+    public static func downloadImage(into destination: UIImageView, from location: String, completion: @escaping (Error?)->()){
         let store = Storage.storage().reference(withPath: location)
         
         // Check for image saved in cache, load image from disk if possible
@@ -64,7 +64,7 @@ class DatabaseController {
         - completion: Function called when finished, passing back an optional Error object when unsuccessful
             - error: An Error object created and returned if unsuccesful for any reason
      */
-    public func uploadImage(data: Data, to location: String, completion: @escaping (Error?)->()) {
+    public static func uploadImage(data: Data, to location: String, completion: @escaping (Error?)->()) {
         var localError: Error?
         let store = Storage.storage().reference(withPath: location)
         
@@ -78,7 +78,7 @@ class DatabaseController {
     
     
     /** Clear all images currently cached by the database on disk or memory. */
-    public func clearCachedImages() {
+    public static func clearCachedImages() {
         
         // Clear memory cache right away.
         ImageCache.default.clearMemoryCache()
@@ -101,7 +101,7 @@ class DatabaseController {
         - completion: Callback called when search has concluded
             - exists: A boolean which is true if current user is in an active conversation with the user
      */
-    public func doesActiveConversationExistWith(username: String, completion: @escaping (Bool) -> Void) {
+    public static func doesActiveConversationExistWith(username: String, completion: @escaping (Bool) -> Void) {
         
         // Query the user's active conversation record for the current user('s uid)
         // If query returns non-nil, the query found a conversation record with other user
@@ -122,7 +122,7 @@ class DatabaseController {
         - completion: Callback called at search end, passing back an optional string with convoID
             - convoID: An optional String holding the conversation ID of the found conversation, if it exists
      */
-    public func findInactiveConversationWith(username: String, completion: @escaping (String?) -> Void) {
+    public static func findInactiveConversationWith(username: String, completion: @escaping (String?) -> Void) {
         
         userInactiveConversationsRef.child(UserState.currentUser.uid).queryOrderedByKey()
             .queryEqual(toValue: username).observeSingleEvent(of: DataEventType.value, with: { snapshot in
@@ -150,7 +150,7 @@ class DatabaseController {
         - completion: A blank callback called when conversation has been created
             - success: A boolean which is false if the conversation could not be created
      */
-    public func createConversationWith(user username: String, withID uid: String, completion: @escaping (Bool)->()) {
+    public static func createConversationWith(user username: String, withID uid: String, completion: @escaping (Bool)->()) {
         
         
         // Note: The app logic assumes that one (and only one) conersation will ever exist between two
@@ -221,7 +221,7 @@ class DatabaseController {
         - completion:Callback that fires when function has finished
             - configured: A boolean representing if the current user object could be configured (required)
      */
-    public func notificationIDForUser(with uid: String, completion: @escaping (String?) -> ()) {
+    public static func notificationIDForUser(with uid: String, completion: @escaping (String?) -> ()) {
      
         userInformationRef.child("\(uid)/notificationID").observeSingleEvent(of: DataEventType.value, with: { snapshot in
             
@@ -232,7 +232,7 @@ class DatabaseController {
     
     
     /** Unsubscribe the specified user from push notifications by removing their notification ID from the database. */
-    public func unsubscribeUserFromNotifications(uid: String) {
+    public static func unsubscribeUserFromNotifications(uid: String) {
         
         // Remove the user's notification ID from the database (stop receiving push notifications)
         // This is the only location that a user's notification ID is stored
@@ -247,7 +247,7 @@ class DatabaseController {
         - username: The username of the user to with whom the conversation was with
         - completion: A blank callback called when current user has been removed from conversation
      */
-    public func leaveConversation(convoID: String, with username: String, completion: @escaping ()->()) {
+    public static func leaveConversation(convoID: String, with username: String, completion: @escaping ()->()) {
         
         // Move record from active to inactive user record
         userConversationListRef.child(UserState.currentUser.uid).child(username).removeValue()
