@@ -124,19 +124,19 @@ class DatabaseController {
      */
     public static func findInactiveConversationWith(username: String, completion: @escaping (String?) -> Void) {
         
-        userInactiveConversationsRef.child(UserState.currentUser.uid).queryOrderedByKey()
-            .queryEqual(toValue: username).observeSingleEvent(of: DataEventType.value, with: { snapshot in
+        // Check inactive conversations record, see if conversation with username ever existed
+        userInactiveConversationsRef.child(UserState.currentUser.uid).observeSingleEvent(of: DataEventType.value, with: { snapshot in
             
-            // Extract the convoID of any existing conversation - there should only ever be one
-            if (snapshot.hasChildren()) {
-                if let conversation = snapshot.children.allObjects[0] as? DataSnapshot {
-                    
-                    // Safely unwrap conversation ID, pass it back to completion handler
-                    guard let convoID = conversation.value as? String else { completion(nil); return }
-                    completion(convoID)
+            // The only way this seemed to work was downloading the whole list of convos, check manually
+            if let conversations = snapshot.value as? [String : String] {
+                
+                if let inactiveConvo = conversations[username] {
+                    completion(inactiveConvo)
+                    return
                 }
+            }
             
-            } else { completion(nil) }
+            completion(nil)
         })
     }
     
@@ -167,6 +167,7 @@ class DatabaseController {
                 
                 // If a conversation still exists with this user, just join into the existing one
                 if let convoID = convoID {
+                    print("Reactivating old conversation: \(convoID)")
                     
                     // Delete this conversation from inactive convo record, add it to the active convo record
                     // This is important, since the conversation list obserever in ChatListViewController will find and load this
@@ -186,6 +187,7 @@ class DatabaseController {
                     
                     // Generate unique conversation identifier
                     let convoID = self.conversationsRef.childByAutoId().key
+                    print("Generating a new conversation: \(convoID)")
                     
                     // Establish the database record for this conversation
                     self.userInformationRef.observeSingleEvent(of: DataEventType.value, with: { snapshot in
