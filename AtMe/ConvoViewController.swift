@@ -114,19 +114,21 @@ class ConvoViewController: UITableViewController, AlertController {
         if (chatInputAccessoryView.expandingTextView.text == "" ||
             chatInputAccessoryView.expandingTextView.text == nil) { return }
         
+        // Clear message text field and dismiss keyboard
+        let text = chatInputAccessoryView.expandingTextView.text
+        
+        chatInputAccessoryView.expandingTextView.text = ""
+        chatInputAccessoryView.expandingTextView.resignFirstResponder()
+        
         let message = Message(
             imageURL: nil,
             sender: UserState.currentUser.username,
-            text: chatInputAccessoryView.expandingTextView.text!,
+            text: text,
             timestamp: Date()
         )
         
         // Pass message along to be stored
         send(message: message)
-        
-        // Clear message text field and dismiss keyboard
-        chatInputAccessoryView.expandingTextView.text = ""
-        chatInputAccessoryView.expandingTextView.resignFirstResponder()
     }
     
     
@@ -159,6 +161,7 @@ class ConvoViewController: UITableViewController, AlertController {
         
         tableView.backgroundColor = UIColor.groupTableViewBackground
         tableView.allowsSelection = false
+        tableView.keyboardDismissMode = .interactive
         
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(reloadWithMoreMessages), for: UIControlEvents.valueChanged)
@@ -216,13 +219,13 @@ class ConvoViewController: UITableViewController, AlertController {
         messages.append(message)
         
         // Efficiently update by updating / inserting only the cells that need to be
-        //self.tableView.beginUpdates()
         self.tableView.insertRows(at: [IndexPath(row: messages.count - 1, section: 0)], with: .none)
-        self.tableView.scrollToRow(at: IndexPath.init(row: messages.count - 1, section: 0) , at: .bottom, animated: false)
-        //self.tableView.endUpdates()
         
-        // TODO: Fix animation for initial message loading. Animation is kinda choppy
-        //print("Scrolling to row \(IndexPath.init(row: messages.count - 1, section: 0))")
+        // TODO: Keep watch of this change during testing (possibly prone to glitches or bugs)
+        // Scroll to bottom after 0.2 seconds, allowing time for keyboard to be fully dismissed and reset table view bounds
+        // Also, this gives more time on first load to allow data source to fill before scrolling (less choppy this way)
+        
+        perform(#selector(scrollToNewestMessage), with: self, afterDelay: TimeInterval.init(0.1))
     }
     
     
@@ -438,6 +441,10 @@ extension ConvoViewController: UITextViewDelegate {
 
 // MARK: Table View Delegate
 extension ConvoViewController {
+    
+    func scrollToNewestMessage() {
+        tableView.scrollToRow(at: IndexPath.init(row: messages.count - 1, section: 0) , at: .bottom, animated: false)
+    }
     
     /** Sets the number of sections to display in the table view. */
     override func numberOfSections(in tableView: UITableView) -> Int { return 1 }

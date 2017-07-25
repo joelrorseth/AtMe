@@ -378,7 +378,7 @@ extension ChatListViewController {
                 
         // Efficiently update by updating / inserting only the cells that need to be
         self.tableView.beginUpdates()
-        self.tableView.insertRows(at: [IndexPath(row: self.conversations.count - 1, section: 0)], with: .left)
+        self.tableView.insertRows(at: [IndexPath(row: self.conversations.count - 1, section: 0)], with: .none)
         self.tableView.endUpdates()
     }
 
