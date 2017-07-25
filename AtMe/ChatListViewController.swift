@@ -21,7 +21,7 @@ class ChatListViewController: UITableViewController {
     var conversationIndexes: [String : Int] = [:]
     var currentlySelectedIndexPath: IndexPath?
     
-    private lazy var dateFormatter: DateFormatter = {
+    fileprivate lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = DateFormatter.Style.none
         formatter.timeStyle = DateFormatter.Style.short
@@ -181,26 +181,33 @@ class ChatListViewController: UITableViewController {
             if let text = snapshot.childSnapshot(forPath: "text").value as? String { message = text }
             else if let _ = snapshot.childSnapshot(forPath: "imageURL").value { message = "Picture Message" }
 
-            
-            // Go through every visible cell, determine if a cell is currently displayed for this conversation
-            if let cells = self.tableView.visibleCells as? [ConversationCell] {
-                for cell in cells {
-                    
-                    // If found, update the most recent message and efficiently move the cell to the top
-                    if (cell.nameLabel.text! == username) {
-                        
-                        // Obtain index path where this convo is being shown as a cell
-                        // We are maintaining the order of the data source (coversations), so we can safely assume that
-                        // a conversaton cell at index k corresponds to conversations[k] !!
-                        
-                        if let currentIndexPath = self.tableView.indexPath(for: cell) {
-                            self.updateRecentMessage(at: currentIndexPath.row, message: message, timestamp: timestamp, unseen: unseenMessages)
-                            self.moveConversation(from: currentIndexPath, to: IndexPath(row: 0, section: 0))
-                        
-                        } else { print("Error: Couldn't find location of cell for convo \(convoID)") }
-                    }
-                }
+        
+            if let index = self.conversationIndexes[convoID] {
+                self.updateMostRecentMessageAt(indexPath: IndexPath(row: index, section: 0) , to: message, timestamp: timestamp, unseen: unseenMessages)
+   
             }
+            
+            // TODO: Delete this once tested. We are avoiding lots of lookup now!
+            
+//            // Go through every visible cell, determine if a cell is currently displayed for this conversation
+//            if let cells = self.tableView.visibleCells as? [ConversationCell] {
+//                for cell in cells {
+//                    
+//                    // If found, update the most recent message and efficiently move the cell to the top
+//                    if (cell.nameLabel.text! == username) {
+//                        
+//                        // Obtain index path where this convo is being shown as a cell
+//                        // We are maintaining the order of the data source (coversations), so we can safely assume that
+//                        // a conversaton cell at index k corresponds to conversations[k] !!
+//                        
+//                        if let currentIndexPath = self.tableView.indexPath(for: cell) {
+//                            self.updateRecentMessage(at: currentIndexPath.row, message: message, timestamp: timestamp, unseen: unseenMessages)
+//                            self.moveConversation(from: currentIndexPath, to: IndexPath(row: 0, section: 0))
+//                        
+//                        } else { print("Error: Couldn't find location of cell for convo \(convoID)") }
+//                    }
+//                }
+//            }
         })
     }
     
@@ -219,13 +226,17 @@ class ChatListViewController: UITableViewController {
             // Extract the notification id of the user, but only add to local dictionary it that usr is not current user
             // We only need the uid or notification id for other users (eg. quick way to push notifications to all users)
             
-            if let notificationID = snapshot.value as? String, let index = self.conversationIndexes[convoID] {
+            if let notificationID = snapshot.value as? String, let row = self.conversationIndexes[convoID] {
                 if (uid != UserState.currentUser.uid) {
                     
                     // Insert uid and notification id's into sets, reload corresponding row to update cell with info
-                    self.conversations[index].memberUIDs.insert(uid)
-                    self.conversations[index].memberNotificationIDs.insert(notificationID)
-                    self.reloadConversation(at: index)
+                    // TODO: This is technically data source code, but it wont ever be used by cells so leave for now
+                    
+                    self.conversations[row].memberUIDs.insert(uid)
+                    self.conversations[row].memberNotificationIDs.insert(notificationID)
+                    
+                    self.updateConversationImageAt(indexPath: IndexPath(row: row, section: 0))
+                    //self.reloadConversation(at: index)
                 }
                 
             } else { print("Error: Could not parse observer value for \'activeMembers\'") }
@@ -246,11 +257,13 @@ class ChatListViewController: UITableViewController {
             // Extract the recorded timestamp of the current user's last visit to this conversation
             // This will change often, and must be updated to determine if we should display new message indicator
             
-            if let interval = snapshot.value as? Double, let index = self.conversationIndexes[convoID] {
+            if let interval = snapshot.value as? Double, let row = self.conversationIndexes[convoID] {
 
-                // Store this date directly in the conversation, reload cell to update with new info
-                self.conversations[index].lastSeenByCurrentUser = Date(timeIntervalSince1970: interval)
-                self.reloadConversation(at: index)
+                self.updateUnseenMessageStatusAt(indexPath: IndexPath(row: row, section: 0), using: Date(timeIntervalSince1970: interval))
+                
+//                // Store this date directly in the conversation, reload cell to update with new info
+//                self.conversations[index].lastSeenByCurrentUser = Date(timeIntervalSince1970: interval)
+//                self.reloadConversation(at: index)
             
             } else { print("Error: Could not parse observer value for \'lastSeen\'") }
         })
@@ -281,22 +294,22 @@ class ChatListViewController: UITableViewController {
     }
     
     
-    /**
-     Update the conversations array, stored locally
-     - parameters:
-        - index: Index of conversation to change
-        - message: The newest message in conversation
-        - timestamp: The timestamp from the newest message
-        - unseen: A boolean determining if conversation has been seen  ( deprecated )
-     */
-    func updateRecentMessage(at index: Int, message: String, timestamp: Date, unseen: Bool) {
-        
-        // Set properties of the conversation, specifically the ones we need to show in cell!
-        conversations[index].newestMessage = message
-        conversations[index].timestamp = timestamp
-        conversations[index].newestMessageTimestamp = dateFormatter.string(from: timestamp)
-        conversations[index].unseenMessages = unseen
-    }
+//    /**
+//     Update the conversations array, stored locally
+//     - parameters:
+//        - index: Index of conversation to change
+//        - message: The newest message in conversation
+//        - timestamp: The timestamp from the newest message
+//        - unseen: A boolean determining if conversation has been seen  ( deprecated )
+//     */
+//    func updateRecentMessage(at index: Int, message: String, timestamp: Date, unseen: Bool) {
+//        
+//        // Set properties of the conversation, specifically the ones we need to show in cell!
+//        conversations[index].newestMessage = message
+//        conversations[index].timestamp = timestamp
+//        conversations[index].newestMessageTimestamp = dateFormatter.string(from: timestamp)
+//        conversations[index].unseenMessages = unseen
+//    }
     
     
     // MARK: Segue
@@ -365,6 +378,86 @@ extension ChatListViewController: AuthenticationDelegate {
 // MARK: Table View
 extension ChatListViewController {
     
+    // MARK: New functions for dynamic cell changes to avoid heavy reloading!!
+    
+    /** Update the data source and cell located at an IndexPath with provided information.
+     This avoids reloading entire cell if it does not require moving indexes in table (eg. move to top b/c new).
+     - parameters:
+        - indexPath: The IndexPath where the update is occuring.
+        - message: The new, updated message to display.
+        - timestamp: The Date timestamp for new message.
+        - unseen: A Bool which is true if the conversation now has unseen messages.
+     */
+    func updateMostRecentMessageAt(indexPath: IndexPath, to message: String, timestamp: Date, unseen: Bool) {
+        
+        // Set properties of the conversation, specifically the ones we need to show in cell!
+        conversations[indexPath.row].newestMessage = message
+        conversations[indexPath.row].timestamp = timestamp
+        conversations[indexPath.row].newestMessageTimestamp = dateFormatter.string(from: timestamp)
+        conversations[indexPath.row].unseenMessages = unseen
+
+        
+        // Update the contents of the cell immediately without calling cellForRow()
+        if let cell = tableView.cellForRow(at: indexPath) as? ConversationCell {
+            cell.recentMessageLabel.text = message
+            cell.recentMessageTimeStampLabel.text = dateFormatter.string(from: timestamp)
+            
+            // Unwrap and determine if message being updated has been seen by current user
+            if let conversationLastSeen = conversations[indexPath.row].lastSeenByCurrentUser {
+                cell.newMessageIndicator.alpha = (conversationLastSeen < timestamp) ? 1 : 0
+            }
+        }
+        
+        // Move to top if required
+        if (indexPath.row != 0) {
+            self.moveConversation(from: indexPath, to: IndexPath(row: 0, section: 0))
+        }
+    }
+    
+    
+    /** Update the new message status and corresponding indicator in data source and cell located at an IndexPath.
+     This avoids reloading entire cell if it does not require moving indexes in table (eg. move to top b/c new).
+     - parameters:
+        - indexPath: The IndexPath where the update is occuring.
+        - date: The new Date object being used as the new most recent 'seen' timestamp.
+     */
+    func updateUnseenMessageStatusAt(indexPath: IndexPath, using date: Date) {
+        
+        // Store this date directly in the conversation, reload cell to update with new info
+        conversations[indexPath.row].lastSeenByCurrentUser = date
+        
+        // Change only the new message indicator instead of reloading cell / cellForRowAt()
+        // Unwrap and determine if new timestamp requres display/hide the new message indicator
+        
+        if let cell = tableView.cellForRow(at: indexPath) as? ConversationCell, let timestamp = conversations[indexPath.row].timestamp {
+            cell.newMessageIndicator.alpha = (date < timestamp) ? 1 : 0
+        }
+    }
+    
+    
+    /** Update the conversation image view (only) of a cell located at a specified IndexPath.
+     This avoids reloading entire cell if it does not require moving indexes in table (eg. move to top b/c new).
+     - parameters:
+        - indexPath: The IndexPath where the update is occuring.
+     */
+    func updateConversationImageAt(indexPath: IndexPath) {
+        
+        if let uid = conversations[indexPath.row].memberUIDs.first, let cell = tableView.cellForRow(at: indexPath) as? ConversationCell {
+            let path = "displayPictures/\(uid)/\(uid).JPG"
+            
+            DatabaseController.downloadImage(into: cell.userDisplayImageView, from: path , completion: { error in
+                
+                if let downloadError = error {
+                    print("AtMe:: An error has occurred, but image data was detected. \(downloadError)")
+                    return
+                }
+            })
+        }
+    }
+    
+    
+    
+    
     /**
      Insert a new conversation into the data source and associated table view
      - parameters:
@@ -403,7 +496,7 @@ extension ChatListViewController {
         
         // TODO: In future update, iOS 11 introduces and recommends performBatchUpdates() for UITableView
         // Update the actual table view dynamically, by moving the cells
-        
+        print("\nMOVING")
         self.tableView.beginUpdates()
         self.tableView.moveRow(at: source, to: destination)
         self.tableView.endUpdates()
