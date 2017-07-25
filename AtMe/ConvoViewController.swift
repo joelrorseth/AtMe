@@ -53,7 +53,10 @@ class ConvoViewController: UITableViewController, AlertController {
     // Firebase references
     var conversationRef: DatabaseReference?
     var messagesRef: DatabaseReference? = nil
-        
+    
+    var messagesHandle: DatabaseHandle?
+    var activeMembersHandle: DatabaseHandle?
+    
     var observingMessages = false
     var messages: [Message] = []
     var notificationIDs: [String] = []
@@ -236,16 +239,16 @@ class ConvoViewController: UITableViewController, AlertController {
      Observe the messages of the current conversation. Initially, a given number of messages will be
      observed, along with each newly added value afterwards.
      - parameters:
-        - count: The number of most recent messages to load when the method is first called
-    */
+     - count: The number of most recent messages to load when the method is first called
+     */
     private func observeReceivedMessages(count: Int) {
         
         let messagesQuery = messagesRef?.queryLimited(toLast: UInt(count))
         messagesQuery?.keepSynced(true)
         
         // This closure is triggered once for every existing record found, and for each record added here
-        messagesQuery?.observe(DataEventType.childAdded, with: { snapshot in
-                        
+        messagesHandle = messagesQuery?.observe(DataEventType.childAdded, with: { snapshot in
+            
             var imageURL: String?
             var text: String?
             
@@ -265,23 +268,23 @@ class ConvoViewController: UITableViewController, AlertController {
     }
     
     
-    /** 
+    /**
      Observe all existing and new notification IDs for the current conversation.
      Instead of observing them directly, we observe existing and new members, then retrieve their latest stored notification id
      */
     private func observeNotificationIDs() {
         
-        conversationRef?.child("activeMembers").observe(DataEventType.childAdded, with: { snapshot in
+        activeMembersHandle = conversationRef?.child("activeMembers").observe(DataEventType.childAdded, with: { snapshot in
             
             // Each member in activeMembers stores key-value pairs, specifically  (uid: username) for all *active* users
             // Firebase will take snapshot of each existing and new notificationID, store in property for push notifications later
             
             let uid = snapshot.key
             if (uid == UserState.currentUser.uid) { return }
-
+            
             // Ask database manager for the *current* notification ID of every observed member
             DatabaseController.notificationIDForUser(with: uid, completion: { notificationID in
-              
+                
                 if let id = notificationID {
                     
                     // Add to local copy, but write it back to database as well
@@ -296,8 +299,17 @@ class ConvoViewController: UITableViewController, AlertController {
     private func removeAllObservers() {
         
         //messagesRef?.keepSynced(false)
-        messagesRef?.removeAllObservers()
-        conversationRef?.child("activeMembers").removeAllObservers()
+        
+        if let ref = messagesRef, let handle = messagesHandle {
+            ref.removeObserver(withHandle: handle)
+        }
+        
+        if let ref = conversationRef, let handle = activeMembersHandle {
+            ref.removeObserver(withHandle: handle)
+        }
+        
+        //messagesRef?.removeAllObservers()
+        //conversationRef?.child("activeMembers").removeAllObservers()
     }
     
     
@@ -405,7 +417,7 @@ extension ConvoViewController: UITextViewDelegate {
         if (messages.count != 0) {
             self.tableView.scrollToRow(at: IndexPath.init(row: messages.count - 1, section: 0) , at: .bottom, animated: true)
         }
-            
+        
         if (self.chatInputAccessoryView.expandingTextView.text == "Enter a message") {
             self.chatInputAccessoryView.expandingTextView.text = ""
         }
@@ -491,7 +503,7 @@ extension ConvoViewController {
                 print("AtMe:: Loaded an image for a message cell")
             })
         }
-
+        
         
         if (message.sender == UserState.currentUser.username && messageContentReference != nil) { // Outgoing
             

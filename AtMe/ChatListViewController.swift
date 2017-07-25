@@ -209,7 +209,7 @@ class ChatListViewController: UITableViewController {
                             self.moveConversation(from: currentIndexPath, to: IndexPath(row: 0, section: 0))
                         
                         } else { print("Error: Couldn't find location of cell for convo \(convoID)") }
-                    } else { print("Error: No match") }
+                    }
                 }
             }
         })
