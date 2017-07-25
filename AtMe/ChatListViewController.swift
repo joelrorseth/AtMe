@@ -19,6 +19,7 @@ class ChatListViewController: UITableViewController {
     // Local conversation data source
     var conversations: [Conversation] = []
     var conversationIndexes: [String : Int] = [:]
+    var currentlySelectedIndexPath: IndexPath?
     
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -40,18 +41,6 @@ class ChatListViewController: UITableViewController {
         // Start the observers
         // TODO: In future update, sort conversations newest at the top
         observeUserConversations()
-    }
-    
-    
-    /** Overridden method called when view controller is soon to be added to view hierarchy. */
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        // FIXME: Find better way to check lastSeen array for the selected cell when returning
-        // from ConvoViewController. Somehow must reload only that selected cell upon reentry or
-        // while ConvoViewController is still being shown (use observer here)
-        
-        tableView.reloadData()
     }
     
     
@@ -245,7 +234,8 @@ class ChatListViewController: UITableViewController {
     
     
     /**
-     Register this view controller to be an observer for the 'last seen' timestamp record
+     Register this view controller to be an observer for the 'last seen' timestamp record. This will keep the new message indicator 
+     in sync with what has been written to the database, and always updates as long as this view controller is in the nav stack.
      - parameters:
         - convoID: The conversation ID of the conversation to observe the last seen timestamps
      */
@@ -322,7 +312,9 @@ class ChatListViewController: UITableViewController {
             // Pass along convoId of selected conversation
             
             if let indexPath = tableView.indexPathForSelectedRow {
+                
                 let selectedConvoId = conversations[indexPath.row].convoID
+                currentlySelectedIndexPath = indexPath
                 
                 // Using the index of selected cell, remove (hide) new message indicator from the cell!
                 (tableView.cellForRow(at: indexPath) as! ConversationCell).newMessageIndicator.alpha = 0
