@@ -16,6 +16,7 @@ public class Conversation {
     var newestMessageTimestamp: String
     var unseenMessages: Bool
     
+    
     // TODO: Refactor to store date instead of string
     var timestamp: Date!
     var lastSeenByCurrentUser: Date!
@@ -24,10 +25,11 @@ public class Conversation {
     
     
     /** Initializer */
-    init(convoID: String, name: String, newestMessage: String, newestMessageTimestamp: String, unseenMessages: Bool) {
+    init(convoID: String, name: String, newestMessage: String, timestamp: Date, newestMessageTimestamp: String, unseenMessages: Bool) {
         self.convoID = convoID
         self.name = name
         self.newestMessage = newestMessage
+        self.timestamp = timestamp
         self.newestMessageTimestamp = newestMessageTimestamp
         self.unseenMessages = unseenMessages
     }

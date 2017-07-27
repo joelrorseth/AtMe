@@ -39,7 +39,6 @@ class ChatListViewController: UITableViewController {
         AuthController.authenticationDelegate = self
         
         // Start the observers
-        // TODO: In future update, sort conversations newest at the top
         observeUserConversations()
     }
     
@@ -132,7 +131,7 @@ class ChatListViewController: UITableViewController {
             if let convoID = snapshot.value as? String {
                 
                 // Insert a blank conversation into the data source, start observing the conversation record
-                let conversation = Conversation(convoID: convoID, name: otherUsername, newestMessage: message, newestMessageTimestamp: "", unseenMessages: false)
+                let conversation = Conversation(convoID: convoID, name: otherUsername, newestMessage: message, timestamp: Date(), newestMessageTimestamp: "", unseenMessages: false)
                 
                 // Insert this conversation into data source and into table view
                 self.insertConversation(conversation: conversation)
@@ -186,28 +185,6 @@ class ChatListViewController: UITableViewController {
                 self.updateMostRecentMessageAt(indexPath: IndexPath(row: index, section: 0) , to: message, timestamp: timestamp, unseen: unseenMessages)
    
             }
-            
-            // TODO: Delete this once tested. We are avoiding lots of lookup now!
-            
-//            // Go through every visible cell, determine if a cell is currently displayed for this conversation
-//            if let cells = self.tableView.visibleCells as? [ConversationCell] {
-//                for cell in cells {
-//                    
-//                    // If found, update the most recent message and efficiently move the cell to the top
-//                    if (cell.nameLabel.text! == username) {
-//                        
-//                        // Obtain index path where this convo is being shown as a cell
-//                        // We are maintaining the order of the data source (coversations), so we can safely assume that
-//                        // a conversaton cell at index k corresponds to conversations[k] !!
-//                        
-//                        if let currentIndexPath = self.tableView.indexPath(for: cell) {
-//                            self.updateRecentMessage(at: currentIndexPath.row, message: message, timestamp: timestamp, unseen: unseenMessages)
-//                            self.moveConversation(from: currentIndexPath, to: IndexPath(row: 0, section: 0))
-//                        
-//                        } else { print("Error: Couldn't find location of cell for convo \(convoID)") }
-//                    }
-//                }
-//            }
         })
     }
     
@@ -236,7 +213,6 @@ class ChatListViewController: UITableViewController {
                     self.conversations[row].memberNotificationIDs.insert(notificationID)
                     
                     self.updateConversationImageAt(indexPath: IndexPath(row: row, section: 0))
-                    //self.reloadConversation(at: index)
                 }
                 
             } else { print("Error: Could not parse observer value for \'activeMembers\'") }
@@ -259,11 +235,8 @@ class ChatListViewController: UITableViewController {
             
             if let interval = snapshot.value as? Double, let row = self.conversationIndexes[convoID] {
 
+                // Update only the new message indicator
                 self.updateUnseenMessageStatusAt(indexPath: IndexPath(row: row, section: 0), using: Date(timeIntervalSince1970: interval))
-                
-//                // Store this date directly in the conversation, reload cell to update with new info
-//                self.conversations[index].lastSeenByCurrentUser = Date(timeIntervalSince1970: interval)
-//                self.reloadConversation(at: index)
             
             } else { print("Error: Could not parse observer value for \'lastSeen\'") }
         })
@@ -292,24 +265,6 @@ class ChatListViewController: UITableViewController {
             conversationsRef.child("\(convo.convoID)/lastSeen/\(UserState.currentUser.uid)").removeAllObservers()
         }
     }
-    
-    
-//    /**
-//     Update the conversations array, stored locally
-//     - parameters:
-//        - index: Index of conversation to change
-//        - message: The newest message in conversation
-//        - timestamp: The timestamp from the newest message
-//        - unseen: A boolean determining if conversation has been seen  ( deprecated )
-//     */
-//    func updateRecentMessage(at index: Int, message: String, timestamp: Date, unseen: Bool) {
-//        
-//        // Set properties of the conversation, specifically the ones we need to show in cell!
-//        conversations[index].newestMessage = message
-//        conversations[index].timestamp = timestamp
-//        conversations[index].newestMessageTimestamp = dateFormatter.string(from: timestamp)
-//        conversations[index].unseenMessages = unseen
-//    }
     
     
     // MARK: Segue
@@ -352,6 +307,7 @@ class ChatListViewController: UITableViewController {
 }
 
 
+
 // MARK: Empty Chat List Delegate
 extension ChatListViewController: EmptyChatListDelegate {
     
@@ -360,6 +316,7 @@ extension ChatListViewController: EmptyChatListDelegate {
         performSegue(withIdentifier: Constants.Segues.newConvoSegue, sender: nil)
     }
 }
+
 
 
 // MARK: AuthenticationDelegate
@@ -375,18 +332,49 @@ extension ChatListViewController: AuthenticationDelegate {
 }
 
 
-// MARK: Table View
+
+// MARK: Data source efficient manipulation
 extension ChatListViewController {
     
-    // MARK: New functions for dynamic cell changes to avoid heavy reloading!!
+    
+    /** Refresh the data source by sorting it and updating the associated index lookup array. */
+    func refreshDataSourceOrdering() {
+        
+        // Sort data source
+        conversations.sort(by: { $0.timestamp > $1.timestamp })
+        
+        // Update corresponding indexes with new sorted positions
+        for (index, convo) in conversations.enumerated() {
+            conversationIndexes[convo.convoID] = index
+        }
+    }
+    
+    
+    /**
+     Insert a new conversation into the data source and ask table view to update accordingly.
+     - parameters:
+     - conversation: The constructed Conversation object to be inserted
+     */
+    func insertConversation(conversation: Conversation) {
+        
+        // Add conversation to data source, then refresh it (sort and update indicies)
+        conversations.append(conversation)
+        refreshDataSourceOrdering()
+        
+        // Using refreshed index lookup, animate the insert at new position
+        if let newIndex = conversationIndexes[conversation.convoID] {
+            animateConversationInsert(at: IndexPath(row: newIndex, section: 0))
+        }
+    }
+    
     
     /** Update the data source and cell located at an IndexPath with provided information.
      This avoids reloading entire cell if it does not require moving indexes in table (eg. move to top b/c new).
      - parameters:
-        - indexPath: The IndexPath where the update is occuring.
-        - message: The new, updated message to display.
-        - timestamp: The Date timestamp for new message.
-        - unseen: A Bool which is true if the conversation now has unseen messages.
+     - indexPath: The IndexPath where the update is occuring.
+     - message: The new, updated message to display.
+     - timestamp: The Date timestamp for new message.
+     - unseen: A Bool which is true if the conversation now has unseen messages.
      */
     func updateMostRecentMessageAt(indexPath: IndexPath, to message: String, timestamp: Date, unseen: Bool) {
         
@@ -395,7 +383,9 @@ extension ChatListViewController {
         conversations[indexPath.row].timestamp = timestamp
         conversations[indexPath.row].newestMessageTimestamp = dateFormatter.string(from: timestamp)
         conversations[indexPath.row].unseenMessages = unseen
-
+        
+        let convoIDBeingEdited = conversations[indexPath.row].convoID
+        
         
         // Update the contents of the cell immediately without calling cellForRow()
         if let cell = tableView.cellForRow(at: indexPath) as? ConversationCell {
@@ -408,9 +398,16 @@ extension ChatListViewController {
             }
         }
         
-        // Move to top if required
-        if (indexPath.row != 0) {
-            self.moveConversation(from: indexPath, to: IndexPath(row: 0, section: 0))
+        // Since only one element is ever inserted at a time, we know only one move should be doneto rearrange table view
+        // This is because we can move table view cells using UIKit and other cells will shift to match data source
+        refreshDataSourceOrdering()
+        
+        
+        // Using refreshed index lookup, animate the move from the old position (indexPath.row) to new position
+        if let newIndex = conversationIndexes[convoIDBeingEdited] {
+            if (indexPath.row != newIndex) {
+                animateConversationMove(from: indexPath, to: IndexPath(row: newIndex, section: 0))
+            }
         }
     }
     
@@ -418,8 +415,8 @@ extension ChatListViewController {
     /** Update the new message status and corresponding indicator in data source and cell located at an IndexPath.
      This avoids reloading entire cell if it does not require moving indexes in table (eg. move to top b/c new).
      - parameters:
-        - indexPath: The IndexPath where the update is occuring.
-        - date: The new Date object being used as the new most recent 'seen' timestamp.
+     - indexPath: The IndexPath where the update is occuring.
+     - date: The new Date object being used as the new most recent 'seen' timestamp.
      */
     func updateUnseenMessageStatusAt(indexPath: IndexPath, using date: Date) {
         
@@ -438,7 +435,7 @@ extension ChatListViewController {
     /** Update the conversation image view (only) of a cell located at a specified IndexPath.
      This avoids reloading entire cell if it does not require moving indexes in table (eg. move to top b/c new).
      - parameters:
-        - indexPath: The IndexPath where the update is occuring.
+     - indexPath: The IndexPath where the update is occuring.
      */
     func updateConversationImageAt(indexPath: IndexPath) {
         
@@ -454,56 +451,31 @@ extension ChatListViewController {
             })
         }
     }
-    
-    
-    
-    
-    /**
-     Insert a new conversation into the data source and associated table view
-     - parameters:
-        - conversation: The constructed Conversation object to be inserted
-     */
-    func insertConversation(conversation: Conversation) {
-        
-        // Append conversation to data source, maintain the index lookup
-        conversationIndexes[conversation.convoID] = self.conversations.count
-        conversations.append(conversation)
-                
-        // Efficiently update by updating / inserting only the cells that need to be
-        self.tableView.beginUpdates()
-        self.tableView.insertRows(at: [IndexPath(row: self.conversations.count - 1, section: 0)], with: .none)
-        self.tableView.endUpdates()
-    }
+}
 
+
+
+// MARK: Table View
+extension ChatListViewController {
+    
+    
+    /** Animate the insertion of a cell at the specified row. 
+     - parameters:
+        - destination: The IndexPath to insert the new row at.
+     */
+    func animateConversationInsert(at destination: IndexPath) {
+        self.tableView.insertRows(at: [destination], with: .none)
+    }
+    
     
     /**
-     Move a conversation (data source and location in table) from an old index path to a new one. This method will
-     rearrange the other elements by collapsing them to fill empty array positions
+     Animate the table view cell located at *source* to the new index path defined by *destination*.
      - parameters:
         - source: The index path of the element (conversation) to be moved
         - destination: The index path to move the source element to
      */
-    func moveConversation(from source: IndexPath, to destination: IndexPath) {
-        
-        // First update data source by removing element at source index, placing at the front
-        let element = conversations.remove(at: source.row)
-        conversations.insert(element, at: 0)
-        
-        // Update the stored indexes (map) for each conversation, now that they have been rearranged
-        for (index, convo) in conversations.enumerated() {
-            conversationIndexes[convo.convoID] = index
-        }
-        
-        // TODO: In future update, iOS 11 introduces and recommends performBatchUpdates() for UITableView
-        // Update the actual table view dynamically, by moving the cells
-        
-        self.tableView.beginUpdates()
+    func animateConversationMove(from source: IndexPath, to destination: IndexPath) {
         self.tableView.moveRow(at: source, to: destination)
-        self.tableView.endUpdates()
-        
-        // Once cell has moved from source to destination, update the cell contents
-        // This is because we changed the message for that cell earlier and didn't refresh anything
-        self.tableView.reloadRows(at: [destination], with: UITableViewRowAnimation.none)
     }
     
     
