@@ -160,6 +160,7 @@ class ConvoViewController: UITableViewController, AlertController {
         chatInputAccessoryView.expandingTextView.inputAccessoryView = chatInputAccessoryView
         
         tableView.backgroundColor = UIColor.groupTableViewBackground
+        tableView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
         tableView.allowsSelection = false
         tableView.keyboardDismissMode = .interactive
         
