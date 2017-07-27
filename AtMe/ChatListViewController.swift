@@ -496,7 +496,7 @@ extension ChatListViewController {
         
         // TODO: In future update, iOS 11 introduces and recommends performBatchUpdates() for UITableView
         // Update the actual table view dynamically, by moving the cells
-        print("\nMOVING")
+        
         self.tableView.beginUpdates()
         self.tableView.moveRow(at: source, to: destination)
         self.tableView.endUpdates()

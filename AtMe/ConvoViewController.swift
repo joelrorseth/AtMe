@@ -17,6 +17,20 @@ class ChatInputAccessoryView: UIInputView {
     @IBOutlet weak var expandingTextView: UITextView!
     
     
+    /** View frame initializer override */
+    override init(frame: CGRect, inputViewStyle: UIInputViewStyle) {
+        super.init(frame: frame, inputViewStyle: inputViewStyle)
+        
+        expandingTextView.textColor = UIColor.darkGray
+    }
+    
+    
+    /** Required view initializer */
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    
     /** Overridden variable which determines if current view contrller can become first responder. */
     override var canBecomeFirstResponder: Bool {
         return true
@@ -172,10 +186,11 @@ class ConvoViewController: UITableViewController, AlertController {
     }
     
     
-    
     /** Overridden method called when view controller will been removed from view hierarchy. */
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        
+        NotificationCenter.default.removeObserver(self)
         
         // If this view controller is being popped off navigation stack, then remove all observers
         if self.isMovingFromParentViewController { removeAllObservers() }
@@ -216,17 +231,16 @@ class ConvoViewController: UITableViewController, AlertController {
     /** Adds a given Message to the table view (chat) by inserting only what it needs to. */
     private func addMessage(message: Message) {
         
-        // Update data source
-        messages.append(message)
-        
         // Efficiently update by updating / inserting only the cells that need to be
-        self.tableView.insertRows(at: [IndexPath(row: messages.count - 1, section: 0)], with: .none)
-        
-        // TODO: Keep watch of this change during testing (possibly prone to glitches or bugs)
-        // Scroll to bottom after 0.2 seconds, allowing time for keyboard to be fully dismissed and reset table view bounds
-        // Also, this gives more time on first load to allow data source to fill before scrolling (less choppy this way)
-        
-        perform(#selector(scrollToNewestMessage), with: self, afterDelay: TimeInterval.init(0.1))
+        DispatchQueue.main.async {
+            
+            // Update data source then scroll to new messgae
+            // Apparently, this must be done in this same main thread to prevent race condition
+            
+            self.messages.append(message)
+            self.tableView.insertRows(at: [IndexPath(row: self.messages.count - 1, section: 0)], with: .none)
+            self.scrollToNewestMessage()
+        }
     }
     
     
@@ -311,9 +325,6 @@ class ConvoViewController: UITableViewController, AlertController {
         if let ref = conversationRef, let handle = activeMembersHandle {
             ref.removeObserver(withHandle: handle)
         }
-        
-        //messagesRef?.removeAllObservers()
-        //conversationRef?.child("activeMembers").removeAllObservers()
     }
     
     
@@ -346,9 +357,18 @@ class ConvoViewController: UITableViewController, AlertController {
     /** Add gesture recognizer to track dismiss keyboard area */
     private func addKeyboardObservers() {
         
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow), name: NSNotification.Name.UIKeyboardDidShow, object: nil)
+
+        
         // Add gesture recognizer to handle tapping outside of keyboard
         let dismissKeyboardTap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         self.tableView.addGestureRecognizer(dismissKeyboardTap)
+    }
+    
+    
+    /** Handle keyboard appearing by scrolling to the bottom of the table view. */
+    func keyboardDidShow() {
+        if messages.count > 0 { scrollToNewestMessage() }
     }
     
     
@@ -415,13 +435,6 @@ extension ConvoViewController: UITextViewDelegate {
         
         textView.inputAccessoryView = chatInputAccessoryView
         
-        self.chatInputAccessoryView.expandingTextView.textColor = UIColor.darkGray
-        
-        // TODO: Test and refactor scrolling to clean up animation, avoid scrolling to inexistent rows
-        if (messages.count != 0) {
-            self.tableView.scrollToRow(at: IndexPath.init(row: messages.count - 1, section: 0) , at: .bottom, animated: true)
-        }
-        
         if (self.chatInputAccessoryView.expandingTextView.text == "Enter a message") {
             self.chatInputAccessoryView.expandingTextView.text = ""
         }
@@ -443,8 +456,10 @@ extension ConvoViewController: UITextViewDelegate {
 // MARK: Table View Delegate
 extension ConvoViewController {
     
+    
+    /** Scroll to current bottom row of the table view. */
     func scrollToNewestMessage() {
-        tableView.scrollToRow(at: IndexPath.init(row: messages.count - 1, section: 0) , at: .bottom, animated: false)
+        tableView.scrollToRow(at: IndexPath.init(row: messages.count - 1, section: 0) , at: .bottom, animated: true)
     }
     
     /** Sets the number of sections to display in the table view. */
@@ -464,7 +479,6 @@ extension ConvoViewController {
         
         if let _ = messages[indexPath.row].imageURL {
             return 200 + (2 * MessageCell.verticalBubbleSpacing) + (2 * MessageCell.verticalInsetPadding)
-            
         }
         
         return 0
