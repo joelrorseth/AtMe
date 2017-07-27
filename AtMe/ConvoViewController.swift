@@ -17,6 +17,14 @@ class ChatInputAccessoryView: UIInputView {
     @IBOutlet weak var expandingTextView: UITextView!
     
     
+    /** Overridden variable which determines if current view controller can become first responder status. */
+    override var canBecomeFirstResponder: Bool { return true }
+    
+    
+    /** Overridden variable which determines if current view controller can resign first responder status. */
+    override var canResignFirstResponder: Bool { return true }
+    
+    
     /** View frame initializer override */
     override init(frame: CGRect, inputViewStyle: UIInputViewStyle) {
         super.init(frame: frame, inputViewStyle: inputViewStyle)
@@ -28,12 +36,6 @@ class ChatInputAccessoryView: UIInputView {
     /** Required view initializer */
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-    }
-    
-    
-    /** Overridden variable which determines if current view contrller can become first responder. */
-    override var canBecomeFirstResponder: Bool {
-        return true
     }
     
     
@@ -191,6 +193,8 @@ class ConvoViewController: UITableViewController, AlertController {
         super.viewWillDisappear(animated)
         
         NotificationCenter.default.removeObserver(self)
+        chatInputAccessoryView.expandingTextView.resignFirstResponder()
+        chatInputAccessoryView.removeFromSuperview()
         
         // If this view controller is being popped off navigation stack, then remove all observers
         if self.isMovingFromParentViewController { removeAllObservers() }
