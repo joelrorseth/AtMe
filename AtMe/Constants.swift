@@ -42,12 +42,17 @@ struct Constants {
     struct Fonts {
         static let lightTitle = UIFont(name: "AvenirNext-Medium", size: 20)!
         static let regularText = UIFont(name: "AvenirNext-Regular", size: 14)!
+        static let boldButtonText = UIFont(name: "AvenirNext-DemiBold", size: 17)!
     }
     
     struct Limits {
         static let messageCountStandardLimit = 25
         static let messageCountIncreaseLimit = 25
         static let resultsCount = UInt(16)
+    }
+    
+    struct Placeholders {
+        static let messagePlaceholder = "Enter a message"
     }
     
     struct Radius {

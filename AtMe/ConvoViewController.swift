@@ -10,62 +10,10 @@ import UIKit
 import Firebase
 
 
-// MARK: ChatInputAccessoryView class (Input View for message bar)
-class ChatInputAccessoryView: UIInputView {
-    
-    private static let preferredHeight: CGFloat = 24.0
-    @IBOutlet weak var expandingTextView: UITextView!
-    
-    
-    /** Overridden variable which determines if current view controller can become first responder status. */
-    override var canBecomeFirstResponder: Bool { return true }
-    
-    
-    /** Overridden variable which determines if current view controller can resign first responder status. */
-    override var canResignFirstResponder: Bool { return true }
-    
-    
-    /** View frame initializer override */
-    override init(frame: CGRect, inputViewStyle: UIInputViewStyle) {
-        super.init(frame: frame, inputViewStyle: inputViewStyle)
-        
-        expandingTextView.textColor = UIColor.darkGray
-    }
-    
-    
-    /** Required view initializer */
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-    
-    
-    /** Asks the view to calculate and return the size that best fits the specified size. */
-    override func sizeThatFits(_ size: CGSize) -> CGSize {
-        return CGSize(width: size.width, height: ChatInputAccessoryView.preferredHeight)
-    }
-    
-    
-    /** Set the natural size to contain all contents in this view */
-    override var intrinsicContentSize: CGSize {
-        var newSize = bounds.size
-        
-        if expandingTextView.bounds.size.height > 0.0 {
-            newSize.height = expandingTextView.bounds.size.height + 20.0
-        }
-        
-        if newSize.height < ChatInputAccessoryView.preferredHeight || newSize.height > 120.0 {
-            newSize.height = ChatInputAccessoryView.preferredHeight
-        }
-        
-        return newSize
-    }
-}
-
-
-
-// MARK: ConvoViewController Class
 class ConvoViewController: UITableViewController, AlertController {
     
+    
+    // MARK: - Properties
     // Firebase references
     var conversationRef: DatabaseReference?
     var messagesRef: DatabaseReference? = nil
@@ -77,16 +25,6 @@ class ConvoViewController: UITableViewController, AlertController {
     var messages: [Message] = []
     var notificationIDs: [String] = []
     var currentMessageCountLimit = Constants.Limits.messageCountStandardLimit
-    
-    
-    /** Overridden variable which determines if current view contrller can become first responder. */
-    override var canBecomeFirstResponder: Bool {
-        return true
-    }
-    
-    
-    // MARK: Storyboard
-    @IBOutlet weak var chatInputAccessoryView: ChatInputAccessoryView!
     
     // FIXME: This needs to be refactored, along with prepareForSegue in ChatList
     var convoId: String = "" {
@@ -106,85 +44,119 @@ class ConvoViewController: UITableViewController, AlertController {
         return formatter
     }()
     
-    // Wrapper view controller for the custom input accessory view
-    let chatInputAccessoryViewController = UIInputViewController()
     
     
-    /** Overridden variable which sets the UIInputViewController input accessory for this view controller. */
-    override var inputAccessoryViewController: UIInputViewController? {
+    // MARK: - Input Accessory View
+    fileprivate let chatToolbarView: ChatToolbarView = {
+        let view = ChatToolbarView(frame: CGRect.zero, inputViewStyle: UIInputViewStyle.default)
         
-        // Ensure our input accessory view controller has it's input view set
-        chatInputAccessoryView.translatesAutoresizingMaskIntoConstraints = false
-        chatInputAccessoryViewController.inputView = chatInputAccessoryView
+        // Add selectors as targets to the toolbar buttons
+        view.sendButton.addTarget(self, action: #selector(didPressSend(sender:)), for: UIControlEvents.touchUpInside)
+        view.libraryButton.addTarget(self, action: #selector(didPressLibraryIcon(sender:)), for: UIControlEvents.touchUpInside)
+        view.cameraButton.addTarget(self, action: #selector(didPressCameraIcon(sender:)), for: UIControlEvents.touchUpInside)
         
-        // Return our custom input accessory view controller. You could also just return a UIView with
-        // override func inputAccessoryView()
-        return chatInputAccessoryViewController
+        return view
+    }()
+    
+    
+    /** Provide the view controller's inputAccessoryView object. */
+    override var inputAccessoryView: UIView? { return chatToolbarView }
+    
+    
+    /** Give the view controller permission to become first responder. */
+    override var canBecomeFirstResponder: Bool { return true }
+    
+    
+    /** Convenience method to dismiss the input accessory (toolbar). */
+    func dismissKeyboard() {
+        
+        // Dismiss toolbar and keyboard only if required
+        if chatToolbarView.expandingTextView.isFirstResponder {
+            chatToolbarView.expandingTextView.resignFirstResponder()
+            self.scrollToNewestMessage()
+        }
     }
     
     
-    // MARK: IBAction methods
+    // MARK: Button methods
     /** Action method which fires when the user taps 'Send'. */
-    @IBAction func didPressSend(_ sender: Any) {
+    @objc func didPressSend(sender: Any) {
         
-        if (chatInputAccessoryView.expandingTextView.text == "" ||
-            chatInputAccessoryView.expandingTextView.text == nil) { return }
+        if (chatToolbarView.expandingTextView.text == "" || chatToolbarView.expandingTextView.text == nil ||
+            chatToolbarView.expandingTextView.text == Constants.Placeholders.messagePlaceholder) { return }
         
-        // Clear message text field and dismiss keyboard
-        let text = chatInputAccessoryView.expandingTextView.text
-        
-        chatInputAccessoryView.expandingTextView.text = ""
-        chatInputAccessoryView.expandingTextView.resignFirstResponder()
-        
+        // Extract message then reset keyboard and toolbar
         let message = Message(
             imageURL: nil,
             sender: UserState.currentUser.username,
-            text: text,
+            text: chatToolbarView.expandingTextView.text!,
             timestamp: Date()
         )
         
         // Pass message along to be stored
         send(message: message)
+        
+        dismissKeyboard()
+        chatToolbarView.reset()
+    }
+    
+    
+    /** Action method which fires when user taps the image library icon. */
+    @objc func didPressLibraryIcon(sender: Any) {
+     
+        dismissKeyboard()
+
+        // Create photo library image picker and present
+        let picker = UIImagePickerController()
+        picker.delegate = self
+        picker.allowsEditing = true
+        picker.sourceType = UIImagePickerControllerSourceType.photoLibrary
+        
+        DispatchQueue.main.async {
+            self.present(picker, animated: true, completion: nil)
+        }
     }
     
     
     /** Action method which fires when the user taps the camera icon. */
-    @IBAction func didPressCameraIcon(_ sender: Any) {
+    @objc func didPressCameraIcon(sender: Any) {
         
-        chatInputAccessoryView.expandingTextView.resignFirstResponder()
+        dismissKeyboard()
         
-        // Create picker, and set this controller as delegate
+        // Create camera image picker and present
         let picker = UIImagePickerController()
         picker.delegate = self
         picker.allowsEditing = true
+        picker.sourceType = UIImagePickerControllerSourceType.camera
         
-        // Call AlertController method to display ActionSheet allowing Camera or Photo Library selection
-        // Use callback to set picker source type determined in the alert controller
-        
-        presentPhotoSelectionPrompt(completion: { (sourceType: UIImagePickerControllerSourceType) in
-            
-            picker.sourceType = sourceType
+        DispatchQueue.main.async {
             self.present(picker, animated: true, completion: nil)
-        })
+        }
     }
     
     
-    // MARK: View
+    
+    // MARK: - View
     /** Overridden method called after view controller's view is loaded into memory. */
     override func viewDidLoad() {
+        super.viewDidLoad()
         
-        chatInputAccessoryView.expandingTextView.inputAccessoryView = chatInputAccessoryView
-        
+        // Set table view properties
         tableView.backgroundColor = UIColor.groupTableViewBackground
         tableView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
         tableView.allowsSelection = false
         tableView.keyboardDismissMode = .interactive
         
+        // Set the delegate of the text view inside the chat toolbar
+        // We will handle changes in this view controller
+        
+        chatToolbarView.expandingTextView.delegate = self
+
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(reloadWithMoreMessages), for: UIControlEvents.valueChanged)
         tableView.refreshControl = refreshControl
         
-        addKeyboardObservers()
+        addGestureRecognizers()
     }
     
     
@@ -192,16 +164,13 @@ class ConvoViewController: UITableViewController, AlertController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        NotificationCenter.default.removeObserver(self)
-        chatInputAccessoryView.expandingTextView.resignFirstResponder()
-        chatInputAccessoryView.removeFromSuperview()
-        
         // If this view controller is being popped off navigation stack, then remove all observers
         if self.isMovingFromParentViewController { removeAllObservers() }
     }
     
     
-    // MARK: Managing messages
+    
+    // MARK: - Managing messages
     /** Perform required actions to send a given Message. */
     func send(message: Message) {
         
@@ -256,7 +225,8 @@ class ConvoViewController: UITableViewController, AlertController {
     }
     
     
-    // MARK: Observers
+    
+    // MARK: - Observers
     /**
      Observe the messages of the current conversation. Initially, a given number of messages will be
      observed, along with each newly added value afterwards.
@@ -357,12 +327,9 @@ class ConvoViewController: UITableViewController, AlertController {
     }
     
     
-    // MARK: Keyboard Handling
+    // MARK: - Gesture Recognizers
     /** Add gesture recognizer to track dismiss keyboard area */
-    private func addKeyboardObservers() {
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow), name: NSNotification.Name.UIKeyboardDidShow, object: nil)
-
+    private func addGestureRecognizers() {
         
         // Add gesture recognizer to handle tapping outside of keyboard
         let dismissKeyboardTap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -370,20 +337,7 @@ class ConvoViewController: UITableViewController, AlertController {
     }
     
     
-    /** Handle keyboard appearing by scrolling to the bottom of the table view. */
-    func keyboardDidShow() {
-        if messages.count > 0 { scrollToNewestMessage() }
-    }
-    
-    
-    /** Dismiss the custom keyboard (the input accessory) */
-    func dismissKeyboard() {
-        chatInputAccessoryViewController.dismissKeyboard()
-        chatInputAccessoryView.expandingTextView.resignFirstResponder()
-    }
-    
-    
-    // MARK: Additional functions
+    // MARK: - Additional functions
     /**
      Obtains a timestamp of the current moment in time (described as the interval from 1970 until now)
      - returns: A TimeInterval object representing the time interval since 1970
@@ -394,7 +348,7 @@ class ConvoViewController: UITableViewController, AlertController {
 }
 
 
-// MARK: UIImagePickerControllerDelegate
+// MARK: - UIImagePickerControllerDelegate
 extension ConvoViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     // TODO: In future update, refactor
@@ -432,38 +386,51 @@ extension ConvoViewController: UIImagePickerControllerDelegate, UINavigationCont
     }
 }
 
+
+
+// MARK: - UITextViewDelegate
 extension ConvoViewController: UITextViewDelegate {
     
     /** Delegate method which fires when the specified text view has begun editing. */
     func textViewDidBeginEditing(_ textView: UITextView) {
+        //print("Text field began editing")
         
-        textView.inputAccessoryView = chatInputAccessoryView
+        chatToolbarView.expandingTextView.textColor = UIColor.darkGray
         
-        if (self.chatInputAccessoryView.expandingTextView.text == "Enter a message") {
-            self.chatInputAccessoryView.expandingTextView.text = ""
+        // If the message has default text (hasn't been touched), then commit to text based message now
+        if (chatToolbarView.expandingTextView.text == Constants.Placeholders.messagePlaceholder) {
+            chatToolbarView.commitToTextBasedMessage()
         }
+        
+        scrollToNewestMessage()
     }
     
     
     /** Delegate method which fires when the specified text view has ended editing. */
     func textViewDidEndEditing(_ textView: UITextView) {
-        self.chatInputAccessoryView.expandingTextView.textColor = UIColor.gray
-        self.chatInputAccessoryViewController.dismissKeyboard()
+        //print("Text field ended editing")
         
-        if (self.chatInputAccessoryView.expandingTextView.text == "") {
-            self.chatInputAccessoryView.expandingTextView.text = "Enter a message"
+        self.chatToolbarView.expandingTextView.textColor = UIColor.gray
+        
+        // TODO: Reimplement these checks in a regular fashion
+        // If the text is back to nothing, now reallow picture to be selected using toolbar
+        if (chatToolbarView.expandingTextView.text == "") {
+            chatToolbarView.uncommitToTextBasedMessage()
         }
     }
 }
 
 
-// MARK: Table View Delegate
+
+// MARK: - Table View Delegate
 extension ConvoViewController {
     
     
     /** Scroll to current bottom row of the table view. */
     func scrollToNewestMessage() {
-        tableView.scrollToRow(at: IndexPath.init(row: messages.count - 1, section: 0) , at: .bottom, animated: true)
+        if messages.count > 0 {
+            tableView.scrollToRow(at: IndexPath.init(row: messages.count - 1, section: 0) , at: .bottom, animated: true)
+        }
     }
     
     /** Sets the number of sections to display in the table view. */

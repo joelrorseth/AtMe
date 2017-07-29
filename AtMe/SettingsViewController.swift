@@ -94,10 +94,12 @@ class SettingsViewController: UITableViewController, AlertController {
         // Call AlertController method to display ActionSheet allowing Camera or Photo Library selection
         // Use callback to set picker source type determined in the alert controller
         
-        presentPhotoSelectionPrompt(completion: { (sourceType: UIImagePickerControllerSourceType) in
+        presentPhotoSelectionPrompt(completion: { (sourceType: UIImagePickerControllerSourceType?) in
             
-            picker.sourceType = sourceType
-            self.present(picker, animated: true, completion: nil)
+            if let sourceType = sourceType {
+                picker.sourceType = sourceType
+                self.present(picker, animated: true, completion: nil)
+            }
         })
     }
     

@@ -35,7 +35,7 @@ extension AlertController where Self:UIViewController {
      - parameters:
         - completion: A completion callback which fires when a UIAlertAction is trigger via selecting an option on the UIAlertController
      */
-    func presentPhotoSelectionPrompt(completion: ((UIImagePickerControllerSourceType) -> Void)?) {
+    func presentPhotoSelectionPrompt(completion: @escaping (UIImagePickerControllerSourceType?) -> Void) {
         
         let controller = UIAlertController(title: "Change Profile Picture", message: "Where do you want to take your picture?", preferredStyle: UIAlertControllerStyle.actionSheet)
         controller.view.tintColor = Constants.Colors.primaryDark
@@ -44,18 +44,24 @@ extension AlertController where Self:UIViewController {
         if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera)) {
             controller.addAction(UIAlertAction(title: "Camera", style: UIAlertActionStyle.default, handler: { _ in
  
-                completion!(UIImagePickerControllerSourceType.camera)
+                completion(UIImagePickerControllerSourceType.camera)
             }))
         }
         
         // Add photo library option
         controller.addAction(UIAlertAction(title: "Photo Library", style: UIAlertActionStyle.default, handler: { _ in
-            completion!(UIImagePickerControllerSourceType.photoLibrary)
+            completion(UIImagePickerControllerSourceType.photoLibrary)
         }))
         
-        // Present the action sheet
-        controller.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: nil))
-        self.present(controller, animated: true, completion: nil)
+        // Add cancel option
+        controller.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: { _ in
+            completion(nil)
+        }))
+        
+        // Present the actual controller
+        DispatchQueue.main.async {
+            self.present(controller, animated: true, completion: nil)
+        }
     }
 }
 
