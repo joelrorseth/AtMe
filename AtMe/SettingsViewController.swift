@@ -43,22 +43,30 @@ class SettingsViewController: UITableViewController, AlertController {
     }
     
     
-    /** Updates the UserState and database stored record of the current user's display picture (url). 
-     - parameters:
-        - image: The UIImage being set as new display picture
-     */
-    func updateUserDisplayPicture(image: UIImage) {
+    /** Updates the UserState and database stored record of the current user's display picture (url). */
+    func updateUserDisplayPicture() {
         
         let uid = UserState.currentUser.uid
-        let url = "\(uid)/\(uid).JPG"
+        let url = "displayPictures/\(uid)/\(uid).JPG"
         
-        AuthController.setDisplayPicture(path: url)
+        // Redownload into image into image view
+        // Although user may not even have profile picture yet, this method is safe and will clear if cached
+        DatabaseController.reloadImage(into: userPictureImageView, from: url, completion: { error in
+            if let error = error { print("Error: \(error.localizedDescription)") }
+            else { print("Good") }
+        })
+        
+        
+        // TODO: Refactor to remove assumption that path in userInfo signifies a valid profile picture
+        // Really we can just query database for this directly and let it fail if not found
+        AuthController.setDisplayPicture(path: "\(uid)/\(uid).JPG")
         
         // Update current user stored display picture, reload image view
-        loadCurrentUserInformation()
+        // loadCurrentUserInformation()
     }
     
     
+    // TODO: Eventually show the actual current information greyed out in the table cells
     /** Loads information about the current user into the view. */
     private func loadCurrentUserInformation() {
         
@@ -66,6 +74,8 @@ class SettingsViewController: UITableViewController, AlertController {
         userDisplayNameLabel.text = UserState.currentUser.name
         usernameLabel.text = "@" + UserState.currentUser.username
         
+        // UserState is assumed to hold only the relative path of display picture
+        // TODO: Change this in the future to full path, or better yet just eliminate it
         guard let picture = UserState.currentUser.displayPicture else {
             presentSimpleAlert(title: "Could Not Set Picture", message: Constants.Errors.displayPictureMissing, completion: nil)
             return
@@ -163,7 +173,7 @@ class SettingsViewController: UITableViewController, AlertController {
 }
 
 
-// MARK: Image Picker Delegate Methods
+// MARK: - Image Picker Delegate Methods
 extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     // TODO: In future update, refactor
@@ -183,7 +193,7 @@ extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationC
                         return
                     }
                     
-                    self.updateUserDisplayPicture(image: image)
+                    self.updateUserDisplayPicture()
                 })
                 
             } else { print("AtMe:: Error extracting image from camera source") }
@@ -201,7 +211,7 @@ extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationC
 
 
 
-// MARK: Table View
+// MARK: - Table View
 extension SettingsViewController {
     
     /** Called when a given row / index path is selected in the table view. */

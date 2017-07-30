@@ -11,18 +11,20 @@ import Kingfisher
 
 class DatabaseController {
     
+    
+    // MARK: - Static Properties
     static var userConversationListRef: DatabaseReference = Database.database().reference().child("userConversationList")
     static var userInactiveConversationsRef: DatabaseReference = Database.database().reference().child("userInactiveConversations")
     static var conversationsRef: DatabaseReference = Database.database().reference().child("conversations")
     static var userInformationRef: DatabaseReference = Database.database().reference().child("userInformation")
         
     
-    // MARK: Image Management
+    // MARK: - Image Management
     /** Downloads an image (from a location in the database) into a specified UIImageView.
      - parameters:
         - destination: The UIImageView that, if successful, will be given the downloaded image
         - location: A path to the image being search for, relative to the root of the storage database
-        - completion: Function called when finished, passing back an optional Error object when unsuccessful
+        - completion: Function called when finished, passing back an optional Error object if unsuccessful
             - error: An Error object created and returned if unsuccesful for any reason
      */
     public static func downloadImage(into destination: UIImageView, from location: String, completion: @escaping (Error?)->()){
@@ -44,7 +46,7 @@ class DatabaseController {
             
             // Otherwise, asynchronously download the file data stored at location and store it for later
             store.downloadURL(completion: { (url, error) in
-                guard let url = url else { return }
+                guard let url = url else { print("Error: Image download url was nil"); return }
                 
                 print("Image was not found in cache, downloading and caching now...")
                 destination.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: { _ in
@@ -77,6 +79,28 @@ class DatabaseController {
     }
     
     
+    /** Redownloads an image (from a location in the database) into a specified UIImageView. This will clear
+     the original image from the cache and reload the image view directly.
+     - parameters:
+        - destination: The UIImageView that, if successful, will be given the downloaded image
+        - location: A path to the image being reloaded, relative to the root of the storage database
+        - completion: Function called when finished, passing back an optional Error object if unsuccessful
+        - parameters:
+            - error: An Error object created and returned if unsuccesful for any reason
+     */
+    public static func reloadImage(into destination: UIImageView, from location: String, completion: @escaping (Error?)->()) {
+        
+        // Convert location to Firebase storage path, remove from cache
+        //let store = Storage.storage().reference(withPath: location)
+        ImageCache.default.removeImage(forKey: location)
+        
+        // Redownload the image into cache and the provided image view using another method
+        downloadImage(into: destination, from: location, completion: { error in
+            completion(error)
+        })
+    }
+    
+    
     /** Clear all images currently cached by the database on disk or memory. */
     public static func clearCachedImages() {
         
@@ -94,7 +118,7 @@ class DatabaseController {
     }
     
     
-    // MARK: Conversation Management
+    // MARK: - Conversation Management
     /** Determine if an active conversation record currently exists between the current user and specified user, and return convoID if so.
      - parameters:
         - username: Username to check for existence of conversation with current user

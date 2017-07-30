@@ -42,7 +42,7 @@ class PromptView: UIView {
         
         // Custom view to contain the popup
         let popupView = UIView(frame: CGRect(x: 20, y: frame.height / 4, width: frame.width - 40, height: 220))
-        popupView.layer.cornerRadius = 5
+        popupView.layer.cornerRadius = Constants.Radius.regularRadius
         popupView.layer.opacity = 1.0
         popupView.alpha = 1.0
         popupView.backgroundColor = UIColor.white

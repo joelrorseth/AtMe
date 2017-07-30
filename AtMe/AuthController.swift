@@ -100,6 +100,7 @@ class AuthController {
     public static func signOut() {
         
         AuthController.authenticationDelegate?.userDidSignOut()
+        DatabaseController.clearCachedImages()
         DatabaseController.unsubscribeUserFromNotifications(uid: UserState.currentUser.uid)
         UserState.resetCurrentUser()
     }
@@ -244,6 +245,7 @@ class AuthController {
         
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
+        print("Setting displayPict: \(path)")
         UserState.currentUser.displayPicture = path
         userInformationRef.child("\(uid)/displayPicture").setValue(path)
     }
