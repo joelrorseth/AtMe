@@ -395,12 +395,21 @@ extension ConvoViewController: UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {
         //print("Text field began editing")
         
+        // Change to active text colour
         chatToolbarView.expandingTextView.textColor = UIColor.darkGray
         
-        // If the message has default text (hasn't been touched), then commit to text based message now
         if (chatToolbarView.expandingTextView.text == Constants.Placeholders.messagePlaceholder) {
-            chatToolbarView.commitToTextBasedMessage()
+            chatToolbarView.expandingTextView.text = ""
         }
+        
+        
+        // If the message has default text (hasn't been touched), then commit to text based message now
+        // TODO: Fix auto layout glitch where text would scroll instead of resize
+        // TODO: In future, dismiss buttons only when text has actually been entered
+        
+//        if (chatToolbarView.expandingTextView.text == Constants.Placeholders.messagePlaceholder) {
+//            chatToolbarView.commitToTextBasedMessage()
+//        }
         
         scrollToNewestMessage()
     }
@@ -412,11 +421,16 @@ extension ConvoViewController: UITextViewDelegate {
         
         self.chatToolbarView.expandingTextView.textColor = UIColor.gray
         
+        if (chatToolbarView.expandingTextView.text == "") {
+            chatToolbarView.expandingTextView.text = Constants.Placeholders.messagePlaceholder
+        }
+        
         // TODO: Reimplement these checks in a regular fashion
         // If the text is back to nothing, now reallow picture to be selected using toolbar
-        if (chatToolbarView.expandingTextView.text == "") {
-            chatToolbarView.uncommitToTextBasedMessage()
-        }
+        
+//        if (chatToolbarView.expandingTextView.text == "") {
+//            chatToolbarView.uncommitToTextBasedMessage()
+//        }
     }
 }
 
