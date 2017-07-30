@@ -602,14 +602,14 @@
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="John Smith" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LWv-K7-TAL">
-                                                    <rect key="frame" x="83" y="25" width="93" height="25"/>
-                                                    <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="18"/>
+                                                    <rect key="frame" x="83" y="25" width="88" height="23.5"/>
+                                                    <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="17"/>
                                                     <color key="textColor" red="0.34901960780000002" green="0.18823529410000001" blue="0.90588235289999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="@john_smith" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2dw-Ko-P3j">
-                                                    <rect key="frame" x="264" y="25" width="93" height="22"/>
-                                                    <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="16"/>
+                                                    <rect key="frame" x="269.5" y="26" width="87.5" height="20.5"/>
+                                                    <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="15"/>
                                                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -618,7 +618,7 @@
                                             <constraints>
                                                 <constraint firstItem="LWv-K7-TAL" firstAttribute="leading" secondItem="bSv-Nu-AGp" secondAttribute="trailing" constant="13" id="Q57-Si-hCA"/>
                                                 <constraint firstItem="LWv-K7-TAL" firstAttribute="centerY" secondItem="wof-y7-ZYH" secondAttribute="centerY" id="T84-XZ-g0K"/>
-                                                <constraint firstItem="2dw-Ko-P3j" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="LWv-K7-TAL" secondAttribute="trailing" constant="60" id="TYc-tf-Bqz"/>
+                                                <constraint firstItem="2dw-Ko-P3j" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="LWv-K7-TAL" secondAttribute="trailing" constant="10" id="TYc-tf-Bqz"/>
                                                 <constraint firstItem="bSv-Nu-AGp" firstAttribute="centerY" secondItem="wof-y7-ZYH" secondAttribute="centerY" id="VMU-0t-EkI"/>
                                                 <constraint firstItem="bSv-Nu-AGp" firstAttribute="top" relation="greaterThanOrEqual" secondItem="wof-y7-ZYH" secondAttribute="topMargin" constant="2" id="ahw-kO-efC"/>
                                                 <constraint firstItem="bSv-Nu-AGp" firstAttribute="leading" secondItem="wof-y7-ZYH" secondAttribute="leadingMargin" constant="10" id="bzS-TM-bb2"/>
