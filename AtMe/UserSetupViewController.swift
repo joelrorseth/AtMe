@@ -211,6 +211,9 @@ extension UserSetupViewController: UIImagePickerControllerDelegate, UINavigation
     /** Called when media has been selected by the user in the image picker. */
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
+        // Dismiss immediately to appear responsive
+        dismiss(animated: true)
+        
         // Extract the image after editing, upload to database as Data object
         if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
             if let data = convertImageToData(image: image) {
@@ -222,9 +225,6 @@ extension UserSetupViewController: UIImagePickerControllerDelegate, UINavigation
                 
             } else { print("AtMe:: Error extracting image from camera source") }
         } else { print("AtMe:: Error extracting edited UIImage from info dictionary") }
-        
-        dismiss(animated: true)
-
     }
 
     

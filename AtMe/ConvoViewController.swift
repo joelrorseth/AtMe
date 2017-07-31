@@ -355,7 +355,10 @@ extension ConvoViewController: UIImagePickerControllerDelegate, UINavigationCont
     /** Called when media has been selected by the user in the image picker. */
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
-        if convoId == "" { dismiss(animated: true, completion: nil) }
+        // Immediately dismiss image picker to keep the UI responsive
+        if convoId == "" { return }
+        self.dismiss(animated: true)
+        
         let path = "conversations/\(convoId)/images/\(Int(Date.timeIntervalSinceReferenceDate * 1000)).jpg"
         
         // Extract the image after editing, upload to database as Data object
@@ -365,14 +368,12 @@ extension ConvoViewController: UIImagePickerControllerDelegate, UINavigationCont
                 DatabaseController.uploadImage(data: data, to: path, completion: { (error) in
                     if let error = error {
                         print("AtMe:: Error uploading picture message to Firebase. \(error.localizedDescription)")
-                        self.dismiss(animated: true)
                         return
                     }
                     
                     // Now that image has uploaded, officially send the message record to the database with storage URL
                     let message = Message(imageURL: path, sender: UserState.currentUser.username, text: nil, timestamp: Date())
                     self.send(message: message)
-                    self.dismiss(animated: true)
                 })
                 
             } else { print("AtMe:: Error extracting image from source") }

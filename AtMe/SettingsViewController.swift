@@ -180,6 +180,9 @@ extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationC
     /** Called when media has been selected by the user in the image picker. */
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
+        // Immediately dismiss for responsiveness
+        dismiss(animated: true)
+        
         let uid = UserState.currentUser.uid
         let path = "displayPictures/\(uid)/\(uid).JPG"
         
@@ -198,8 +201,6 @@ extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationC
                 
             } else { print("AtMe:: Error extracting image from camera source") }
         } else { print("AtMe:: Error extracting edited UIImage from info dictionary") }
-
-        dismiss(animated: true)
     }
     
     
