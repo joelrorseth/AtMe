@@ -124,7 +124,7 @@ class SettingsViewController: UITableViewController, AlertController {
     func logout() {
         
         // Present a confirmation dialog to logout
-        let ac = UIAlertController(title: "Confirm Logout", message: "Are you sure you want to logout?", preferredStyle: .alert)
+        let ac = UIAlertController(title: "Confirm Logout", message: Constants.Messages.confirmLogout, preferredStyle: .alert)
         ac.view.tintColor = Constants.Colors.primaryDark
         ac.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         ac.addAction(UIAlertAction(title: "Logout", style: .default, handler: { (action) in
@@ -217,7 +217,7 @@ extension SettingsViewController {
     
     /** Called when a given row / index path is selected in the table view. */
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        print("Tapped \(indexPath)")
         // Opting to change editable user attributes prompts PromptViewController
         if (indexPath.section == 1 || indexPath.section == 2) {
             DispatchQueue.main.async {
@@ -229,6 +229,7 @@ extension SettingsViewController {
         if (indexPath.section == 3) {
             if (indexPath.row == 0) {
                 DatabaseController.clearCachedImages()
+                presentSimpleAlert(title: "Cache Cleared", message: Constants.Messages.cacheClearedSuccess, completion: nil)
             }
         }
         

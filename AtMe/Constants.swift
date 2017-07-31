@@ -51,6 +51,11 @@ struct Constants {
         static let resultsCount = UInt(16)
     }
     
+    struct Messages {
+        static let cacheClearedSuccess = "Image cache was successfully emptied."
+        static let confirmLogout = "Are you sure you want to logout?"
+    }
+    
     struct Placeholders {
         static let messagePlaceholder = "Enter a message"
     }
