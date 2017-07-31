@@ -72,6 +72,11 @@ class ConvoViewController: UITableViewController, AlertController {
         
         // Dismiss toolbar and keyboard only if required
         if chatToolbarView.expandingTextView.isFirstResponder {
+            
+            if (!chatToolbarView.messageInProgress()) {
+                chatToolbarView.resetToPlaceholder()
+            }
+            
             chatToolbarView.expandingTextView.resignFirstResponder()
             self.scrollToNewestMessage()
         }
@@ -95,9 +100,7 @@ class ConvoViewController: UITableViewController, AlertController {
         
         // Pass message along to be stored
         send(message: message)
-        
-        dismissKeyboard()
-        chatToolbarView.reset()
+        chatToolbarView.clearText()
     }
     
     

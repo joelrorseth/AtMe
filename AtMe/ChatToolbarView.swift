@@ -235,9 +235,21 @@ class ChatToolbarView: UIInputView {
     }
     
     
-    /** Reset toolbar to original state. */
-    func reset() {
+    /** Determine if the text view has text message currently.
+    - returns: True if the text view has a message inside currently
+    */
+    func messageInProgress() -> Bool { return expandingTextView.text! != ""}
+    
+    
+    /** Clears text entirely from the toolbar, leaving no placeholder. */
+    func clearText() { expandingTextView.text = "" }
+    
+    
+    /** Reset toolbar to docked state with placeholder message. */
+    func resetToPlaceholder() {
         expandingTextView.text = Constants.Placeholders.messagePlaceholder
-        uncommitToTextBasedMessage()
+        
+        // Add in in future update
+        //uncommitToTextBasedMessage()
     }
 }
