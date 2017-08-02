@@ -30,7 +30,7 @@ class ChatListViewController: UITableViewController {
     }()
     
     
-    // MARK: View
+    // MARK: - View
     /** Overridden method called after view controller's view is loaded into memory */
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -114,7 +114,7 @@ class ChatListViewController: UITableViewController {
     }
     
     
-    // MARK: Observers
+    // MARK: - Observers
     /** Register this view controller to be an observer for new conversations */
     private func observeUserConversations() {
         
@@ -123,6 +123,8 @@ class ChatListViewController: UITableViewController {
         // Call this closure once for every conversation record, and any time a record is added
         userConversationListRef.child(uid).keepSynced(true)
         
+        
+        // Observe all conversations and any added afterwards
         userConversationListRef.child(uid).observe(DataEventType.childAdded, with: { snapshot in
             
             let otherUsername = snapshot.key
@@ -144,6 +146,16 @@ class ChatListViewController: UITableViewController {
                 self.observeMessages(convoID: convoID, with: otherUsername)
             }
         })
+        
+        
+        // Observe all removals of conversations from the active conversation list in database
+        userConversationListRef.child(uid).observe(DataEventType.childRemoved, with: { snapshot in
+            
+            if let convoID = snapshot.value as? String {
+                self.removeConversation(convoID: convoID)
+            }
+        })
+        
     }
     
     
@@ -158,6 +170,12 @@ class ChatListViewController: UITableViewController {
         // Retrieve a snapshot for the most recent message record in this conversation
         conversationsRef.child("\(convoID)/messages").queryLimited(toLast: 1).observe(DataEventType.childAdded, with: { snapshot in
             
+            // Check if conversation still exists locally, prevent going any further if not
+            guard let convoIndex = self.conversationIndexes[convoID] else {
+                print("Error: Received a message, but its conversation no longer exists.")
+                return
+            }
+            
             var unseenMessages = false
             var timestamp: Date = Date()
             
@@ -167,7 +185,7 @@ class ChatListViewController: UITableViewController {
                 // If this message was sent after last time user viewed conversation, mark unseen as true
                 // This will be used to set the unseen messages indicator in the conversation cell
                 
-                if let lastDateSeen = self.conversations[self.conversationIndexes[convoID]!].lastSeenByCurrentUser {
+                if let lastDateSeen = self.conversations[convoIndex].lastSeenByCurrentUser {
                     if lastDateSeen < timestamp { unseenMessages = true }
                 }
             }
@@ -181,10 +199,8 @@ class ChatListViewController: UITableViewController {
             else if let _ = snapshot.childSnapshot(forPath: "imageURL").value { message = "Picture Message" }
 
         
-            if let index = self.conversationIndexes[convoID] {
-                self.updateMostRecentMessageAt(indexPath: IndexPath(row: index, section: 0) , to: message, timestamp: timestamp, unseen: unseenMessages)
-   
-            }
+            // Actually update the conversation cell with this new information
+            self.updateMostRecentMessageAt(indexPath: IndexPath(row: convoIndex, section: 0) , to: message, timestamp: timestamp, unseen: unseenMessages)
         })
     }
     
@@ -214,8 +230,7 @@ class ChatListViewController: UITableViewController {
                     
                     self.updateConversationImageAt(indexPath: IndexPath(row: row, section: 0))
                 }
-                
-            } else { print("Error: Could not parse observer value for \'activeMembers\'") }
+            } else { print("Error: Could not parse active member or no conversation was found for member") }
         })
     }
     
@@ -368,6 +383,22 @@ extension ChatListViewController {
     }
     
     
+    /** Remove conversation from the data source and ask table view to update accordingly.
+     - parameters:
+     - convoID: The conversation ID of the conversation to be deleted
+     */
+    func removeConversation(convoID: String) {
+        
+        guard let row = conversationIndexes[convoID] else { return }
+        let indexPath = IndexPath(row: row, section: 0)
+        
+        conversations.remove(at: row)
+        conversationIndexes.removeValue(forKey: convoID)
+        
+        animateConversationRemoval(at: indexPath)
+    }
+    
+    
     /** Update the data source and cell located at an IndexPath with provided information.
      This avoids reloading entire cell if it does not require moving indexes in table (eg. move to top b/c new).
      - parameters:
@@ -465,6 +496,15 @@ extension ChatListViewController {
      */
     func animateConversationInsert(at destination: IndexPath) {
         self.tableView.insertRows(at: [destination], with: .none)
+    }
+    
+    
+    /** Animate the removal of a cell at the specified row.
+     - parameters:
+        - indexPath: IndexPath of cell to be removed
+    */
+    func animateConversationRemoval(at indexPath: IndexPath) {
+        self.tableView.deleteRows(at: [indexPath], with: .left)
     }
     
     
@@ -580,13 +620,8 @@ extension ChatListViewController {
             // These must be separate in database because an observer will detect all entries in active list
             
             DatabaseController.leaveConversation(convoID: convoID, with: username, completion: {
-                
-                // Remove records from local table view data source
-                self.conversations.remove(at: indexPath.row)
-                
-                // Delete row in tableView
-                tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.right)
-                tableView.reloadData()
+                // At this point, childRemoved observer will take care of table view removal and
+                // data source. This allows the database to keep in sync at its own pace.
             })
         }
     }
