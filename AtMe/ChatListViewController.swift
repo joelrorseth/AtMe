@@ -267,7 +267,7 @@ class ChatListViewController: UITableViewController {
     }
     
     
-    // MARK: Segue
+    // MARK: - Segue
     /** Overridden method providing an opportunity for data transfer to destination view controller before segueing to it. */
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
@@ -282,18 +282,18 @@ class ChatListViewController: UITableViewController {
             if let indexPath = tableView.indexPathForSelectedRow {
                 
                 let selectedConvoId = conversations[indexPath.row].convoID
+                cvc.convoId = selectedConvoId
+                
+                // Pass the actual conversation object
+                cvc.conversation = conversations[indexPath.row]
+                cvc.messagesRef = conversationsRef.child("\(selectedConvoId)/messages")
+                cvc.navigationItem.title = conversations[indexPath.row].name
+                
+                // Track selected index for return to this view controller
                 currentlySelectedIndexPath = indexPath
                 
                 // Using the index of selected cell, remove (hide) new message indicator from the cell!
                 (tableView.cellForRow(at: indexPath) as! ConversationCell).newMessageIndicator.alpha = 0
-                
-                cvc.messagesRef = conversationsRef.child("\(selectedConvoId)/messages")
-                cvc.convoId = selectedConvoId
-                
-                // Pass the username selected to the title of convo
-                if let selectedUsername = (tableView.cellForRow(at: indexPath) as! ConversationCell).nameLabel.text {
-                    cvc.navigationItem.title = selectedUsername
-                }
             }
         }
     }

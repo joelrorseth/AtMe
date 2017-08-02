@@ -175,6 +175,25 @@ class AuthController {
     }
     
     
+    /** Asynchronously determine name of user with a given uid.
+     - parameters:
+        - uid: The uid of the user being searched for
+        - completion: Completion handler called when search has finished
+            - name: The name of user found, but nil if not found
+     */
+    public static func findNameFor(uid: String, completion: @escaping (String?) -> Void) {
+        
+        userInformationRef.observeSingleEvent(of: DataEventType.value, with: { snapshot in
+            
+            if let first = snapshot.childSnapshot(forPath: "\(uid)/firstName").value as? String,
+                let last = snapshot.childSnapshot(forPath: "\(uid)/lastName").value as? String {
+                completion(first + " " + last)
+            
+            } else { completion(nil) }
+        })
+    }
+    
+    
     // Current user maintenance
     /**
      Retrieve details for current user from the database. User must be authorized already.

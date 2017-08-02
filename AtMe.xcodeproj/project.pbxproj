@@ -31,6 +31,7 @@
 		5D6394F51F315E3C0095C1C5 /* privacy.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5D6394F41F315E3C0095C1C5 /* privacy.txt */; };
 		5D65EBF61EFA1798009F512E /* NotificationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D65EBF51EFA1798009F512E /* NotificationsController.swift */; };
 		5D9027231EB2A3E60021AEE9 /* Conversation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D9027221EB2A3E60021AEE9 /* Conversation.swift */; };
+		5D9617381F316C6100222C79 /* ConvoAuxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D9617371F316C6100222C79 /* ConvoAuxViewController.swift */; };
 		5D9D443A1EAEE81500CF25F7 /* UserState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D9D44391EAEE81500CF25F7 /* UserState.swift */; };
 		5DA1D56D1EF78B57001A6ED5 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA1D56C1EF78B57001A6ED5 /* NotificationService.swift */; };
 		5DA1D5711EF78B57001A6ED5 /* OneSignalNotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 5DA1D56A1EF78B57001A6ED5 /* OneSignalNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -96,6 +97,7 @@
 		5D6394F41F315E3C0095C1C5 /* privacy.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = privacy.txt; sourceTree = "<group>"; };
 		5D65EBF51EFA1798009F512E /* NotificationsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationsController.swift; sourceTree = "<group>"; };
 		5D9027221EB2A3E60021AEE9 /* Conversation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Conversation.swift; sourceTree = "<group>"; };
+		5D9617371F316C6100222C79 /* ConvoAuxViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvoAuxViewController.swift; sourceTree = "<group>"; };
 		5D9D44391EAEE81500CF25F7 /* UserState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserState.swift; sourceTree = "<group>"; };
 		5DA1D56A1EF78B57001A6ED5 /* OneSignalNotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OneSignalNotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		5DA1D56C1EF78B57001A6ED5 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
@@ -207,6 +209,7 @@
 				5DAFF1611E72FD02008DE303 /* SignUpViewController.swift */,
 				5D04E9891E58DD0C006D8CD5 /* ChatListViewController.swift */,
 				5D04E98B1E58E24E006D8CD5 /* ConvoViewController.swift */,
+				5D9617371F316C6100222C79 /* ConvoAuxViewController.swift */,
 				5D3DDA391E6248DA00B6FBB7 /* NewConvoViewController.swift */,
 				5D0B5AB71E668EFB0077BE46 /* SettingsViewController.swift */,
 				5D2B625F1EC909A300B8363E /* PromptViewController.swift */,
@@ -480,6 +483,7 @@
 				5D0B5AB81E668EFB0077BE46 /* SettingsViewController.swift in Sources */,
 				5DF36ED91EB3D35400346868 /* Message.swift in Sources */,
 				5D07CAB21E752C0100316D75 /* UserProfile.swift in Sources */,
+				5D9617381F316C6100222C79 /* ConvoAuxViewController.swift in Sources */,
 				5D2B62601EC909A300B8363E /* PromptViewController.swift in Sources */,
 				5D6394F11F314F800095C1C5 /* LegalViewController.swift in Sources */,
 				5DE764EE1F0046E700E483C6 /* AuthController.swift in Sources */,

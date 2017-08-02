@@ -21,6 +21,7 @@ class ConvoViewController: UITableViewController, AlertController {
     var messagesHandle: DatabaseHandle?
     var activeMembersHandle: DatabaseHandle?
     
+    var conversation: Conversation!
     var observingMessages = false
     var messages: [Message] = []
     var notificationIDs: [String] = []
@@ -150,6 +151,12 @@ class ConvoViewController: UITableViewController, AlertController {
         tableView.allowsSelection = false
         tableView.keyboardDismissMode = .interactive
         
+        
+        // Setrup info icon for displaying user profile
+        let infoButton = UIButton(type: UIButtonType.infoDark)
+        infoButton.addTarget(self, action: #selector(didTapAuxMenuIcon), for: UIControlEvents.touchUpInside)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: infoButton)
+        
         // Set the delegate of the text view inside the chat toolbar
         // We will handle changes in this view controller
         
@@ -169,6 +176,24 @@ class ConvoViewController: UITableViewController, AlertController {
         
         // If this view controller is being popped off navigation stack, then remove all observers
         if self.isMovingFromParentViewController { removeAllObservers() }
+    }
+    
+    
+    /** Handle selection of auxiliary menu icon to bring up conversation options */
+    func didTapAuxMenuIcon() {
+        performSegue(withIdentifier: Constants.Segues.showAuxSegue, sender: nil)
+    }
+    
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == Constants.Segues.showAuxSegue {
+            if let vc = segue.destination as? ConvoAuxViewController {
+                vc.username = self.navigationItem.title ?? ""
+                vc.convoID = self.convoId
+                vc.uid = conversation.memberUIDs.first ?? ""
+            }
+        }
     }
     
     

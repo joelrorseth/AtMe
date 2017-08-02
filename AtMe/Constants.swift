@@ -69,6 +69,7 @@ struct Constants {
         static let loadConvoSegue = "LoadConvoSegue"
         static let newConvoSegue = "NewConvoSegue"
         static let settingsSegue = "SettingsSegue"
+        static let showAuxSegue = "ShowAuxSegue"
         static let showLegalSegue = "ShowLegalSegue"
         static let showPromptSegue = "ShowPrompt"
         static let signInSuccessSegue = "SignInSuccessSegue"
