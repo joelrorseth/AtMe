@@ -323,7 +323,7 @@ class ChatListViewController: UITableViewController {
 
 
 
-// MARK: Empty Chat List Delegate
+// MARK: - Empty Chat List Delegate
 extension ChatListViewController: EmptyChatListDelegate {
     
     /** Delegate method implementation which fires when user selects '@Somebody' in an EmptyChatListView */
@@ -334,7 +334,7 @@ extension ChatListViewController: EmptyChatListDelegate {
 
 
 
-// MARK: AuthenticationDelegate
+// MARK: - AuthenticationDelegate
 extension ChatListViewController: AuthenticationDelegate {
     
     /** Handles the AuthenticationDelegate function called when the current user signs out */
@@ -348,7 +348,7 @@ extension ChatListViewController: AuthenticationDelegate {
 
 
 
-// MARK: Data source efficient manipulation
+// MARK: - Data source efficient manipulation
 extension ChatListViewController {
     
     

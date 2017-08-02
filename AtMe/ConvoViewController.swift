@@ -20,6 +20,7 @@ class ConvoViewController: UITableViewController, AlertController {
     
     var messagesHandle: DatabaseHandle?
     var activeMembersHandle: DatabaseHandle?
+    var removedMembersHandle: DatabaseHandle?
     
     var conversation: Conversation!
     var observingMessages = false
@@ -294,6 +295,7 @@ class ConvoViewController: UITableViewController, AlertController {
      */
     private func observeNotificationIDs() {
         
+        // Observe a user entering the conversation
         activeMembersHandle = conversationRef?.child("activeMembers").observe(DataEventType.childAdded, with: { snapshot in
             
             // Each member in activeMembers stores key-value pairs, specifically  (uid: username) for all *active* users
@@ -312,6 +314,29 @@ class ConvoViewController: UITableViewController, AlertController {
                 }
             })
         })
+        
+    
+        // Observe a user leaving the conversation
+        removedMembersHandle = conversationRef?.child("activeMembers").observe(DataEventType.childRemoved, with: { snapshot in
+            
+            // Each member in activeMembers stores key-value pairs, specifically  (uid: username) for all *active* users
+            // Firebase will take snapshot of each existing and new notificationID, store in property for push notifications later
+            
+            let uid = snapshot.key
+            if (uid == UserState.currentUser.uid) { return }
+            
+            // Ask database manager for the *current* notification ID of every observed member
+            DatabaseController.notificationIDForUser(with: uid, completion: { notificationID in
+                
+                if let id = notificationID {
+                    
+                    // Find the notification id and remove it now that user has left
+                    for (index, notificationID) in self.notificationIDs.enumerated() {
+                        if notificationID == id { self.notificationIDs.remove(at: index) }
+                    }
+                }
+            })
+        })
     }
     
     
@@ -325,6 +350,10 @@ class ConvoViewController: UITableViewController, AlertController {
         }
         
         if let ref = conversationRef, let handle = activeMembersHandle {
+            ref.removeObserver(withHandle: handle)
+        }
+        
+        if let ref = conversationRef, let handle = removedMembersHandle {
             ref.removeObserver(withHandle: handle)
         }
     }
