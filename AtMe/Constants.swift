@@ -53,6 +53,7 @@ struct Constants {
     
     struct Messages {
         static let cacheClearedSuccess = "Image cache was successfully emptied."
+        static let confirmBlockMessage = "Are you sure you want to block this user? You will be unable to contact each other while blocked."
         static let confirmLogout = "Are you sure you want to logout?"
     }
     

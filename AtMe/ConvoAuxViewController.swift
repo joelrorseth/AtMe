@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ConvoAuxViewController: UIViewController {
+class ConvoAuxViewController: UIViewController, AlertController {
 
     var username: String = ""
     var convoID: String = ""
@@ -23,6 +23,10 @@ class ConvoAuxViewController: UIViewController {
     
     /** Handle user pressing the Block User button. */
     @IBAction func didPressBlockUserButton(_ sender: UIButton) {
+        
+        presentConfirmationAlert(title: "Confirm Block", message: Constants.Messages.confirmBlockMessage, completion: { _ in
+            print("Confirmed")
+        })
     }
 
     
