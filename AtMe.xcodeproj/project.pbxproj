@@ -26,6 +26,9 @@
 		5D5A13031F2177C400D54109 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5D5A13011F2177C400D54109 /* GoogleService-Info.plist */; };
 		5D5D67761ED1E90200FF8F2A /* DatabaseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D5D67751ED1E90200FF8F2A /* DatabaseController.swift */; };
 		5D5EDF851EC3D14C00F7FC44 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D5EDF841EC3D14C00F7FC44 /* Extensions.swift */; };
+		5D6394F11F314F800095C1C5 /* LegalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D6394F01F314F800095C1C5 /* LegalViewController.swift */; };
+		5D6394F31F31598E0095C1C5 /* terms.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5D6394F21F31598E0095C1C5 /* terms.txt */; };
+		5D6394F51F315E3C0095C1C5 /* privacy.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5D6394F41F315E3C0095C1C5 /* privacy.txt */; };
 		5D65EBF61EFA1798009F512E /* NotificationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D65EBF51EFA1798009F512E /* NotificationsController.swift */; };
 		5D9027231EB2A3E60021AEE9 /* Conversation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D9027221EB2A3E60021AEE9 /* Conversation.swift */; };
 		5D9D443A1EAEE81500CF25F7 /* UserState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D9D44391EAEE81500CF25F7 /* UserState.swift */; };
@@ -88,6 +91,9 @@
 		5D5A13011F2177C400D54109 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5D5D67751ED1E90200FF8F2A /* DatabaseController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseController.swift; sourceTree = "<group>"; };
 		5D5EDF841EC3D14C00F7FC44 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Extensions.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		5D6394F01F314F800095C1C5 /* LegalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegalViewController.swift; sourceTree = "<group>"; };
+		5D6394F21F31598E0095C1C5 /* terms.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = terms.txt; sourceTree = "<group>"; };
+		5D6394F41F315E3C0095C1C5 /* privacy.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = privacy.txt; sourceTree = "<group>"; };
 		5D65EBF51EFA1798009F512E /* NotificationsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationsController.swift; sourceTree = "<group>"; };
 		5D9027221EB2A3E60021AEE9 /* Conversation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Conversation.swift; sourceTree = "<group>"; };
 		5D9D44391EAEE81500CF25F7 /* UserState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserState.swift; sourceTree = "<group>"; };
@@ -167,6 +173,8 @@
 				5D1C704E1E58C68A00FEDEC3 /* Controllers */,
 				5D1C704D1E58C67800FEDEC3 /* Model */,
 				5D1C70421E58C64A00FEDEC3 /* Assets.xcassets */,
+				5D6394F21F31598E0095C1C5 /* terms.txt */,
+				5D6394F41F315E3C0095C1C5 /* privacy.txt */,
 				5D1C703F1E58C64A00FEDEC3 /* Main.storyboard */,
 				5D1C70441E58C64A00FEDEC3 /* LaunchScreen.storyboard */,
 				5D5A13011F2177C400D54109 /* GoogleService-Info.plist */,
@@ -203,6 +211,7 @@
 				5D0B5AB71E668EFB0077BE46 /* SettingsViewController.swift */,
 				5D2B625F1EC909A300B8363E /* PromptViewController.swift */,
 				5DE764EF1F00814900E483C6 /* UserSetupViewController.swift */,
+				5D6394F01F314F800095C1C5 /* LegalViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -349,8 +358,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				5D1C70461E58C64A00FEDEC3 /* LaunchScreen.storyboard in Resources */,
+				5D6394F51F315E3C0095C1C5 /* privacy.txt in Resources */,
 				5D5A13021F2177C400D54109 /* GoogleService-Info.plist in Resources */,
 				5D1C70431E58C64A00FEDEC3 /* Assets.xcassets in Resources */,
+				5D6394F31F31598E0095C1C5 /* terms.txt in Resources */,
 				5D1C70411E58C64A00FEDEC3 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -470,6 +481,7 @@
 				5DF36ED91EB3D35400346868 /* Message.swift in Sources */,
 				5D07CAB21E752C0100316D75 /* UserProfile.swift in Sources */,
 				5D2B62601EC909A300B8363E /* PromptViewController.swift in Sources */,
+				5D6394F11F314F800095C1C5 /* LegalViewController.swift in Sources */,
 				5DE764EE1F0046E700E483C6 /* AuthController.swift in Sources */,
 				5D9D443A1EAEE81500CF25F7 /* UserState.swift in Sources */,
 			);
