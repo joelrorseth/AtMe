@@ -217,7 +217,7 @@ extension SettingsViewController {
     
     /** Called when a given row / index path is selected in the table view. */
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("Tapped \(indexPath)")
+        
         // Opting to change editable user attributes prompts PromptViewController
         if (indexPath.section == 1 || indexPath.section == 2) {
             DispatchQueue.main.async {
@@ -234,7 +234,11 @@ extension SettingsViewController {
         }
         
         // Initiate logout
-        else if (indexPath.section == 4 && indexPath.row == 0) {
+        if (indexPath.section == 4 && indexPath.row == 0) {
+            performSegue(withIdentifier: Constants.Segues.showLegalSegue, sender: nil)
+        }
+        
+        else if (indexPath.section == 4 && indexPath.row == 1) {
             logout()
         }
     }
