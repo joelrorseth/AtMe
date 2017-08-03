@@ -196,7 +196,7 @@ class ConvoViewController: UITableViewController, AlertController {
                 // IMPORTANT: Assume only two users in a chat max, and that current user
                 // uid is never stored in the conversation member ids sets. Thus other user is in at least one
                 
-                vc.uid = conversation.activeMemberUIDs.first ?? conversation.inactiveMemberUIDs.first ?? ""
+                vc.uid = conversation.activeMemberUIDs.first ?? conversation.inactiveMemberUIDs.first
             }
         }
     }

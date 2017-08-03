@@ -164,7 +164,7 @@ class DatabaseController {
         })
     }
     
-    
+    // TODO: Refactor for future update
     /**
      Attempts to create a conversation between current user and a given user, or rejoins an existing conversation with user if active.
      This method is duplicate safe, and checks for inactive and currently active conversations to avoid creating multiple conversations.
@@ -177,72 +177,76 @@ class DatabaseController {
     public static func createConversationWith(user username: String, withID uid: String, completion: @escaping (Bool)->()) {
         
         
-        // Note: The app logic assumes that one (and only one) conersation will ever exist between two
+        // IMPORTANT NOTE: The app logic assumes that one (and only one) conersation will ever exist between two
         // users. We maintain a record of active and inactive conversations, observe only the active
         // ones, and transfer a conversation record back and forth when deleted or (re)created by user.
         
-//        AuthController.userOrCurrentUserHasBlocked(uid: uid, username: username, completion: { blocked in
-//            
-//            // Prevent 
-//            if blocked { completion(false) }
-//        })
-
-        doesActiveConversationExistWith(username: username, completion: { exists in
+        AuthController.userOrCurrentUserHasBlocked(uid: uid, username: username, completion: { blocked in
             
-            // If conversation exists, just exit gracefully and do absolutely nothing
-            if (exists) { print("Error: Active conversation already exists"); completion(false); return }
+            // Prevent 
+            if blocked { completion(false); return }
+          
+            // Now that we checked if user is blocked, check if active convo exists for current user
+            // In regards to note above, we only allow one convo record between users
+            // The actual convo stays in place, but userConversationList tracks active members
             
-            self.findInactiveConversationWith(username: username, completion: { convoID in
+            doesActiveConversationExistWith(username: username, completion: { exists in
                 
-                // If a conversation still exists with this user, just join into the existing one
-                // Re-establish the current user as an active member (eg. inactive --> active)
-                if let convoID = convoID {
-                    print("Reactivating old conversation: \(convoID)")
+                // If conversation exists, just exit gracefully and do absolutely nothing
+                if (exists) { print("Error: Active conversation already exists"); completion(false); return }
+                
+                self.findInactiveConversationWith(username: username, completion: { convoID in
                     
-                    // Delete this conversation from inactive convo record, add it to the active convo record
-                    // This is important, since the conversation list obserever in ChatListViewController will find and load this
-                    
-                    self.userInactiveConversationsRef.child(UserState.currentUser.uid).child(username).removeValue()
-                    self.userConversationListRef.child(UserState.currentUser.uid).child(username).setValue(convoID)
-                    
-                    // Establish current user as an active member
-                    self.conversationsRef.child("\(convoID)/inactiveMembers/\(UserState.currentUser.uid)").removeValue()
-                    self.conversationsRef.child("\(convoID)/activeMembers/\(UserState.currentUser.uid)").setValue(UserState.currentUser.username)
-                    
-                    completion(true)
-                }
-                    
-                    
-                // Otherwise, a new conversation is generated and recorded into database
-                else {
-                    
-                    // Generate unique conversation identifier
-                    let convoID = self.conversationsRef.childByAutoId().key
-                    print("Generating a new conversation: \(convoID)")
-                    
-                    // Establish the database record for this conversation
-                    self.userInformationRef.observeSingleEvent(of: DataEventType.value, with: { snapshot in
+                    // If a conversation still exists with this user, just join into the existing one
+                    // Re-establish the current user as an active member (eg. inactive --> active)
+                    if let convoID = convoID {
+                        print("Reactivating old conversation: \(convoID)")
                         
-                        // Store list of each member's uid and username for quick lookup
-                        // More importantly, this is stored to track who is active and should receive push notifications
-
-                        let members = [UserState.currentUser.uid: UserState.currentUser.username, uid: username]
-                        let lastSeen = [UserState.currentUser.uid: Date().timeIntervalSince1970, uid: Date().timeIntervalSinceNow]
+                        // Delete this conversation from inactive convo record, add it to the active convo record
+                        // This is important, since the conversation list obserever in ChatListViewController will find and load this
                         
-                        //let selectedUserNotificationID = snapshot.childSnapshot(forPath: "\(uid)/notificationID").value as? String
-                        //let members = [UserState.currentUser.uid: UserState.currentUser.notificationID, uid: selectedUserNotificationID!]
-                        
-                        self.conversationsRef.child("\(convoID)/creator").setValue(UserState.currentUser.username)
-                        self.conversationsRef.child("\(convoID)/activeMembers").setValue(members)
-                        self.conversationsRef.child("\(convoID)/lastSeen").setValue(lastSeen)
-                        
-                        // For both users separately, record the convoId in a record identified by other user's username
+                        self.userInactiveConversationsRef.child(UserState.currentUser.uid).child(username).removeValue()
                         self.userConversationListRef.child(UserState.currentUser.uid).child(username).setValue(convoID)
-                        self.userConversationListRef.child(uid).child(UserState.currentUser.username).setValue(convoID)
+                        
+                        // Establish current user as an active member
+                        self.conversationsRef.child("\(convoID)/inactiveMembers/\(UserState.currentUser.uid)").removeValue()
+                        self.conversationsRef.child("\(convoID)/activeMembers/\(UserState.currentUser.uid)").setValue(UserState.currentUser.username)
                         
                         completion(true)
-                    })
-                }
+                    }
+                        
+                        
+                        // Otherwise, a new conversation is generated and recorded into database
+                    else {
+                        
+                        // Generate unique conversation identifier
+                        let convoID = self.conversationsRef.childByAutoId().key
+                        print("Generating a new conversation: \(convoID)")
+                        
+                        // Establish the database record for this conversation
+                        self.userInformationRef.observeSingleEvent(of: DataEventType.value, with: { snapshot in
+                            
+                            // Store list of each member's uid and username for quick lookup
+                            // More importantly, this is stored to track who is active and should receive push notifications
+                            
+                            let members = [UserState.currentUser.uid: UserState.currentUser.username, uid: username]
+                            let lastSeen = [UserState.currentUser.uid: Date().timeIntervalSince1970, uid: Date().timeIntervalSinceNow]
+                            
+                            //let selectedUserNotificationID = snapshot.childSnapshot(forPath: "\(uid)/notificationID").value as? String
+                            //let members = [UserState.currentUser.uid: UserState.currentUser.notificationID, uid: selectedUserNotificationID!]
+                            
+                            self.conversationsRef.child("\(convoID)/creator").setValue(UserState.currentUser.username)
+                            self.conversationsRef.child("\(convoID)/activeMembers").setValue(members)
+                            self.conversationsRef.child("\(convoID)/lastSeen").setValue(lastSeen)
+                            
+                            // For both users separately, record the convoId in a record identified by other user's username
+                            self.userConversationListRef.child(UserState.currentUser.uid).child(username).setValue(convoID)
+                            self.userConversationListRef.child(uid).child(UserState.currentUser.username).setValue(convoID)
+                            
+                            completion(true)
+                        })
+                    }
+                })
             })
         })
     }

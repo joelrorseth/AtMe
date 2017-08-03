@@ -30,6 +30,7 @@ struct Constants {
         static let createConversationError = "There was an error attempting to start the conversation. Please try again or contact support."
         static let missingFields = "Please fill in all required information."
         static let invalidCharacters = "Your fields must not contain any of the following: . $ # [ ] /"
+        static let loadProfileError = "An error occured while loading this profile. Please try again once dismissed."
         static let passwordLength = "Your password must be 6 or more characters."
         static let usernameLength = "Your username must be 4 or more valid characters."
         static let usernameTaken = "Your @Me username must be unique, please choose another."
