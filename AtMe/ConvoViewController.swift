@@ -292,7 +292,7 @@ class ConvoViewController: UITableViewController, AlertController {
         })
     }
     
-    //TODO: Active
+    
     /**
      Observe all existing and new notification IDs for the current conversation.
      Instead of observing them directly, we observe existing and new members, then retrieve their latest stored notification id

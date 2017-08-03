@@ -38,14 +38,12 @@ class ConvoAuxViewController: UIViewController, AlertController {
     /** Handle user pressing the Report User button. */
     @IBAction func didPressReportUserButton(_ sender: Any) {
         
-//        AuthController.userOrCurrentUserHasBlocked(uid: uid, username: username, completion: { blocked in
-//            print(blocked)
-//        })
+        // Just to test, print blocked status and unblock
+        AuthController.userOrCurrentUserHasBlocked(uid: uid, username: username, completion: { blocked in
+            print(blocked)
+        })
         
         AuthController.unblockUser(username: username)
-        DatabaseController.leaveConversation(convoID: convoID, with: username, completion: {
-            
-        })
     }
     
     
