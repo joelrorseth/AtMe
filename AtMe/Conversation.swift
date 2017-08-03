@@ -20,8 +20,13 @@ public class Conversation {
     // TODO: Refactor to store date instead of string
     var timestamp: Date!
     var lastSeenByCurrentUser: Date!
-    var memberUIDs = Set<String>()
-    var memberNotificationIDs = Set<String>()
+    
+    // Assume that every convo will only have two members (current user and another)
+    // In ChatListViewController, we don't add current user to these lists
+    // Thus only the 'other user' will appear, exclusively in either inactive or active
+    
+    var activeMemberUIDs = Set<String>()
+    var inactiveMemberUIDs = Set<String>()
     
     
     /** Initializer */

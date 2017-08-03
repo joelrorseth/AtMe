@@ -192,7 +192,11 @@ class ConvoViewController: UITableViewController, AlertController {
             if let vc = segue.destination as? ConvoAuxViewController {
                 vc.username = self.navigationItem.title ?? ""
                 vc.convoID = self.convoId
-                vc.uid = conversation.memberUIDs.first ?? ""
+                
+                // IMPORTANT: Assume only two users in a chat max, and that current user
+                // uid is never stored in the conversation member ids sets. Thus other user is in at least one
+                
+                vc.uid = conversation.activeMemberUIDs.first ?? conversation.inactiveMemberUIDs.first ?? ""
             }
         }
     }
@@ -288,7 +292,7 @@ class ConvoViewController: UITableViewController, AlertController {
         })
     }
     
-    
+    //TODO: Active
     /**
      Observe all existing and new notification IDs for the current conversation.
      Instead of observing them directly, we observe existing and new members, then retrieve their latest stored notification id
@@ -302,7 +306,7 @@ class ConvoViewController: UITableViewController, AlertController {
             // Firebase will take snapshot of each existing and new notificationID, store in property for push notifications later
             
             let uid = snapshot.key
-            if (uid == UserState.currentUser.uid) { return }
+            if (uid == UserState.currentUser.uid) { return }    // Don't add current user
             
             // Ask database manager for the *current* notification ID of every observed member
             DatabaseController.notificationIDForUser(with: uid, completion: { notificationID in

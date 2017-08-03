@@ -206,33 +206,47 @@ class ChatListViewController: UITableViewController {
     
     
     /** 
-     Register this view controller to be an observer for the members of a given conversation
+     Register this view controller to be an observer for active and inactive members of a given conversation
      - parameters:
         - convoID: The conversation ID of the conversation to observe the members of
      */
     private func observeMembers(convoID: String) {
         
+        // Observe active members
         conversationsRef.child("\(convoID)/activeMembers/").observe(DataEventType.childAdded, with: { snapshot in
+            
+            // Each child will be a (uid: username pair)
+            let uid = snapshot.key
+            
+            // Add the active member's uid to the set, update the convo image
+            // Important: Don't add current user (we assume throughout app that we don't track current user)
+            if let row = self.conversationIndexes[convoID] {
+                if (uid != UserState.currentUser.uid) {
+                    
+                    self.conversations[row].activeMemberUIDs.insert(uid)
+                    self.updateConversationImageAt(indexPath: IndexPath(row: row, section: 0))
+                }
+            } else { print("Error: Could not parse active member or no conversation was found for member") }
+        })
+        
+        
+
+        // Observe inactive members so we can still obtain profile pic for convo
+        conversationsRef.child("\(convoID)/inactiveMembers/").observe(DataEventType.childAdded, with: { snapshot in
             
             let uid = snapshot.key
             
-            // Extract the notification id of the user, but only add to local dictionary it that usr is not current user
-            // We only need the uid or notification id for other users (eg. quick way to push notifications to all users)
-            
-            if let notificationID = snapshot.value as? String, let row = self.conversationIndexes[convoID] {
+            // Add the inactive member's uid to the set, update convo image
+            if let row = self.conversationIndexes[convoID] {
                 if (uid != UserState.currentUser.uid) {
                     
-                    // Insert uid and notification id's into sets, reload corresponding row to update cell with info
-                    // TODO: This is technically data source code, but it wont ever be used by cells so leave for now
-                    
-                    self.conversations[row].memberUIDs.insert(uid)
-                    self.conversations[row].memberNotificationIDs.insert(notificationID)
-                    
+                    self.conversations[row].inactiveMemberUIDs.insert(uid)
                     self.updateConversationImageAt(indexPath: IndexPath(row: row, section: 0))
                 }
             } else { print("Error: Could not parse active member or no conversation was found for member") }
         })
     }
+    
     
     
     /**
@@ -467,14 +481,25 @@ extension ChatListViewController {
     }
     
     
-    /** Update the conversation image view (only) of a cell located at a specified IndexPath.
+    /** 
+     Update the conversation image view (only) of a cell located at a specified IndexPath.
      This avoids reloading entire cell if it does not require moving indexes in table (eg. move to top b/c new).
      - parameters:
-     - indexPath: The IndexPath where the update is occuring.
+        - indexPath: The IndexPath where the update is occuring.
      */
     func updateConversationImageAt(indexPath: IndexPath) {
         
-        if let uid = conversations[indexPath.row].memberUIDs.first, let cell = tableView.cellForRow(at: indexPath) as? ConversationCell {
+        // Extract the relevant user, either from active or inactive member list (it should be in one or the other)
+        // Even if user has left convo, we still need their display picture to show
+        
+        guard let uid = conversations[indexPath.row].activeMemberUIDs.first ?? conversations[indexPath.row].inactiveMemberUIDs.first else {
+            print("Attempted to update convo image at \(indexPath), but uid for display pic wasn't found at all.")
+            return
+        }
+        
+        
+        // Download the image of the user with 'uid; and load it into the conversation cell
+        if let cell = tableView.cellForRow(at: indexPath) as? ConversationCell {
             let path = "displayPictures/\(uid)/\(uid).JPG"
             
             DatabaseController.downloadImage(into: cell.userDisplayImageView, from: path , completion: { error in
@@ -585,17 +610,7 @@ extension ChatListViewController {
         // ASSUMPTION: Only two people can belong to a chat
         // Take first (only) member UID and download image for the convo cell (fail safe if not provided)
         
-        if let uid = conversations[indexPath.row].memberUIDs.first {
-            let path = "displayPictures/\(uid)/\(uid).JPG"
-            
-            DatabaseController.downloadImage(into: cell.userDisplayImageView, from: path , completion: { error in
-                
-                if let downloadError = error {
-                    print("AtMe:: An error has occurred, but image data was detected. \(downloadError)")
-                    return
-                }
-            })
-        }
+        updateConversationImageAt(indexPath: indexPath)
         
         return cell
     }

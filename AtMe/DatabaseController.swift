@@ -181,6 +181,11 @@ class DatabaseController {
         // users. We maintain a record of active and inactive conversations, observe only the active
         // ones, and transfer a conversation record back and forth when deleted or (re)created by user.
         
+//        AuthController.userOrCurrentUserHasBlocked(uid: uid, username: username, completion: { blocked in
+//            
+//            // Prevent 
+//            if blocked { completion(false) }
+//        })
 
         doesActiveConversationExistWith(username: username, completion: { exists in
             
@@ -190,6 +195,7 @@ class DatabaseController {
             self.findInactiveConversationWith(username: username, completion: { convoID in
                 
                 // If a conversation still exists with this user, just join into the existing one
+                // Re-establish the current user as an active member (eg. inactive --> active)
                 if let convoID = convoID {
                     print("Reactivating old conversation: \(convoID)")
                     
@@ -200,6 +206,7 @@ class DatabaseController {
                     self.userConversationListRef.child(UserState.currentUser.uid).child(username).setValue(convoID)
                     
                     // Establish current user as an active member
+                    self.conversationsRef.child("\(convoID)/inactiveMembers/\(UserState.currentUser.uid)").removeValue()
                     self.conversationsRef.child("\(convoID)/activeMembers/\(UserState.currentUser.uid)").setValue(UserState.currentUser.username)
                     
                     completion(true)
@@ -275,12 +282,16 @@ class DatabaseController {
      */
     public static func leaveConversation(convoID: String, with username: String, completion: @escaping ()->()) {
         
+        let currentUid = UserState.currentUser.uid
+        let currentUsername = UserState.currentUser.username
+        
         // Move record from active to inactive user record
-        userConversationListRef.child(UserState.currentUser.uid).child(username).removeValue()
-        userInactiveConversationsRef.child(UserState.currentUser.uid).child(username).setValue(convoID)
+        userConversationListRef.child(currentUid).child(username).removeValue()
+        userInactiveConversationsRef.child(currentUid).child(username).setValue(convoID)
         
         // Remove record of current user from conversation active members
-        conversationsRef.child("\(convoID)/activeMembers/\(UserState.currentUser.uid)").removeValue()
+        conversationsRef.child("\(convoID)/activeMembers/\(currentUid)").removeValue()
+        conversationsRef.child("\(convoID)/inactiveMembers/\(currentUid)").setValue(currentUsername)
         
         completion()
     }

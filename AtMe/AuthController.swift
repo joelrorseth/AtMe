@@ -18,6 +18,8 @@ protocol AuthenticationDelegate {
 
 class AuthController {
     
+    
+    // MARK: - Properties
     static var authenticationDelegate: AuthenticationDelegate?
     
     // Firebase References
@@ -108,18 +110,49 @@ class AuthController {
     
     
     // MARK: - Blocking users
+    /**
+     Add a given user to the current user's blocked usernames list.
+     - parameters:
+        - username: The username of the user whom the current user is blocking.
+    */
     public static func blockUser(username: String) {
-        
-        let blockedUserEntry = [username : true]
-        userInformationRef.child(UserState.currentUser.uid).child("blockedUsernames").setValue(blockedUserEntry)
+        userInformationRef.child(UserState.currentUser.uid).child("blockedUsernames/\(username)").setValue(true)
     }
     
+    
+    /**
+     Remove a given user from the current user's blocked usernames list.
+     - parameters:
+        - username: The username of the user whom the current user is unblocking.
+     */
     public static func unblockUser(username: String) {
         userInformationRef.child(UserState.currentUser.uid).child("blockedUsernames/\(username)").removeValue()
     }
     
     
-    // MARK: User search and information retrieval
+    /**
+     Determine if current user has blocked a given user, or vice versa.
+     - parameters:
+        - uid: The uid of the other user whom we are checking for blocked status.
+        - username: The username of the other user whom we are checking for blocked status.
+        - completion: A completion callback called when a conclusion has been reached.
+            - blocked: A variable passed through callback, which will be true if either user has blocked the other.
+     */
+    public static func userOrCurrentUserHasBlocked(uid: String, username: String, completion: @escaping (Bool) -> ()) {
+        
+        userInformationRef.child(UserState.currentUser.uid).child("blockedUsernames/\(username)").observeSingleEvent(of: DataEventType.value, with: { snapshot in
+            userInformationRef.child(uid).child("blockedUsernames/\(UserState.currentUser.username)").observeSingleEvent(of: DataEventType.value, with: { otherSnap in
+              
+                if let _ = snapshot.value as? Bool { completion(true) }
+                else if let _ = otherSnap.value as? Bool { completion(true) }
+                else { completion(false) }
+            })
+        })
+    }
+    
+    
+    
+    // MARK: - User lookup
     /** Finds details for specified users, then returns a UserProfile for each found via a completion callback.
      - parameters:
      - results: A dictionary containing [username: uid] pairs for users
@@ -146,8 +179,9 @@ class AuthController {
     }
     
     
-    /** Performs a search using given string, and attempts to find a predefined number of users whom the user
-     is most likely searching for. Please note that the search omits the current user.
+    /** 
+     Performs a search using given string, and attempts to find a predefined number of users whom the user
+    is most likely searching for. Please note that the search omits the current user.
      - parameters:
         - term: The term to search for and match usernames with
         - completion: A completion callback that fires when it has found all the results it can
@@ -207,7 +241,7 @@ class AuthController {
     }
     
     
-    // Current user maintenance
+    // MARK: - Current user maintenance
     /**
      Retrieve details for current user from the database. User must be authorized already.
      - parameters:
