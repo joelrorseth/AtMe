@@ -25,13 +25,23 @@ class ConvoAuxViewController: UIViewController, AlertController {
     @IBAction func didPressBlockUserButton(_ sender: UIButton) {
         
         presentConfirmationAlert(title: "Confirm Block", message: Constants.Messages.confirmBlockMessage, completion: { _ in
-            print("Confirmed")
+            
+            // Add user to current user's blocked list, leave conversation
+            AuthController.blockUser(username: self.username)
+            DatabaseController.leaveConversation(convoID: self.convoID, with: self.username, completion: {
+                self.performSegue(withIdentifier: "UnwindToChatListSegue", sender: nil)
+            })
         })
     }
 
     
     /** Handle user pressing the Report User button. */
     @IBAction func didPressReportUserButton(_ sender: Any) {
+        
+//        AuthController.unblockUser(username: username)
+//        DatabaseController.leaveConversation(convoID: convoID, with: username, completion: {
+//            
+//        })
     }
     
     

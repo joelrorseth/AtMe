@@ -1010,9 +1010,11 @@
                         <outlet property="nameLabel" destination="dfB-gn-hE2" id="wF0-5L-sd2"/>
                         <outlet property="reportUserButton" destination="QcD-WV-ru8" id="mpE-bG-Lqx"/>
                         <outlet property="usernameLabel" destination="udM-F4-OWr" id="JL2-MG-rkP"/>
+                        <segue destination="Edq-UR-8zJ" kind="unwind" identifier="UnwindToChatListSegue" unwindAction="unwindToChatListWithSegue:" id="p8s-ws-06I"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5UH-qM-8TK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="Edq-UR-8zJ" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="4558" y="206"/>
         </scene>

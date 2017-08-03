@@ -314,6 +314,10 @@ class ChatListViewController: UITableViewController {
     }
     
     
+    /** Method stub for unwind segue to this view controller from another. */
+    @IBAction func unwindToChatList(segue: UIStoryboardSegue) {}
+    
+    
     // MARK: Functionality
     /** Selector method used in the event that the settings icon is tapped. */
     @objc private func didTapSettings() {

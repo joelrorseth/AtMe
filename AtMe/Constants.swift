@@ -75,6 +75,7 @@ struct Constants {
         static let showPromptSegue = "ShowPrompt"
         static let signInSuccessSegue = "SignInSuccessSegue"
         static let signUpSuccessSegue = "SignUpSuccessSegue"
+        static let unwindToChatListSegue = "UnwindToChatListSegue"
         static let unwindToSignInSegue = "UnwindToSignIn"
     }
     

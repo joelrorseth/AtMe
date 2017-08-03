@@ -27,7 +27,7 @@ class AuthController {
     private lazy var databaseManager = DatabaseController()
     
     
-    // MARK: Account Management
+    // MARK: - Account Management
     /**
      Asynchronously attempts to create an @Me account
      - parameters:
@@ -103,6 +103,19 @@ class AuthController {
         DatabaseController.clearCachedImages()
         DatabaseController.unsubscribeUserFromNotifications(uid: UserState.currentUser.uid)
         UserState.resetCurrentUser()
+    }
+    
+    
+    
+    // MARK: - Blocking users
+    public static func blockUser(username: String) {
+        
+        let blockedUserEntry = [username : true]
+        userInformationRef.child(UserState.currentUser.uid).child("blockedUsernames").setValue(blockedUserEntry)
+    }
+    
+    public static func unblockUser(username: String) {
+        userInformationRef.child(UserState.currentUser.uid).child("blockedUsernames/\(username)").removeValue()
     }
     
     

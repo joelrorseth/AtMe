@@ -284,4 +284,17 @@ class DatabaseController {
         
         completion()
     }
+    
+    
+    /** Removes the current user from a conversation and places the conversation in the blocked
+     conversations database. A conversation must be active to in order to do this (how else would you trigger?).
+     The effect of this is that th
+     - parameters:
+        - convoID: The conversation ID of the conversation the current user requests to block
+        - username: The username of the user to with whom the conversation was with
+        - completion: A blank callback called when current user has been removed from conversation
+     */
+    public static func blockConversation(convoID: String, with username: String, completion: @escaping ()->()) {
+        
+    }
 }
