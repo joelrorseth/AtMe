@@ -578,11 +578,11 @@
                             </tableViewSection>
                             <tableViewSection id="BFM-Y2-Uce">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="JK9-NU-iL6">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" id="JK9-NU-iL6">
                                         <rect key="frame" x="0.0" y="513" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="JK9-NU-iL6" id="XT7-un-ZSi">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="342" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Blocked Users" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fbp-wF-tcQ">
@@ -740,7 +740,7 @@
                                             <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="14"/>
                                             <state key="normal" title="Unblock"/>
                                             <connections>
-                                                <action selector="didTapUnblockButton:" destination="FDO-WM-fBi" eventType="touchUpInside" id="l6a-pl-QZy"/>
+                                                <action selector="didTapUnblockButton:" destination="FDO-WM-fBi" eventType="touchUpInside" id="2DM-1p-FS1"/>
                                             </connections>
                                         </button>
                                     </subviews>
