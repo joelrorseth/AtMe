@@ -17,6 +17,10 @@ struct Constants {
         static let purpleUserImage = "user_purple"
     }
     
+    struct CellIdentifiers {
+        static let blockedUserCell = "BlockedUserCell"
+    }
+    
     struct Colors {
         static let tableViewBackground = UIColor(red: 250/255, green: 250/255, blue: 250/255, alpha: 1.0)
         static let primaryLight = UIColor(red: 180/255, green: 93/255, blue: 231/255, alpha: 1)
@@ -72,6 +76,7 @@ struct Constants {
         static let newConvoSegue = "NewConvoSegue"
         static let settingsSegue = "SettingsSegue"
         static let showAuxSegue = "ShowAuxSegue"
+        static let showBlockedUsersSegue = "ShowBlockedUsersSegue"
         static let showLegalSegue = "ShowLegalSegue"
         static let showPromptSegue = "ShowPrompt"
         static let signInSuccessSegue = "SignInSuccessSegue"

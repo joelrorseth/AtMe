@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		28120FCEF4C0012F55BBA9D8 /* libPods-OneSignalNotificationServiceExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 74649526AFB7305F6EC2E9B5 /* libPods-OneSignalNotificationServiceExtension.a */; };
+		5D00D1041F339B9900130C59 /* BlockedUsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D00D1031F339B9900130C59 /* BlockedUsersViewController.swift */; };
+		5D00D1061F33A72E00130C59 /* BlockedUserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D00D1051F33A72E00130C59 /* BlockedUserCell.swift */; };
 		5D04E98A1E58DD0C006D8CD5 /* ChatListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D04E9891E58DD0C006D8CD5 /* ChatListViewController.swift */; };
 		5D04E98C1E58E24E006D8CD5 /* ConvoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D04E98B1E58E24E006D8CD5 /* ConvoViewController.swift */; };
 		5D07CAB21E752C0100316D75 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D07CAB11E752C0100316D75 /* UserProfile.swift */; };
@@ -72,6 +74,8 @@
 
 /* Begin PBXFileReference section */
 		3EA6B6C2F24651C2E0E50A37 /* Pods-AtMe.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AtMe.release.xcconfig"; path = "Pods/Target Support Files/Pods-AtMe/Pods-AtMe.release.xcconfig"; sourceTree = "<group>"; };
+		5D00D1031F339B9900130C59 /* BlockedUsersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockedUsersViewController.swift; sourceTree = "<group>"; };
+		5D00D1051F33A72E00130C59 /* BlockedUserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockedUserCell.swift; sourceTree = "<group>"; };
 		5D04E9891E58DD0C006D8CD5 /* ChatListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ChatListViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		5D04E98B1E58E24E006D8CD5 /* ConvoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ConvoViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		5D07CAB11E752C0100316D75 /* UserProfile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
@@ -215,6 +219,7 @@
 				5D2B625F1EC909A300B8363E /* PromptViewController.swift */,
 				5DE764EF1F00814900E483C6 /* UserSetupViewController.swift */,
 				5D6394F01F314F800095C1C5 /* LegalViewController.swift */,
+				5D00D1031F339B9900130C59 /* BlockedUsersViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -225,6 +230,7 @@
 				5DA9E0DC1E5B6E0900F38C96 /* MessageCell.swift */,
 				5DFC7F3C1E7A27CF003C6594 /* ConversationCell.swift */,
 				5D3DDA371E62469000B6FBB7 /* UserInfoCell.swift */,
+				5D00D1051F33A72E00130C59 /* BlockedUserCell.swift */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -478,12 +484,14 @@
 				5DFC7F3D1E7A27CF003C6594 /* ConversationCell.swift in Sources */,
 				5DD231841F2B65BE0058DD54 /* ChatToolbarView.swift in Sources */,
 				5DAF28B71E5BBCBC00288F31 /* Constants.swift in Sources */,
+				5D00D1041F339B9900130C59 /* BlockedUsersViewController.swift in Sources */,
 				5D323B721F107C3E00853EDE /* EmptyChatListView.swift in Sources */,
 				5D5EDF851EC3D14C00F7FC44 /* Extensions.swift in Sources */,
 				5D0B5AB81E668EFB0077BE46 /* SettingsViewController.swift in Sources */,
 				5DF36ED91EB3D35400346868 /* Message.swift in Sources */,
 				5D07CAB21E752C0100316D75 /* UserProfile.swift in Sources */,
 				5D9617381F316C6100222C79 /* ConvoAuxViewController.swift in Sources */,
+				5D00D1061F33A72E00130C59 /* BlockedUserCell.swift in Sources */,
 				5D2B62601EC909A300B8363E /* PromptViewController.swift in Sources */,
 				5D6394F11F314F800095C1C5 /* LegalViewController.swift in Sources */,
 				5DE764EE1F0046E700E483C6 /* AuthController.swift in Sources */,

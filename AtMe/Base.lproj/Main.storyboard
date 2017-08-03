@@ -441,7 +441,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="X5W-4j-icJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1937" y="954"/>
+            <point key="canvasLocation" x="945" y="1719"/>
         </scene>
         <!--Settings-->
         <scene sceneID="FcA-yU-P8S">
@@ -585,7 +585,24 @@
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Clear cached images" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fbp-wF-tcQ">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Blocked Users" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fbp-wF-tcQ">
+                                                    <rect key="frame" x="20" y="11" width="139" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="14"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="WN9-OQ-gj9">
+                                        <rect key="frame" x="0.0" y="557" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="WN9-OQ-gj9" id="ztM-hD-XPI">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Clear cached images" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HVM-C6-vTk">
                                                     <rect key="frame" x="20" y="11" width="139" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="14"/>
@@ -600,7 +617,7 @@
                             <tableViewSection id="9Pg-0s-zHN">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="sVy-j8-TAO">
-                                        <rect key="frame" x="0.0" y="593" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="637" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="sVy-j8-TAO" id="AIP-gw-AQD">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
@@ -620,7 +637,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" id="FaJ-ZU-kI6">
-                                        <rect key="frame" x="0.0" y="637" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="681" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="FaJ-ZU-kI6" id="WAq-Ky-uwh">
                                             <rect key="frame" x="0.0" y="0.0" width="342" height="44"/>
@@ -652,12 +669,13 @@
                         <outlet property="usernameLabel" destination="P0O-xx-Sbx" id="UHg-2s-2BI"/>
                         <segue destination="zHr-Ew-ICi" kind="unwind" identifier="UnwindToSignIn" unwindAction="unwindToSignInSegue:" id="lHz-0J-yfa"/>
                         <segue destination="PUW-Nl-gDK" kind="presentation" identifier="ShowPrompt" modalPresentationStyle="overCurrentContext" modalTransitionStyle="crossDissolve" id="V0k-cK-80R"/>
+                        <segue destination="1WP-YE-RUC" kind="show" identifier="ShowBlockedUsersSegue" id="Uo0-rT-Eky"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="txl-Af-8oa" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="zHr-Ew-ICi" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2696.8000000000002" y="953.97301349325346"/>
+            <point key="canvasLocation" x="2697" y="954"/>
         </scene>
         <!--Prompt View Controller-->
         <scene sceneID="GLR-pK-3YY">
@@ -675,6 +693,87 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SjQ-Rn-nsq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3721" y="954"/>
+        </scene>
+        <!--Blocked Users View Controller-->
+        <scene sceneID="JB5-6U-79Z">
+            <objects>
+                <tableViewController id="1WP-YE-RUC" customClass="BlockedUsersViewController" customModule="AtMe" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="94" sectionHeaderHeight="28" sectionFooterHeight="28" id="6b9-fx-sgO">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="BlockedUserCell" rowHeight="94" id="FDO-WM-fBi" customClass="BlockedUserCell" customModule="AtMe" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="28" width="375" height="94"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="FDO-WM-fBi" id="6pl-0m-tkJ">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="93.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="@john_smith" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="udD-oX-pdp">
+                                            <rect key="frame" x="95" y="47" width="87.5" height="20.5"/>
+                                            <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="15"/>
+                                            <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user_purple" translatesAutoresizingMaskIntoConstraints="NO" id="94V-9m-ZaX">
+                                            <rect key="frame" x="21" y="17" width="60" height="60"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" secondItem="94V-9m-ZaX" secondAttribute="height" multiplier="1:1" id="EOh-ZF-Zif"/>
+                                                <constraint firstAttribute="width" relation="lessThanOrEqual" priority="999" constant="60" id="Pex-Gz-nfO"/>
+                                            </constraints>
+                                        </imageView>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="John Smith" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vQL-F1-fk5">
+                                            <rect key="frame" x="95" y="25" width="88" height="23.5"/>
+                                            <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="17"/>
+                                            <color key="textColor" red="0.34901960780000002" green="0.18823529410000001" blue="0.90588235289999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cHz-OM-UHy">
+                                            <rect key="frame" x="274" y="27" width="80" height="40"/>
+                                            <color key="backgroundColor" red="0.76264105900000001" green="0.099717881940000003" blue="0.2303602431" alpha="1" colorSpace="calibratedRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="80" id="AEH-Qt-PW0"/>
+                                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="40" id="hn7-Gg-vve"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="14"/>
+                                            <state key="normal" title="Unblock"/>
+                                            <connections>
+                                                <action selector="didTapUnblockButton:" destination="FDO-WM-fBi" eventType="touchUpInside" id="l6a-pl-QZy"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="94V-9m-ZaX" firstAttribute="leading" secondItem="6pl-0m-tkJ" secondAttribute="leadingMargin" constant="13" id="9e0-Mw-XiD"/>
+                                        <constraint firstItem="vQL-F1-fk5" firstAttribute="leading" secondItem="94V-9m-ZaX" secondAttribute="trailing" constant="14" id="EnR-y4-RVI"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="cHz-OM-UHy" secondAttribute="trailing" constant="13" id="YeF-M4-wOU"/>
+                                        <constraint firstItem="udD-oX-pdp" firstAttribute="leading" secondItem="94V-9m-ZaX" secondAttribute="trailing" constant="14" id="bQP-3X-CRK"/>
+                                        <constraint firstItem="vQL-F1-fk5" firstAttribute="centerY" relation="lessThanOrEqual" secondItem="6pl-0m-tkJ" secondAttribute="centerY" id="ffg-IB-XuG"/>
+                                        <constraint firstItem="cHz-OM-UHy" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="vQL-F1-fk5" secondAttribute="trailing" constant="50" id="gmP-UA-4od"/>
+                                        <constraint firstItem="cHz-OM-UHy" firstAttribute="centerY" secondItem="6pl-0m-tkJ" secondAttribute="centerY" id="oaz-K3-5Mt"/>
+                                        <constraint firstItem="udD-oX-pdp" firstAttribute="top" secondItem="vQL-F1-fk5" secondAttribute="bottom" constant="-1.5" id="pxX-of-DL5"/>
+                                        <constraint firstItem="udD-oX-pdp" firstAttribute="centerY" secondItem="6pl-0m-tkJ" secondAttribute="centerY" constant="10.5" id="qRe-K2-4qO"/>
+                                        <constraint firstItem="94V-9m-ZaX" firstAttribute="centerY" secondItem="6pl-0m-tkJ" secondAttribute="centerY" id="vmb-Ug-Tte"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="displayPictureImageView" destination="94V-9m-ZaX" id="svO-zU-rH7"/>
+                                    <outlet property="nameLabel" destination="vQL-F1-fk5" id="FqM-VB-tjn"/>
+                                    <outlet property="unblockButton" destination="cHz-OM-UHy" id="SS1-1d-CWW"/>
+                                    <outlet property="usernameLabel" destination="udD-oX-pdp" id="oBZ-rz-coU"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="1WP-YE-RUC" id="yb7-UP-zv0"/>
+                            <outlet property="delegate" destination="1WP-YE-RUC" id="7w6-4x-l5v"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="6bn-tM-xjd" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3720.8000000000002" y="1718.5907046476764"/>
         </scene>
         <!--New Convo View Controller-->
         <scene sceneID="KIL-9c-Fgb">
@@ -1059,7 +1158,7 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="Y9u-wz-Va2"/>
-        <segue reference="QVE-PA-65p"/>
+        <segue reference="Jfi-GC-QGb"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
 </document>

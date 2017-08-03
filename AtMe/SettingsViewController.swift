@@ -228,6 +228,10 @@ extension SettingsViewController {
         // Handle cache removal request
         if (indexPath.section == 3) {
             if (indexPath.row == 0) {
+                performSegue(withIdentifier: Constants.Segues.showBlockedUsersSegue, sender: nil)
+            }
+            
+            if (indexPath.row == 1) {
                 DatabaseController.clearCachedImages()
                 presentSimpleAlert(title: "Cache Cleared", message: Constants.Messages.cacheClearedSuccess, completion: nil)
             }

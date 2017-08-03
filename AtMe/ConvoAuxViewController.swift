@@ -23,12 +23,12 @@ class ConvoAuxViewController: UIViewController, AlertController {
     
     /** Handle user pressing the Block User button. */
     @IBAction func didPressBlockUserButton(_ sender: UIButton) {
-        guard let convoID = self.convoID, let username = self.username else { return }
+        guard let uid = self.uid, let convoID = self.convoID, let username = self.username else { return }
         
         presentConfirmationAlert(title: "Confirm Block", message: Constants.Messages.confirmBlockMessage, completion: { _ in
             
             // Add user to current user's blocked list, leave conversation
-            AuthController.blockUser(username: username)
+            AuthController.blockUser(uid: uid, username: username)
             DatabaseController.leaveConversation(convoID: convoID, with: username, completion: {
                 self.performSegue(withIdentifier: "UnwindToChatListSegue", sender: nil)
             })
@@ -45,7 +45,7 @@ class ConvoAuxViewController: UIViewController, AlertController {
             print(blocked)
         })
         
-        AuthController.unblockUser(username: username)
+        AuthController.unblockUser(uid: uid, username: username)
     }
     
     

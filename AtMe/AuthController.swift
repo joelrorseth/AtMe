@@ -113,20 +113,44 @@ class AuthController {
     /**
      Add a given user to the current user's blocked usernames list.
      - parameters:
+        - uid: The uid of the user whom the current user is blocking.
         - username: The username of the user whom the current user is blocking.
     */
-    public static func blockUser(username: String) {
-        userInformationRef.child(UserState.currentUser.uid).child("blockedUsernames/\(username)").setValue(true)
+    public static func blockUser(uid: String, username: String) {
+        userInformationRef.child(UserState.currentUser.uid).child("blockedUsernames/\(username)").setValue(uid)
     }
     
     
     /**
      Remove a given user from the current user's blocked usernames list.
      - parameters:
+        - uid: The uid of the user whom the current user is unblocking.
         - username: The username of the user whom the current user is unblocking.
      */
-    public static func unblockUser(username: String) {
+    public static func unblockUser(uid: String, username: String) {
         userInformationRef.child(UserState.currentUser.uid).child("blockedUsernames/\(username)").removeValue()
+    }
+    
+    
+    /**
+     Find all users whom the current user has blocked.
+     - parameters:
+        - completion: A callback function *invoked once for every UserProfile found*.
+            - profile: The UserProfile object returned for a single given user.
+    */
+    public static func findCurrentUserBlockedUsers(completion: @escaping (UserProfile) -> Void) {
+        
+        userInformationRef.child(UserState.currentUser.uid).child("blockedUsernames").observeSingleEvent(of: DataEventType.value, with: { snapshot in
+            
+            // Attempt to unwrap list as a dictionary of (username, uid) pairs as stored
+            if let blockedUsers = snapshot.value as? [String : String] {
+                
+                // Ask AuthController to find UserProfile objects for each found user
+                self.findDetailsForUsers(results: blockedUsers, completion: { userDetails in
+                    completion(userDetails)
+                })
+            }
+        })
     }
     
     
@@ -143,7 +167,7 @@ class AuthController {
         userInformationRef.child(UserState.currentUser.uid).child("blockedUsernames/\(username)").observeSingleEvent(of: DataEventType.value, with: { snapshot in
             userInformationRef.child(uid).child("blockedUsernames/\(UserState.currentUser.username)").observeSingleEvent(of: DataEventType.value, with: { otherSnap in
               
-                if let _ = snapshot.value as? Bool { completion(true) }
+                if let _ = snapshot.value as? String { completion(true) }
                 else if let _ = otherSnap.value as? Bool { completion(true) }
                 else { completion(false) }
             })
@@ -153,11 +177,12 @@ class AuthController {
     
     
     // MARK: - User lookup
-    /** Finds details for specified users, then returns a UserProfile for each found via a completion callback.
+    /**
+     Finds details for specified users, then returns a UserProfile for each found via a completion callback.
      - parameters:
-     - results: A dictionary containing [username: uid] pairs for users
-     - completion: A completion callback invoked each time details are found for a user
-     profile: The UserProfile object representing and holding the details found for a specific user
+        - results: A dictionary containing (username: uid) pairs for users
+        - completion: A completion callback invoked each time details are found for a user
+            - profile: The UserProfile object representing and holding the details found for a specific user
      */
     public static func findDetailsForUsers(results: [String : String], completion: @escaping (UserProfile) -> Void) {
         
@@ -179,9 +204,8 @@ class AuthController {
     }
     
     
-    /** 
-     Performs a search using given string, and attempts to find a predefined number of users whom the user
-    is most likely searching for. Please note that the search omits the current user.
+    /**
+     Performs a search using given string, and attempts to find a predefined number of users whom the user is most likely searching for. Please note that the search omits the current user.
      - parameters:
         - term: The term to search for and match usernames with
         - completion: A completion callback that fires when it has found all the results it can
