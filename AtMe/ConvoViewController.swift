@@ -21,18 +21,19 @@ class ConvoViewController: UITableViewController, AlertController {
     var messagesHandle: DatabaseHandle?
     var activeMembersHandle: DatabaseHandle?
     var removedMembersHandle: DatabaseHandle?
+    var addedInactiveMembersHandle: DatabaseHandle?
     
     // Variables to track state and help optimize scrolling frequency
-    //var reloadingCachedNewestTimestamp = Date()
-    //var initialCachedNewestTimestamp = Date()
     var mostRecentMessageTimestamp = Date()
     var currentlyReloading = false
     
-    var conversation: Conversation!
+    //var conversation: Conversation!
     var observingMessages = false
     var timeSinceLastScroll = Date()
     
     var messages: [Message] = []
+    var activeMembers: [String : String] = [:]
+    var inactiveMembers: [String : String] = [:]
     var notificationIDs: [String] = []
     var currentMessageCountLimit = Constants.Limits.messageCountStandardLimit
     
@@ -41,7 +42,7 @@ class ConvoViewController: UITableViewController, AlertController {
         didSet {
             conversationRef = Database.database().reference().child("conversations/\(convoId)")
             messagesRef = Database.database().reference().child("conversations/\(convoId)/messages/")
-            observeNotificationIDs()
+            observeMembersNotificationIDs()
             
             if (!observingMessages) {
                 DispatchQueue.global(qos: .background).async {
@@ -211,10 +212,10 @@ class ConvoViewController: UITableViewController, AlertController {
                 // Blank out the 'Back' button for the view controller being presented
                 navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
                 
-                // IMPORTANT: Assume only two users in a chat max, and that current user
-                // uid is never stored in the conversation member ids sets. Thus other user is in at least one
+                // IMPORTANT: Assume only two users in a chat max, and that current user uid is never stored
                 
-                vc.uid = conversation.activeMemberUIDs.first ?? conversation.inactiveMemberUIDs.first
+                vc.uid = activeMembers.first?.key ?? inactiveMembers.first?.key
+                //vc.uid = conversation.activeMemberUIDs.first ?? conversation.inactiveMemberUIDs.first
             }
         }
     }
@@ -231,6 +232,17 @@ class ConvoViewController: UITableViewController, AlertController {
         // Since we are sending this message, we can cache it as most recent
         mostRecentMessageTimestamp = message.timestamp
         
+        
+        // If there are inactive members, attempt to rejoin them 
+        // Otherwise you would manually have to rejoin to be added again
+        
+        
+        
+        for (uid, username) in inactiveMembers {
+            DatabaseController.attemptRejoinIntoConversation(convoID: convoId, uid: uid, username: username, completion: {_ in})
+        }
+        
+
         // Each message record (uniquely identified) will record sender and message text
         if let text = message.text {
             messagesRef?.child(randomMessageId).setValue(
@@ -354,7 +366,7 @@ class ConvoViewController: UITableViewController, AlertController {
      Observe all existing and new notification IDs for the current conversation.
      Instead of observing them directly, we observe existing and new members, then retrieve their latest stored notification id
      */
-    private func observeNotificationIDs() {
+    private func observeMembersNotificationIDs() {
         
         // Observe a user entering the conversation
         activeMembersHandle = conversationRef?.child("activeMembers").observe(DataEventType.childAdded, with: { snapshot in
@@ -364,6 +376,13 @@ class ConvoViewController: UITableViewController, AlertController {
             
             let uid = snapshot.key
             if (uid == UserState.currentUser.uid) { return }    // Don't add current user
+            
+            // Maintain dictionary of inactive and active members eg. (uid, username) pairs
+            if let username = snapshot.value as? String {
+                print("New active member: \(username)")
+                self.inactiveMembers.removeValue(forKey: uid)
+                self.activeMembers[uid] = username
+            }
             
             // Ask database manager for the *current* notification ID of every observed member
             DatabaseController.notificationIDForUser(with: uid, completion: { notificationID in
@@ -397,6 +416,21 @@ class ConvoViewController: UITableViewController, AlertController {
                     }
                 }
             })
+        })
+        
+        
+        // Observe all inactive users as well
+        addedInactiveMembersHandle = conversationRef?.child("inactiveMembers").observe(DataEventType.childAdded, with: { snapshot in
+            
+            let uid = snapshot.key
+            if (uid == UserState.currentUser.uid) { return }
+            
+            // Maintain dictionary of inactive and active members eg. (uid, username) pairs
+            if let username = snapshot.value as? String {
+                print("New inactive member: \(username)")
+                self.activeMembers.removeValue(forKey: uid)
+                self.inactiveMembers[uid] = username
+            }
         })
     }
     

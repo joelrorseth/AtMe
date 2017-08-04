@@ -314,7 +314,7 @@ class ChatListViewController: UITableViewController {
                 cvc.convoId = selectedConvoId
                 
                 // Pass the actual conversation object
-                cvc.conversation = conversations[indexPath.row]
+                //cvc.conversation = conversations[indexPath.row]
                 cvc.messagesRef = conversationsRef.child("\(selectedConvoId)/messages")
                 cvc.navigationItem.title = conversations[indexPath.row].name
                 
