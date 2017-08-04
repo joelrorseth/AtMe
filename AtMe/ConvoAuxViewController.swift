@@ -36,22 +36,22 @@ class ConvoAuxViewController: UIViewController, AlertController {
     }
 
     
-    /** Handle user pressing the Report User button. */
-    @IBAction func didPressReportUserButton(_ sender: Any) {
-        guard let uid = self.uid, let username = self.username else { return }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
-        // Just to test, print blocked status and unblock
-        AuthController.userOrCurrentUserHasBlocked(uid: uid, username: username, completion: { blocked in
-            print(blocked)
-        })
-        
-        AuthController.unblockUser(uid: uid, username: username)
+        // Set display picture frame to circle (need this for default image especially)
+        self.displayPictureImageView.layer.masksToBounds = true
+        self.displayPictureImageView.layer.cornerRadius = self.displayPictureImageView.frame.size.width / 2
     }
     
     
     /** Method called when view is loaded onto screen. */
     override func viewDidLoad() {
         super.viewDidLoad()
+                
+        // Set display picture frame to circle (need this for default image especially)
+        self.displayPictureImageView.layer.cornerRadius = self.displayPictureImageView.frame.size.width / 2
         
         guard let uid = self.uid, let username = self.username else {
             presentSimpleAlert(title: "Error Loading Profile", message: Constants.Errors.loadProfileError, completion: { _ in
@@ -60,18 +60,59 @@ class ConvoAuxViewController: UIViewController, AlertController {
             return
         }
         
+        
+        // Download display picture into large central image view
         DatabaseController.downloadImage(into: displayPictureImageView, from: "displayPictures/\(uid)/\(uid).JPG", completion: { _ in
             self.displayPictureImageView.layer.masksToBounds = true
             self.displayPictureImageView.layer.cornerRadius = self.displayPictureImageView.frame.size.width / 2
         })
         
+        // Set the name of user
         AuthController.findNameFor(uid: uid, completion: { name in
             if let name = name { self.nameLabel.text = name }
+        })
+        
+        
+        // In case user has already blocked this user, disable
+        AuthController.userOrCurrentUserHasBlocked(uid: uid, username: username, completion: { blocked in
+            
+            if blocked {
+                self.blockUserButton.isEnabled = false
+                self.blockUserButton.isUserInteractionEnabled = false
+                self.blockUserButton.backgroundColor = UIColor.groupTableViewBackground
+            }
         })
 
         blockUserButton.layer.cornerRadius = Constants.Radius.regularRadius
         reportUserButton.layer.cornerRadius = Constants.Radius.regularRadius
         
         usernameLabel.text = "@\(username)"
+    }
+    
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == Constants.Segues.reportUserSegue {
+            let vc = segue.destination as! ReportUserViewController
+            
+            // Pass in details about user whom is being reported
+            if let uid = self.uid, let username = self.username, let convoID = self.convoID {
+             
+                vc.violatorUid = uid
+                vc.violatorUsername = username
+                vc.convoID = convoID
+            }
+        }
+    }
+    
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        if identifier == Constants.Segues.reportUserSegue {
+            
+            // Make sure optionals can be unwrapped before segue is performed
+            if let _ = self.uid, let _ = self.username, let _ = self.convoID { return true }
+            else { return false }
+        }
+        
+        return true
     }
 }

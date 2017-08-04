@@ -60,6 +60,7 @@ struct Constants {
         static let cacheClearedSuccess = "Image cache was successfully emptied."
         static let confirmBlockMessage = "Are you sure you want to block this user? You will be unable to contact each other while blocked."
         static let confirmLogout = "Are you sure you want to logout?"
+        static let didReportUser = "Thank you for your report. We will investigate this issue and take appropriate action within 24 hours."
     }
     
     struct Placeholders {
@@ -74,6 +75,7 @@ struct Constants {
         static let createAccountSuccessSegue = "CreateAccountSuccessSegue"
         static let loadConvoSegue = "LoadConvoSegue"
         static let newConvoSegue = "NewConvoSegue"
+        static let reportUserSegue = "ReportUserSegue"
         static let settingsSegue = "SettingsSegue"
         static let showAuxSegue = "ShowAuxSegue"
         static let showBlockedUsersSegue = "ShowBlockedUsersSegue"

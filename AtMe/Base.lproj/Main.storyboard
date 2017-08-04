@@ -365,7 +365,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="012-b6-bXT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="944.79999999999995" y="577.9610194902549"/>
+            <point key="canvasLocation" x="913" y="578"/>
         </scene>
         <!--Legal View Controller-->
         <scene sceneID="BtL-Ll-4w4">
@@ -702,6 +702,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="sectionIndexBackgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="BlockedUserCell" rowHeight="94" id="FDO-WM-fBi" customClass="BlockedUserCell" customModule="AtMe" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="375" height="94"/>
@@ -1040,8 +1041,9 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Sh8-Dl-6oe">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user" translatesAutoresizingMaskIntoConstraints="NO" id="Sh8-Dl-6oe">
                                 <rect key="frame" x="67.5" y="94" width="240" height="240"/>
+                                <color key="backgroundColor" red="0.45098039220000002" green="0.086274509799999996" blue="0.90588235289999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="240" id="0by-m5-l1S"/>
                                     <constraint firstAttribute="width" secondItem="Sh8-Dl-6oe" secondAttribute="height" multiplier="1:1" id="zMm-Dp-tcr"/>
@@ -1059,8 +1061,6 @@
                                 </state>
                                 <connections>
                                     <action selector="didPressBlockUserButton:" destination="nIm-2k-jZl" eventType="touchUpInside" id="wY3-p5-ZUw"/>
-                                    <action selector="didPressFinish:" destination="gWN-xG-q04" eventType="touchUpInside" id="QNn-Xn-nyq"/>
-                                    <action selector="didTapCreateAccount:" destination="cE4-CE-511" eventType="touchUpInside" id="pe5-zl-B1o"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="751" text="Username" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="udM-F4-OWr">
@@ -1080,9 +1080,7 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="didPressFinish:" destination="gWN-xG-q04" eventType="touchUpInside" id="f0p-F7-2tu"/>
-                                    <action selector="didPressReportUserButton:" destination="nIm-2k-jZl" eventType="touchUpInside" id="7wy-vp-UOk"/>
-                                    <action selector="didTapCreateAccount:" destination="cE4-CE-511" eventType="touchUpInside" id="U9R-gz-wPH"/>
+                                    <segue destination="kdE-0i-ham" kind="show" identifier="ReportUserSegue" id="bpr-UH-Nuc"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -1116,6 +1114,119 @@
                 <exit id="Edq-UR-8zJ" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="4558" y="206"/>
+        </scene>
+        <!--Report User View Controller-->
+        <scene sceneID="zFu-yh-OSI">
+            <objects>
+                <viewController id="kdE-0i-ham" customClass="ReportUserViewController" customModule="AtMe" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="VrS-69-fjt"/>
+                        <viewControllerLayoutGuide type="bottom" id="GNd-bE-a9h"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="inu-o5-YQV">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O5y-2L-qfv">
+                                <rect key="frame" x="21" y="84" width="333" height="91"/>
+                                <string key="text">Thank you for taking the time to improve the @Me community. Help us identify the problem you have experienced with this user by selecting the most appropriate description.</string>
+                                <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="14"/>
+                                <color key="textColor" red="0.45098039220000002" green="0.086274509799999996" blue="0.90588235289999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pZb-Tm-Ma9">
+                                <rect key="frame" x="21" y="192" width="333" height="36"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="36" id="T75-pm-TJg"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="16"/>
+                                <state key="normal" title="Spam">
+                                    <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                </state>
+                                <connections>
+                                    <action selector="didPressSpamButton:" destination="kdE-0i-ham" eventType="touchUpInside" id="9vB-eV-20R"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jNd-Bl-uiy">
+                                <rect key="frame" x="21" y="236" width="333" height="36"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="36" id="Lgh-TM-udt"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="16"/>
+                                <state key="normal" title="Nudity or pornography">
+                                    <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                </state>
+                                <connections>
+                                    <action selector="didPressNudityButton:" destination="kdE-0i-ham" eventType="touchUpInside" id="I4v-lE-gfd"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aXe-FM-dVZ">
+                                <rect key="frame" x="21" y="280" width="333" height="36"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="36" id="RRQ-t4-uru"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="16"/>
+                                <state key="normal" title="Harassment or discrimination">
+                                    <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                </state>
+                                <connections>
+                                    <action selector="didPressHarassmentButton:" destination="kdE-0i-ham" eventType="touchUpInside" id="teg-eE-SE8"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wru-yW-vuZ">
+                                <rect key="frame" x="21" y="324" width="333" height="36"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="36" id="jiT-RF-aqF"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="16"/>
+                                <state key="normal" title="Abuse or threats ">
+                                    <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                </state>
+                                <connections>
+                                    <action selector="didPressAbuseButton:" destination="kdE-0i-ham" eventType="touchUpInside" id="Voy-uP-VD2"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="n0d-b0-le2">
+                                <rect key="frame" x="21" y="368" width="333" height="36"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="36" id="1HP-xg-qwK"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="16"/>
+                                <state key="normal" title="Objectionable content">
+                                    <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                </state>
+                                <connections>
+                                    <action selector="didObjectionableContentButton:" destination="kdE-0i-ham" eventType="touchUpInside" id="Shz-sx-rvQ"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="wru-yW-vuZ" firstAttribute="top" secondItem="aXe-FM-dVZ" secondAttribute="bottom" constant="8" symbolic="YES" id="1Kv-Lt-8u0"/>
+                            <constraint firstItem="O5y-2L-qfv" firstAttribute="centerX" secondItem="inu-o5-YQV" secondAttribute="centerX" id="3TN-wX-CAT"/>
+                            <constraint firstItem="O5y-2L-qfv" firstAttribute="leading" secondItem="inu-o5-YQV" secondAttribute="leadingMargin" constant="5" id="Dv6-RI-o3f"/>
+                            <constraint firstItem="pZb-Tm-Ma9" firstAttribute="leading" secondItem="jNd-Bl-uiy" secondAttribute="leading" id="FT1-dT-dgM"/>
+                            <constraint firstItem="aXe-FM-dVZ" firstAttribute="trailing" secondItem="wru-yW-vuZ" secondAttribute="trailing" id="Fa2-x0-ADH"/>
+                            <constraint firstItem="aXe-FM-dVZ" firstAttribute="leading" secondItem="wru-yW-vuZ" secondAttribute="leading" id="Gqr-pY-3zI"/>
+                            <constraint firstItem="wru-yW-vuZ" firstAttribute="leading" secondItem="n0d-b0-le2" secondAttribute="leading" id="Grf-jf-AFy"/>
+                            <constraint firstItem="O5y-2L-qfv" firstAttribute="trailing" secondItem="pZb-Tm-Ma9" secondAttribute="trailing" id="I7l-ax-0GH"/>
+                            <constraint firstItem="pZb-Tm-Ma9" firstAttribute="top" secondItem="O5y-2L-qfv" secondAttribute="bottom" constant="17" id="Jbk-xH-Gpr"/>
+                            <constraint firstItem="pZb-Tm-Ma9" firstAttribute="trailing" secondItem="jNd-Bl-uiy" secondAttribute="trailing" id="Pmi-Zp-kYg"/>
+                            <constraint firstItem="jNd-Bl-uiy" firstAttribute="top" secondItem="pZb-Tm-Ma9" secondAttribute="bottom" constant="8" symbolic="YES" id="QEu-cY-P9d"/>
+                            <constraint firstItem="aXe-FM-dVZ" firstAttribute="top" secondItem="jNd-Bl-uiy" secondAttribute="bottom" constant="8" symbolic="YES" id="Qb3-1m-2vw"/>
+                            <constraint firstItem="jNd-Bl-uiy" firstAttribute="leading" secondItem="aXe-FM-dVZ" secondAttribute="leading" id="Sbj-BA-Ixq"/>
+                            <constraint firstItem="n0d-b0-le2" firstAttribute="top" secondItem="wru-yW-vuZ" secondAttribute="bottom" constant="8" symbolic="YES" id="Ved-Yh-GEX"/>
+                            <constraint firstItem="jNd-Bl-uiy" firstAttribute="trailing" secondItem="aXe-FM-dVZ" secondAttribute="trailing" id="bTx-Bd-63F"/>
+                            <constraint firstItem="O5y-2L-qfv" firstAttribute="leading" secondItem="pZb-Tm-Ma9" secondAttribute="leading" id="d5E-bL-u3e"/>
+                            <constraint firstItem="GNd-bE-a9h" firstAttribute="top" secondItem="n0d-b0-le2" secondAttribute="bottom" constant="263" id="mWq-wl-ExH"/>
+                            <constraint firstItem="O5y-2L-qfv" firstAttribute="top" secondItem="VrS-69-fjt" secondAttribute="bottom" constant="20" id="rct-W8-Rv6"/>
+                            <constraint firstItem="wru-yW-vuZ" firstAttribute="trailing" secondItem="n0d-b0-le2" secondAttribute="trailing" id="wfM-Zv-XLj"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jJw-1o-Qd0" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5336.8000000000002" y="205.54722638680661"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="wAg-Xh-ya9">
@@ -1158,7 +1269,7 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="Y9u-wz-Va2"/>
-        <segue reference="Jfi-GC-QGb"/>
+        <segue reference="QVE-PA-65p"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
 </document>

@@ -35,6 +35,7 @@
 		5D9027231EB2A3E60021AEE9 /* Conversation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D9027221EB2A3E60021AEE9 /* Conversation.swift */; };
 		5D9617381F316C6100222C79 /* ConvoAuxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D9617371F316C6100222C79 /* ConvoAuxViewController.swift */; };
 		5D9D443A1EAEE81500CF25F7 /* UserState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D9D44391EAEE81500CF25F7 /* UserState.swift */; };
+		5DA1C37C1F33FCA8002E2773 /* ReportUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA1C37B1F33FCA8002E2773 /* ReportUserViewController.swift */; };
 		5DA1D56D1EF78B57001A6ED5 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA1D56C1EF78B57001A6ED5 /* NotificationService.swift */; };
 		5DA1D5711EF78B57001A6ED5 /* OneSignalNotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 5DA1D56A1EF78B57001A6ED5 /* OneSignalNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		5DA9E0DD1E5B6E0900F38C96 /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA9E0DC1E5B6E0900F38C96 /* MessageCell.swift */; };
@@ -103,6 +104,7 @@
 		5D9027221EB2A3E60021AEE9 /* Conversation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Conversation.swift; sourceTree = "<group>"; };
 		5D9617371F316C6100222C79 /* ConvoAuxViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvoAuxViewController.swift; sourceTree = "<group>"; };
 		5D9D44391EAEE81500CF25F7 /* UserState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserState.swift; sourceTree = "<group>"; };
+		5DA1C37B1F33FCA8002E2773 /* ReportUserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportUserViewController.swift; sourceTree = "<group>"; };
 		5DA1D56A1EF78B57001A6ED5 /* OneSignalNotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OneSignalNotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		5DA1D56C1EF78B57001A6ED5 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		5DA1D56E1EF78B57001A6ED5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -220,6 +222,7 @@
 				5DE764EF1F00814900E483C6 /* UserSetupViewController.swift */,
 				5D6394F01F314F800095C1C5 /* LegalViewController.swift */,
 				5D00D1031F339B9900130C59 /* BlockedUsersViewController.swift */,
+				5DA1C37B1F33FCA8002E2773 /* ReportUserViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -471,6 +474,7 @@
 				5D04E98C1E58E24E006D8CD5 /* ConvoViewController.swift in Sources */,
 				5D3DDA381E62469000B6FBB7 /* UserInfoCell.swift in Sources */,
 				5D65EBF61EFA1798009F512E /* NotificationsController.swift in Sources */,
+				5DA1C37C1F33FCA8002E2773 /* ReportUserViewController.swift in Sources */,
 				5DA9E0DD1E5B6E0900F38C96 /* MessageCell.swift in Sources */,
 				5D04E98A1E58DD0C006D8CD5 /* ChatListViewController.swift in Sources */,
 				5D2B62621EC909CC00B8363E /* PromptView.swift in Sources */,

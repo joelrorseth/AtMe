@@ -25,6 +25,7 @@ class AuthController {
     // Firebase References
     static var userInformationRef: DatabaseReference = Database.database().reference().child("userInformation")
     static var registeredUsernamesRef: DatabaseReference = Database.database().reference().child("registeredUsernames")
+    static var reportedUsersRecordRef: DatabaseReference = Database.database().reference().child("reportedUsersRecord")
     
     private lazy var databaseManager = DatabaseController()
     
@@ -172,6 +173,16 @@ class AuthController {
                 else { completion(false) }
             })
         })
+    }
+    
+    
+    
+    public static func reportUser(uid: String, username: String, violation: String, convoID: String) {
+        
+        let record = ["uidReported": uid, "usernameReported": username, "violation": violation,
+                      "relevantConvoID": convoID, "reportedBy": UserState.currentUser.username,
+                      "timestamp": "\(Date().timeIntervalSince1970)"]
+        reportedUsersRecordRef.childByAutoId().setValue(record)
     }
     
     
