@@ -196,7 +196,7 @@ class ChatListViewController: UITableViewController {
             var message = "This is the beginning of your conversation with \(username)"
             
             if let text = snapshot.childSnapshot(forPath: "text").value as? String { message = text }
-            else if let _ = snapshot.childSnapshot(forPath: "imageURL").value { message = "Picture Message" }
+            else if let _ = snapshot.childSnapshot(forPath: "imageURL").value { message = Constants.Placeholders.pictureMessagePlaceholder }
 
         
             // Actually update the conversation cell with this new information
@@ -317,6 +317,10 @@ class ChatListViewController: UITableViewController {
                 cvc.conversation = conversations[indexPath.row]
                 cvc.messagesRef = conversationsRef.child("\(selectedConvoId)/messages")
                 cvc.navigationItem.title = conversations[indexPath.row].name
+                
+                // Important: Pass most recent message so that next view controller knows when it
+                // should scroll to bottom (instead of doing it for every message!)
+                cvc.mostRecentMessageTimestamp = conversations[indexPath.row].timestamp
                 
                 // Track selected index for return to this view controller
                 currentlySelectedIndexPath = indexPath

@@ -16,14 +16,22 @@ class ConvoViewController: UITableViewController, AlertController {
     // MARK: - Properties
     // Firebase references
     var conversationRef: DatabaseReference?
-    var messagesRef: DatabaseReference? = nil
+    var messagesRef: DatabaseReference?
     
     var messagesHandle: DatabaseHandle?
     var activeMembersHandle: DatabaseHandle?
     var removedMembersHandle: DatabaseHandle?
     
+    // Variables to track state and help optimize scrolling frequency
+    //var reloadingCachedNewestTimestamp = Date()
+    //var initialCachedNewestTimestamp = Date()
+    var mostRecentMessageTimestamp = Date()
+    var currentlyReloading = false
+    
     var conversation: Conversation!
     var observingMessages = false
+    var timeSinceLastScroll = Date()
+    
     var messages: [Message] = []
     var notificationIDs: [String] = []
     var currentMessageCountLimit = Constants.Limits.messageCountStandardLimit
@@ -34,7 +42,14 @@ class ConvoViewController: UITableViewController, AlertController {
             conversationRef = Database.database().reference().child("conversations/\(convoId)")
             messagesRef = Database.database().reference().child("conversations/\(convoId)/messages/")
             observeNotificationIDs()
-            if (!observingMessages) { observeReceivedMessages(count: currentMessageCountLimit); observingMessages = true }
+            
+            if (!observingMessages) {
+                DispatchQueue.global(qos: .background).async {
+                    self.observeReceivedMessages(count: self.currentMessageCountLimit, initialLoad: true)
+                }
+                
+                observingMessages = true
+            }
         }
     }
     
@@ -213,6 +228,9 @@ class ConvoViewController: UITableViewController, AlertController {
         // Write the message to Firebase
         let randomMessageId = messagesRef!.childByAutoId().key
         
+        // Since we are sending this message, we can cache it as most recent
+        mostRecentMessageTimestamp = message.timestamp
+        
         // Each message record (uniquely identified) will record sender and message text
         if let text = message.text {
             messagesRef?.child(randomMessageId).setValue(
@@ -232,13 +250,13 @@ class ConvoViewController: UITableViewController, AlertController {
         
         // Ask NotificationController to send this message as a push notification
         for notificationID in notificationIDs {
-            NotificationsController.send(to: notificationID, title: message.sender, message: message.text ?? "Picture message")
+            NotificationsController.send(to: notificationID, title: message.sender, message: message.text ?? Constants.Placeholders.pictureMessagePlaceholder)
         }
     }
     
     
     /** Adds a given Message to the table view (chat) by inserting only what it needs to. */
-    private func addMessage(message: Message) {
+    private func addMessage(message: Message, scrollToBottom: Bool) {
         
         // Efficiently update by updating / inserting only the cells that need to be
         DispatchQueue.main.async {
@@ -248,7 +266,10 @@ class ConvoViewController: UITableViewController, AlertController {
             
             self.messages.append(message)
             self.tableView.insertRows(at: [IndexPath(row: self.messages.count - 1, section: 0)], with: .none)
-            self.scrollToNewestMessage()
+            
+            if scrollToBottom {
+                self.scrollToNewestMessage()
+            }
         }
     }
     
@@ -267,18 +288,22 @@ class ConvoViewController: UITableViewController, AlertController {
      Observe the messages of the current conversation. Initially, a given number of messages will be
      observed, along with each newly added value afterwards.
      - parameters:
-     - count: The number of most recent messages to load when the method is first called
+        - count: The number of most recent messages to load when the method is first called
      */
-    private func observeReceivedMessages(count: Int) {
+    private func observeReceivedMessages(count: Int, initialLoad: Bool) {
         
         let messagesQuery = messagesRef?.queryLimited(toLast: UInt(count))
         messagesQuery?.keepSynced(true)
+        
+        var stillLoadingInitialMessages = initialLoad
+        
         
         // This closure is triggered once for every existing record found, and for each record added here
         messagesHandle = messagesQuery?.observe(DataEventType.childAdded, with: { snapshot in
             
             var imageURL: String?
             var text: String?
+            var shouldScroll = false
             
             // Unwrap picture message url or text message, can and must always be only one or the other
             if let imageURLValue = snapshot.childSnapshot(forPath: "imageURL").value as? String { imageURL = imageURLValue }
@@ -290,8 +315,37 @@ class ConvoViewController: UITableViewController, AlertController {
             // Because a new message has arrived, update the last message seen timestamp!
             self.updateLastSeenTimestamp(convoID: self.convoId)
             
+            
+            // IMPORTANT: Scrolling optimization algorithm
+            // Worst case: essages will be scrolled to at a maximum rate of once per 0.3 seconds
+            if (Date().timeIntervalSince(self.timeSinceLastScroll) > 0.3) { shouldScroll = true }
+            
+            // If this is the initial load or a reload, don't scroll (until last message)
+            if stillLoadingInitialMessages { shouldScroll = false }
+            if self.currentlyReloading { shouldScroll = false }
+            
+            // If message is most recent (cached), then allow scroll to it
+            if self.mostRecentMessageTimestamp == timestamp {
+                shouldScroll = true
+                
+                // However, we won't scroll back to bottom when user wants a reload (just stay)
+                if self.currentlyReloading {
+                    print("Saw most recent message and we are reloading")
+                    self.currentlyReloading = false
+                    shouldScroll = false
+                }
+                
+                if stillLoadingInitialMessages {
+                    print("Saw most recent message and we are loading init")
+                    stillLoadingInitialMessages = false
+                }
+            }
+            
+            // Update time since last scroll if need be
+            if shouldScroll { self.timeSinceLastScroll = Date() }
+            
             // Add message to local messages cache
-            self.addMessage(message: Message(imageURL: imageURL, sender: sender, text: text, timestamp: timestamp))
+            self.addMessage(message: Message(imageURL: imageURL, sender: sender, text: text, timestamp: timestamp), scrollToBottom: shouldScroll)
         })
     }
     
@@ -373,18 +427,32 @@ class ConvoViewController: UITableViewController, AlertController {
     @objc private func reloadWithMoreMessages() {
         
         // Remove the messages observer to start over and query a larger amount
-        if let ref = messagesRef {
-            ref.removeAllObservers()
-            
-            // Remove data from data source
-            messages.removeAll()
-            tableView.reloadData()
-            
-            // Increase number of messages to load by a constant factor
-            currentMessageCountLimit += Constants.Limits.messageCountIncreaseLimit
-            observeReceivedMessages(count: currentMessageCountLimit)
-            
-        } else { print("Error: Could not unwrap handle or database ref to start the reload") }
+
+        if let handle = messagesHandle {
+            messagesRef?.removeObserver(withHandle: handle)
+        }
+        
+        // Keep track of reloading state to temp. disable scrolling to bottom
+        // The user won't want to be taken back to bottom if they want older messages
+        
+        currentlyReloading = true
+        
+        // We also MUST cache most recent message displayed here, since incoming messages will not be
+        // detected / distinguished from current users (thus timestamp would be wrong when checking for most recent)
+        
+        if let ts = messages.last?.timestamp { mostRecentMessageTimestamp = ts }
+        
+        
+        // Remove data from data source
+        messages.removeAll()
+        tableView.reloadData()
+        
+        // Increase number of messages to load by a constant factor
+        currentMessageCountLimit += Constants.Limits.messageCountIncreaseLimit
+        
+        DispatchQueue.global(qos: .background).async {
+            self.observeReceivedMessages(count: self.currentMessageCountLimit, initialLoad: false)
+        }
         
         // Stop the reloading animation
         tableView.refreshControl?.endRefreshing()
@@ -508,7 +576,9 @@ extension ConvoViewController {
     /** Scroll to current bottom row of the table view. */
     func scrollToNewestMessage() {
         if messages.count > 0 {
-            tableView.scrollToRow(at: IndexPath.init(row: messages.count - 1, section: 0) , at: .bottom, animated: true)
+            
+                tableView.scrollToRow(at: IndexPath.init(row: messages.count - 1, section: 0) , at: .bottom, animated: true)
+            
         }
     }
     
@@ -544,6 +614,8 @@ extension ConvoViewController {
         
         // Dequeue a custom cell for collection view
         let cell = tableView.dequeueReusableCell(withIdentifier: Constants.Storyboard.messageId, for: indexPath) as! MessageCell
+        cell.layer.shouldRasterize = true
+        cell.layer.rasterizationScale = UIScreen.main.scale
         let message = messages[indexPath.row]
         
         // Clear message fields

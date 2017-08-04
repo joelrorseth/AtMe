@@ -52,7 +52,7 @@ struct Constants {
     }
     
     struct Limits {
-        static let messageCountStandardLimit = 25
+        static let messageCountStandardLimit = 45
         static let messageCountIncreaseLimit = 25
         static let resultsCount = UInt(16)
     }
@@ -67,6 +67,7 @@ struct Constants {
     
     struct Placeholders {
         static let messagePlaceholder = "Enter a message"
+        static let pictureMessagePlaceholder = "Picture Message"
     }
     
     struct Radius {
