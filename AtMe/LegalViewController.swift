@@ -18,9 +18,37 @@ class LegalViewController: UIViewController {
     var privacy: String = "Privacy"
     
     
+    // MARK: - Storyboard Controls Actions
+    /** Called when done button is pressed inside view controller. */
+    @IBAction func didPressDoneButton(_ sender: Any) {
+        self.dismiss(animated: true, completion: nil)
+    }
+
+    
+    /** Called when the segmented control changed it's selected value. */
+    @IBAction func segmentedControlValueChanged(_ sender: UISegmentedControl) {
+        if (sender.titleForSegment(at: sender.selectedSegmentIndex) == "Terms of Service") {
+            mainTextView.text = terms
+        } else {
+            mainTextView.text = privacy
+        }
+    }
+    
+    
+    // MARK: - View
+    /**
+     Overridden variable to set the style (color) of the status bar
+    */
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return UIStatusBarStyle.lightContent
+    }
+    
+    
     /** Method called when view controller has been loaded */
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.title = "Legal"
         
         // EXtract the policies from the included text files
         if let path = Bundle.main.path(forResource: "terms", ofType: "txt") {
@@ -38,21 +66,4 @@ class LegalViewController: UIViewController {
         // Force statement load
         segmentedControlValueChanged(segmentedControl)
     }
-    
-    
-    /** Called when done button is pressed inside view controller. */
-    @IBAction func didPressDoneButton(_ sender: Any) {
-        self.dismiss(animated: true, completion: nil)
-    }
-
-    
-    /** Called when the segmented control changed it's selected value. */
-    @IBAction func segmentedControlValueChanged(_ sender: UISegmentedControl) {
-        if (sender.titleForSegment(at: sender.selectedSegmentIndex) == "Terms of Service") {
-            mainTextView.text = terms
-        } else {
-            mainTextView.text = privacy
-        }
-    }
-    
 }
