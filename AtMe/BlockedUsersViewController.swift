@@ -27,9 +27,8 @@ class BlockedUsersViewController: UITableViewController {
             self.tableView.insertRows(at: [IndexPath(row: self.blockedUsers.count - 1, section: 0)], with: .automatic)
         })
 
-        // Set table view attributes
         self.title = "Blocked"
-        tableView.tableFooterView = UIView()
+//        self.tableView.tableFooterView = UIView()
     }
     
 
@@ -46,6 +45,28 @@ class BlockedUsersViewController: UITableViewController {
      Determine the number of rows in a given section of the table view.
     */
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        if blockedUsers.count == 0 {
+            
+            // Create a custom label / view to display when empty
+            let label = UILabel(frame: tableView.frame)
+            label.font = Constants.Fonts.emptyViewMessageFont
+            label.backgroundColor = UIColor.groupTableViewBackground
+            label.textColor = UIColor.darkGray
+            label.text = Constants.Messages.noBlockedUsersMessage
+            label.textAlignment = NSTextAlignment.center
+            label.translatesAutoresizingMaskIntoConstraints = false
+            label.sizeToFit()
+            tableView.backgroundView = label
+            tableView.separatorStyle = UITableViewCellSeparatorStyle.none
+        
+        } else {
+            
+            // Restore to normal look when content is available
+            tableView.backgroundView = nil
+            tableView.separatorStyle = UITableViewCellSeparatorStyle.none
+        }
+        
         return blockedUsers.count
     }
 

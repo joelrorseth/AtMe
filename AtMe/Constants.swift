@@ -45,6 +45,7 @@ struct Constants {
     }
     
     struct Fonts {
+        static let emptyViewMessageFont = UIFont(name: "Avenir Next", size: 18)!
         static let lightTitle = UIFont(name: "AvenirNext-Medium", size: 20)!
         static let regularText = UIFont(name: "AvenirNext-Regular", size: 14)!
         static let boldButtonText = UIFont(name: "AvenirNext-DemiBold", size: 17)!
@@ -61,6 +62,7 @@ struct Constants {
         static let confirmBlockMessage = "Are you sure you want to block this user? You will be unable to contact each other while blocked."
         static let confirmLogout = "Are you sure you want to logout?"
         static let didReportUser = "Thank you for your report. We will investigate this issue and take appropriate action within 24 hours."
+        static let noBlockedUsersMessage = "You have not blocked any users."
     }
     
     struct Placeholders {

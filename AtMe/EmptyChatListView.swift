@@ -52,7 +52,7 @@ class EmptyChatListView: UIView {
 
         // Label setup
         label.text = "You have no active conversations!"
-        label.font = UIFont(name: "Avenir Next", size: 18)
+        label.font = Constants.Fonts.emptyViewMessageFont
         label.textColor = UIColor.darkGray
         label.textAlignment = NSTextAlignment.center
         label.translatesAutoresizingMaskIntoConstraints = false
