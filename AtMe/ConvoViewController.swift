@@ -193,6 +193,9 @@ class ConvoViewController: UITableViewController, AlertController {
                 vc.username = self.navigationItem.title ?? ""
                 vc.convoID = self.convoId
                 
+                // Blank out the 'Back' button for the view controller being presented
+                navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+                
                 // IMPORTANT: Assume only two users in a chat max, and that current user
                 // uid is never stored in the conversation member ids sets. Thus other user is in at least one
                 

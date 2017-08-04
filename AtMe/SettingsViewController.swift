@@ -152,6 +152,9 @@ class SettingsViewController: UITableViewController, AlertController {
     /** Overridden method providing an opportunity for data transfer to destination view controller before segueing to it. */
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
+        // Blank out the 'Back' button for the view controller being presented
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        
         if segue.identifier == Constants.Segues.showPromptSegue {
             if let destination = segue.destination as? PromptViewController {
                 var attributeIndex: Int = 0
