@@ -534,7 +534,7 @@ extension ChatListViewController {
         - destination: The IndexPath to insert the new row at.
      */
     func animateConversationInsert(at destination: IndexPath) {
-        self.tableView.insertRows(at: [destination], with: .none)
+        self.tableView.insertRows(at: [destination], with: .automatic)
     }
     
     
@@ -543,7 +543,7 @@ extension ChatListViewController {
         - indexPath: IndexPath of cell to be removed
     */
     func animateConversationRemoval(at indexPath: IndexPath) {
-        self.tableView.deleteRows(at: [indexPath], with: .left)
+        self.tableView.deleteRows(at: [indexPath], with: .automatic)
     }
     
     

@@ -28,7 +28,7 @@ class BlockedUsersViewController: UITableViewController {
         })
 
         self.title = "Blocked"
-//        self.tableView.tableFooterView = UIView()
+        self.tableView.tableFooterView = UIView()
     }
     
 
@@ -64,7 +64,7 @@ class BlockedUsersViewController: UITableViewController {
             
             // Restore to normal look when content is available
             tableView.backgroundView = nil
-            tableView.separatorStyle = UITableViewCellSeparatorStyle.none
+            tableView.separatorStyle = UITableViewCellSeparatorStyle.singleLine
         }
         
         return blockedUsers.count
