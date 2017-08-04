@@ -451,6 +451,10 @@ class ConvoViewController: UITableViewController, AlertController {
         if let ref = conversationRef, let handle = removedMembersHandle {
             ref.removeObserver(withHandle: handle)
         }
+        
+        if let ref = conversationRef, let handle = addedInactiveMembersHandle {
+            ref.removeObserver(withHandle: handle)
+        }
     }
     
     

@@ -152,6 +152,7 @@ class ChatListViewController: UITableViewController {
         userConversationListRef.child(uid).observe(DataEventType.childRemoved, with: { snapshot in
             
             if let convoID = snapshot.value as? String {
+                print("Observed convo removal for \(convoID)")
                 self.removeConversation(convoID: convoID)
             }
         })
@@ -390,7 +391,7 @@ extension ChatListViewController {
     /**
      Insert a new conversation into the data source and ask table view to update accordingly.
      - parameters:
-     - conversation: The constructed Conversation object to be inserted
+        - conversation: The constructed Conversation object to be inserted
      */
     func insertConversation(conversation: Conversation) {
         
@@ -407,7 +408,7 @@ extension ChatListViewController {
     
     /** Remove conversation from the data source and ask table view to update accordingly.
      - parameters:
-     - convoID: The conversation ID of the conversation to be deleted
+        - convoID: The conversation ID of the conversation to be deleted
      */
     func removeConversation(convoID: String) {
         
@@ -417,6 +418,11 @@ extension ChatListViewController {
         conversations.remove(at: row)
         conversationIndexes.removeValue(forKey: convoID)
         
+        // Refresh the data source (indexes and actual conversations)
+        // Cell can be animated off screen now because data source matches
+        refreshDataSourceOrdering()
+            
+        print("Removed convo at array/table row \(row)")
         animateConversationRemoval(at: indexPath)
     }
     
@@ -424,10 +430,10 @@ extension ChatListViewController {
     /** Update the data source and cell located at an IndexPath with provided information.
      This avoids reloading entire cell if it does not require moving indexes in table (eg. move to top b/c new).
      - parameters:
-     - indexPath: The IndexPath where the update is occuring.
-     - message: The new, updated message to display.
-     - timestamp: The Date timestamp for new message.
-     - unseen: A Bool which is true if the conversation now has unseen messages.
+        - indexPath: The IndexPath where the update is occuring.
+        - message: The new, updated message to display.
+        - timestamp: The Date timestamp for new message.
+        - unseen: A Bool which is true if the conversation now has unseen messages.
      */
     func updateMostRecentMessageAt(indexPath: IndexPath, to message: String, timestamp: Date, unseen: Bool) {
         
