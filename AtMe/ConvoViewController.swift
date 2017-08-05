@@ -34,7 +34,7 @@ class ConvoViewController: UITableViewController, AlertController {
     var messages: [Message] = []
     var activeMembers: [String : String] = [:]
     var inactiveMembers: [String : String] = [:]
-    var notificationIDs: [String] = []
+    var notificationIDs: [String : String] = [:]
     var currentMessageCountLimit = Constants.Limits.messageCountStandardLimit
     
     // FIXME: This needs to be refactored, along with prepareForSegue in ChatList
@@ -236,8 +236,6 @@ class ConvoViewController: UITableViewController, AlertController {
         // If there are inactive members, attempt to rejoin them 
         // Otherwise you would manually have to rejoin to be added again
         
-        
-        
         for (uid, username) in inactiveMembers {
             DatabaseController.attemptRejoinIntoConversation(convoID: convoId, uid: uid, username: username, completion: {_ in})
         }
@@ -261,7 +259,7 @@ class ConvoViewController: UITableViewController, AlertController {
         updateLastSeenTimestamp(convoID: convoId)
         
         // Ask NotificationController to send this message as a push notification
-        for notificationID in notificationIDs {
+        for notificationID in notificationIDs.values {
             NotificationsController.send(to: notificationID, title: message.sender, message: message.text ?? Constants.Placeholders.pictureMessagePlaceholder)
         }
     }
@@ -382,17 +380,12 @@ class ConvoViewController: UITableViewController, AlertController {
                 print("New active member: \(username)")
                 self.inactiveMembers.removeValue(forKey: uid)
                 self.activeMembers[uid] = username
-            }
-            
-            // Ask database manager for the *current* notification ID of every observed member
-            DatabaseController.notificationIDForUser(with: uid, completion: { notificationID in
                 
-                if let id = notificationID {
-                    
-                    // Add to local copy, but write it back to database as well
-                    self.notificationIDs.append(id)
-                }
-            })
+                // Ask database manager for user's notification id and adds it to local dictionary
+                DatabaseController.notificationIDForUser(with: uid, completion: { notificationID in
+                    if let id = notificationID { self.notificationIDs[username] = id }
+                })
+            }
         })
         
     
@@ -405,17 +398,8 @@ class ConvoViewController: UITableViewController, AlertController {
             let uid = snapshot.key
             if (uid == UserState.currentUser.uid) { return }
             
-            // Ask database manager for the *current* notification ID of every observed member
-            DatabaseController.notificationIDForUser(with: uid, completion: { notificationID in
-                
-                if let id = notificationID {
-                    
-                    // Find the notification id and remove it now that user has left
-                    for (index, notificationID) in self.notificationIDs.enumerated() {
-                        if notificationID == id { self.notificationIDs.remove(at: index) }
-                    }
-                }
-            })
+            // Unwrap username and remove
+            if let username = snapshot.value as? String { self.notificationIDs.removeValue(forKey: username) }
         })
         
         
@@ -430,6 +414,20 @@ class ConvoViewController: UITableViewController, AlertController {
                 print("New inactive member: \(username)")
                 self.activeMembers.removeValue(forKey: uid)
                 self.inactiveMembers[uid] = username
+                
+                // If current user or this observered user haven't blocked eachother, we can add 
+                // them to notificationIDs so they can be notified that an old convo became active again
+                AuthController.userOrCurrentUserHasBlocked(uid: uid, username: username, completion: { blocked in
+                    
+                    if blocked { self.notificationIDs.removeValue(forKey: username) }
+                    
+                    else {
+                        // Ask database manager for user's notification id and adds it to local dictionary
+                        DatabaseController.notificationIDForUser(with: uid, completion: { notificationID in
+                            if let id = notificationID { self.notificationIDs[username] = id }
+                        })
+                    }
+                })
             }
         })
     }
