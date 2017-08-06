@@ -21,12 +21,13 @@ class DatabaseController {
     
     
     // MARK: - Image Management
-    /** Downloads an image (from a location in the database) into a specified UIImageView.
+    /**
+     Downloads an image (from a location in the database) into a specified UIImageView.
      - parameters:
-     - destination: The UIImageView that, if successful, will be given the downloaded image
-     - location: A path to the image being search for, relative to the root of the storage database
-     - completion: Function called when finished, passing back an optional Error object if unsuccessful
-     - error: An Error object created and returned if unsuccesful for any reason
+        - destination: The UIImageView that, if successful, will be given the downloaded image
+        - location: A path to the image being search for, relative to the root of the storage database
+        - completion: Function called when finished, passing back an optional Error object if unsuccessful
+            - error: An Error object created and returned if unsuccesful for any reason
      */
     public func downloadImage(into destination: UIImageView, from location: String, completion: @escaping (Error?)->()){
         let store = Storage.storage().reference(withPath: location)
@@ -60,12 +61,13 @@ class DatabaseController {
     }
     
     
-    /** Uploads an image (in the form of a Data object) to a specified location in the database.
+    /**
+     Uploads an image (in the form of a Data object) to a specified location in the database.
      - parameters:
-     - data: The Data object holding the image information to store in the database
-     - location: A path for the image data to be saved to, relative to the root of the storage database
-     - completion: Function called when finished, passing back an optional Error object when unsuccessful
-     - error: An Error object created and returned if unsuccesful for any reason
+        - data: The Data object holding the image information to store in the database
+        - location: A path for the image data to be saved to, relative to the root of the storage database
+        - completion: Function called when finished, passing back an optional Error object when unsuccessful
+            - error: An Error object created and returned if unsuccesful for any reason
      */
     public func uploadImage(data: Data, to location: String, completion: @escaping (Error?)->()) {
         var localError: Error?
@@ -80,14 +82,14 @@ class DatabaseController {
     }
     
     
-    /** Redownloads an image (from a location in the database) into a specified UIImageView. This will clear
+    /**
+     Redownloads an image (from a location in the database) into a specified UIImageView. This will clear
      the original image from the cache and reload the image view directly.
      - parameters:
-     - destination: The UIImageView that, if successful, will be given the downloaded image
-     - location: A path to the image being reloaded, relative to the root of the storage database
-     - completion: Function called when finished, passing back an optional Error object if unsuccessful
-     - parameters:
-     - error: An Error object created and returned if unsuccesful for any reason
+        - destination: The UIImageView that, if successful, will be given the downloaded image
+        - location: A path to the image being reloaded, relative to the root of the storage database
+        - completion: Function called when finished, passing back an optional Error object if unsuccessful
+            - error: An Error object created and returned if unsuccesful for any reason
      */
     public func reloadImage(into destination: UIImageView, from location: String, completion: @escaping (Error?)->()) {
         
@@ -157,13 +159,15 @@ class DatabaseController {
      */
     private func reactivateConversationFor(user uid: String, username: String, with otherUsername: String, convoID: String, completion: @escaping (Bool) -> ()) {
         
-        userInactiveConversationsRef.child(uid).keepSynced(true)    // temporary fix, permanent observer preferrable
-        userInactiveConversationsRef.child(uid).observeSingleEvent(of: DataEventType.value, with: { snapshot in
+        // Observe inactive conversations for the specified user
+        // Store handle for use inside closure, which will remove observer after closure executes
+        var handle: UInt = 0
+        handle = userInactiveConversationsRef.child(uid).observe(DataEventType.value, with: { snapshot in
             
             // Extract specified user's inactive conversations as (username: convoID) pairs
             if let inactiveConvos = (snapshot.value as? [String : String]) {
-                print(inactiveConvos)
-                print("CHECK 2:  inactiveConvos[\(otherUsername)]=\(inactiveConvos[otherUsername] ?? "nil")  , convoID=\(convoID)")
+                //print(inactiveConvos)
+                
                 if inactiveConvos[otherUsername] == convoID {
         
                     // Move the record of conversation from inactive to active convo list
@@ -175,17 +179,19 @@ class DatabaseController {
                     self.conversationsRef.child("\(convoID)/activeMembers/\(uid)").setValue(username)
        
                     completion(true)
+                    self.userInactiveConversationsRef.child(uid).removeObserver(withHandle: handle)
                 }
             }
         })
     }
     
     
-    /** Determine if an active conversation record currently exists between the current user and specified user, and return convoID if so.
+    /**
+     Determine if an active conversation record currently exists between the current user and specified user, and return convoID if so.
      - parameters:
-     - username: Username to check for existence of conversation with current user
-     - completion: Callback called when search has concluded
-     - exists: A boolean which is true if current user is in an active conversation with the user
+        - username: Username to check for existence of conversation with current user
+        - completion: Callback called when search has concluded
+        - exists: A boolean which is true if current user is in an active conversation with the user
      */
     public func doesActiveConversationExistWith(username: String, completion: @escaping (Bool) -> Void) {
         
@@ -205,9 +211,9 @@ class DatabaseController {
     /**
      Determine if current user has inactive conversation record with a specified user, and return convoID if so.
      - parameters:
-     - username: Username to check for existence of conversation with current user
-     - completion: Callback called at search end, passing back an optional string with convoID
-     - convoID: An optional String holding the conversation ID of the found conversation, if it exists
+        - username: Username to check for existence of conversation with current user
+        - completion: Callback called at search end, passing back an optional string with convoID
+            - convoID: An optional String holding the conversation ID of the found conversation, if it exists
      */
     public func findInactiveConversationWith(username: String, completion: @escaping (String?) -> Void) {
         
@@ -232,10 +238,10 @@ class DatabaseController {
      Attempts to create a conversation between current user and a given user, or rejoins an existing conversation with user if active.
      This method is duplicate safe, and checks for inactive and currently active conversations to avoid creating multiple conversations.
      - parameters:
-     - username: The username of the user to create the conversation with
-     - uid: The user id of the user to create the conversation with
-     - completion: A blank callback called when conversation has been created
-     - success: A boolean which is false if the conversation could not be created
+        - username: The username of the user to create the conversation with
+        - uid: The user id of the user to create the conversation with
+        - completion: A blank callback called when conversation has been created
+            - success: A boolean which is false if the conversation could not be created
      */
     public func createConversationWith(user username: String, withID uid: String, completion: @escaping (Bool)->()) {
         
@@ -315,11 +321,12 @@ class DatabaseController {
     }
     
     
-    /** Retrieve details for current user from the database. User must be authorized already.
+    /**
+     Retrieve details for current user from the database. User must be authorized already.
      - parameters:
-     - user: The current user, which should be authorized at this point
-     - completion:Callback that fires when function has finished
-     - configured: A boolean representing if the current user object could be configured (required)
+        - user: The current user, which should be authorized at this point
+        - completion:Callback that fires when function has finished
+            - configured: A boolean representing if the current user object could be configured (required)
      */
     public func notificationIDForUser(with uid: String, completion: @escaping (String?) -> ()) {
         
@@ -341,11 +348,12 @@ class DatabaseController {
     }
     
     
-    /** Removes the current user from a given conversation, thus archiving it and making it inactive.
+    /**
+     Removes the current user from a given conversation, thus archiving it and making it inactive.
      - parameters:
-     - convoID: The conversation ID of the conversation the current user requests to leave
-     - username: The username of the user to with whom the conversation was with
-     - completion: A blank callback called when current user has been removed from conversation
+        - convoID: The conversation ID of the conversation the current user requests to leave
+        - username: The username of the user to with whom the conversation was with
+        - completion: A blank callback called when current user has been removed from conversation
      */
     public func leaveConversation(convoID: String, with username: String, completion: @escaping ()->()) {
         
@@ -361,18 +369,5 @@ class DatabaseController {
         conversationsRef.child("\(convoID)/inactiveMembers/\(currentUid)").setValue(currentUsername)
         
         completion()
-    }
-    
-    
-    /** Removes the current user from a conversation and places the conversation in the blocked
-     conversations database. A conversation must be active to in order to do this (how else would you trigger?).
-     The effect of this is that th
-     - parameters:
-     - convoID: The conversation ID of the conversation the current user requests to block
-     - username: The username of the user to with whom the conversation was with
-     - completion: A blank callback called when current user has been removed from conversation
-     */
-    public func blockConversation(convoID: String, with username: String, completion: @escaping ()->()) {
-        
     }
 }

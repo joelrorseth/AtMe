@@ -368,6 +368,9 @@ class ConvoViewController: UITableViewController, AlertController {
      */
     private func observeMembersNotificationIDs() {
         
+        conversationRef?.child("activeMembers").keepSynced(true)
+        conversationRef?.child("inactiveMembers").keepSynced(true)
+        
         // Observe a user entering the conversation
         activeMembersHandle = conversationRef?.child("activeMembers").observe(DataEventType.childAdded, with: { snapshot in
             
@@ -438,7 +441,8 @@ class ConvoViewController: UITableViewController, AlertController {
     /** Removes all database observers active in this view controller. */
     private func removeAllObservers() {
         
-        //messagesRef?.keepSynced(false)
+        conversationRef?.child("activeMembers").keepSynced(false)
+        conversationRef?.child("inactiveMembers").keepSynced(false)
         
         if let ref = messagesRef, let handle = messagesHandle {
             ref.removeObserver(withHandle: handle)
