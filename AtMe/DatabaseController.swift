@@ -13,7 +13,7 @@ class DatabaseController {
     
     lazy var authManager = AuthController()
     
-    // MARK: - Static Properties
+    // MARK: - Properties
     var userConversationListRef: DatabaseReference = Database.database().reference().child("userConversationList")
     var userInactiveConversationsRef: DatabaseReference = Database.database().reference().child("userInactiveConversations")
     var conversationsRef: DatabaseReference = Database.database().reference().child("conversations")

@@ -260,6 +260,7 @@ class ConvoViewController: UITableViewController, AlertController {
         // This is required to later determine if messages loaded have already been seen
         updateLastSeenTimestamp(convoID: convoId)
         
+        // TODO: Internet speed may prevent sending notification if observers do not find out about newly reactivated users in time
         // Ask NotificationController to send this message as a push notification
         for notificationID in notificationIDs.values {
             NotificationsController.send(to: notificationID, title: message.sender, message: message.text ?? Constants.Placeholders.pictureMessagePlaceholder)
@@ -389,6 +390,7 @@ class ConvoViewController: UITableViewController, AlertController {
                 // Ask database manager for user's notification id and adds it to local dictionary
                 self.databaseManager.notificationIDForUser(with: uid, completion: { notificationID in
                     if let id = notificationID { self.notificationIDs[username] = id }
+                    //print("NotificationIDs: \(self.notificationIDs)")
                 })
             }
         })
@@ -405,6 +407,7 @@ class ConvoViewController: UITableViewController, AlertController {
             
             // Unwrap username and remove
             if let username = snapshot.value as? String { self.notificationIDs.removeValue(forKey: username) }
+            //print("NotificationIDs: \(self.notificationIDs)")
         })
         
         
@@ -419,7 +422,7 @@ class ConvoViewController: UITableViewController, AlertController {
                 
                 self.activeMembers.removeValue(forKey: uid)
                 self.inactiveMembers[uid] = username
-                print("New inactive member: \(username). There are \(self.inactiveMembers.count) inactive members now")
+                
                 // If current user or this observered user haven't blocked eachother, we can add 
                 // them to notificationIDs so they can be notified that an old convo became active again
                 self.authManager.userOrCurrentUserHasBlocked(uid: uid, username: username, completion: { blocked in
@@ -432,6 +435,8 @@ class ConvoViewController: UITableViewController, AlertController {
                             if let id = notificationID { self.notificationIDs[username] = id }
                         })
                     }
+                    
+                    //print("NotificationIDs: \(self.notificationIDs)")
                 })
             }
         })
@@ -618,9 +623,7 @@ extension ConvoViewController {
     /** Scroll to current bottom row of the table view. */
     func scrollToNewestMessage() {
         if messages.count > 0 {
-            
                 tableView.scrollToRow(at: IndexPath.init(row: messages.count - 1, section: 0) , at: .bottom, animated: true)
-            
         }
     }
     
