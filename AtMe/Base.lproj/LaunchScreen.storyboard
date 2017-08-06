@@ -6,7 +6,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -23,7 +22,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="@" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="m6g-oK-Rnt">
-                                <rect key="frame" x="86" y="217" width="202" height="233"/>
+                                <rect key="frame" x="134" y="229.5" width="106" height="180"/>
                                 <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="131"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
@@ -33,10 +32,8 @@
                         </subviews>
                         <color key="backgroundColor" red="0.45098039220000002" green="0.086274509799999996" blue="0.90588235289999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="m6g-oK-Rnt" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" constant="217" id="GCd-YZ-ekC"/>
                             <constraint firstItem="m6g-oK-Rnt" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="Rqo-b3-na1"/>
-                            <constraint firstItem="m6g-oK-Rnt" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="qTf-iZ-Agc"/>
-                            <constraint firstItem="m6g-oK-Rnt" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" constant="70" id="vRr-1U-i2U"/>
+                            <constraint firstItem="m6g-oK-Rnt" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" constant="-14" id="qTf-iZ-Agc"/>
                         </constraints>
                     </view>
                     <nil key="simulatedStatusBarMetrics"/>

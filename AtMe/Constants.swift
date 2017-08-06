@@ -52,8 +52,8 @@ struct Constants {
     }
     
     struct Limits {
-        static let messageCountStandardLimit = 45
-        static let messageCountIncreaseLimit = 25
+        static let messageCountStandardLimit = 40
+        static let messageCountIncreaseLimit = 20
         static let resultsCount = UInt(16)
     }
     

@@ -82,7 +82,8 @@ class ConvoAuxViewController: UIViewController, AlertController {
             if blocked {
                 self.blockUserButton.isEnabled = false
                 self.blockUserButton.isUserInteractionEnabled = false
-                self.blockUserButton.backgroundColor = UIColor.groupTableViewBackground
+                self.blockUserButton.backgroundColor = UIColor.lightGray
+                self.blockUserButton.setTitle("Already Blocked", for: .normal)
             }
         })
 

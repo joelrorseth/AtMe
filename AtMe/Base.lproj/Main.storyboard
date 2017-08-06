@@ -523,7 +523,7 @@
                                         <rect key="frame" x="0.0" y="309" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="B2H-eq-4kv" id="K8q-eZ-IIt">
-                                            <rect key="frame" x="0.0" y="0.0" width="342" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="341" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Change last name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8xq-MT-GF7">
@@ -544,7 +544,7 @@
                                         <rect key="frame" x="0.0" y="389" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="vIh-FX-wrV" id="b6t-bh-JzL">
-                                            <rect key="frame" x="0.0" y="0.0" width="342" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="341" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Change email address" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0MN-Ta-IY2">
@@ -561,7 +561,7 @@
                                         <rect key="frame" x="0.0" y="433" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="m7i-h0-mOT" id="B9j-i5-XoQ">
-                                            <rect key="frame" x="0.0" y="0.0" width="342" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="341" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Change password" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fIo-YQ-AwB">
@@ -893,7 +893,7 @@
                                             <rect key="frame" x="8" y="4" width="359" height="86"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="John Smith" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bqg-Sv-x3B">
-                                                    <rect key="frame" x="92" y="14" width="88.5" height="23.5"/>
+                                                    <rect key="frame" x="93" y="14" width="88.5" height="23.5"/>
                                                     <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="17"/>
                                                     <color key="textColor" red="0.34901960784313724" green="0.18823529411764706" blue="0.90588235294117647" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -913,7 +913,7 @@
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a9Q-E9-dqz">
-                                                    <rect key="frame" x="92" y="36" width="255" height="36"/>
+                                                    <rect key="frame" x="93" y="36" width="253" height="36"/>
                                                     <string key="text">This is an example message containing example test, as an example. And here is so more text for the purpose of making the message long.</string>
                                                     <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="13"/>
                                                     <color key="textColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
@@ -930,8 +930,8 @@
                                             <constraints>
                                                 <constraint firstItem="a9Q-E9-dqz" firstAttribute="top" secondItem="t6Y-lr-onH" secondAttribute="bottom" id="0sF-mA-cxd"/>
                                                 <constraint firstItem="cI4-Ea-wPO" firstAttribute="centerY" secondItem="dJp-j9-5Al" secondAttribute="centerY" constant="-1.5" id="8hf-8V-cqG"/>
-                                                <constraint firstItem="Bqg-Sv-x3B" firstAttribute="leading" secondItem="lJk-Ac-HDo" secondAttribute="trailing" constant="12" id="Axx-qJ-vNW"/>
-                                                <constraint firstItem="a9Q-E9-dqz" firstAttribute="leading" secondItem="lJk-Ac-HDo" secondAttribute="trailing" constant="12" id="Ct4-kW-l6Y"/>
+                                                <constraint firstItem="Bqg-Sv-x3B" firstAttribute="leading" secondItem="lJk-Ac-HDo" secondAttribute="trailing" constant="13" id="Axx-qJ-vNW"/>
+                                                <constraint firstItem="a9Q-E9-dqz" firstAttribute="leading" secondItem="lJk-Ac-HDo" secondAttribute="trailing" constant="13" id="Ct4-kW-l6Y"/>
                                                 <constraint firstItem="t6Y-lr-onH" firstAttribute="top" secondItem="Bqg-Sv-x3B" secondAttribute="top" id="Ltw-49-FIf"/>
                                                 <constraint firstItem="lJk-Ac-HDo" firstAttribute="leading" secondItem="cI4-Ea-wPO" secondAttribute="trailing" constant="7" id="Xmk-Hf-uMo"/>
                                                 <constraint firstAttribute="bottom" secondItem="lJk-Ac-HDo" secondAttribute="bottom" constant="14" id="ZsP-gm-Fc4"/>
@@ -953,7 +953,7 @@
                                         <constraint firstItem="dJp-j9-5Al" firstAttribute="top" secondItem="VB3-B0-OEO" secondAttribute="topMargin" constant="-4" id="CRu-mO-aWp"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="dJp-j9-5Al" secondAttribute="bottom" constant="-4" id="KPx-rd-kvA"/>
                                         <constraint firstAttribute="leadingMargin" secondItem="dJp-j9-5Al" secondAttribute="leading" id="aDW-dF-NwH"/>
-                                        <constraint firstAttribute="trailingMargin" secondItem="a9Q-E9-dqz" secondAttribute="trailing" constant="12" id="fdi-q2-GiO"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="a9Q-E9-dqz" secondAttribute="trailing" constant="13" id="fdi-q2-GiO"/>
                                         <constraint firstAttribute="trailingMargin" secondItem="dJp-j9-5Al" secondAttribute="trailing" id="sbo-oR-eKx"/>
                                     </constraints>
                                 </tableViewCellContentView>
@@ -1130,7 +1130,7 @@
                                 <rect key="frame" x="21" y="84" width="333" height="91"/>
                                 <string key="text">Thank you for taking the time to improve the @Me community. Help us identify the problem you have experienced with this user by selecting the most appropriate description.</string>
                                 <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="14"/>
-                                <color key="textColor" red="0.45098039220000002" green="0.086274509799999996" blue="0.90588235289999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="textColor" red="0.34901960780000002" green="0.18823529410000001" blue="0.90588235289999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pZb-Tm-Ma9">
@@ -1268,7 +1268,7 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="Y9u-wz-Va2"/>
-        <segue reference="QVE-PA-65p"/>
+        <segue reference="Jfi-GC-QGb"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
 </document>
