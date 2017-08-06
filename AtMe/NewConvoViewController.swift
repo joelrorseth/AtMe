@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class NewConvoViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, AlertController {
+class NewConvoViewController: UIViewController, UISearchBarDelegate, AlertController {
     
     lazy var authManager = AuthController()
     lazy var databaseManager = DatabaseController()
@@ -26,7 +26,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     
-    // MARK: View
+    // MARK: - View
     /** Overridden method called after view controller's view is loaded into memory. */
     override func viewDidLoad() {
         
@@ -48,9 +48,63 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         dismissKeyboardTap.cancelsTouchesInView = false
         self.view.addGestureRecognizer(dismissKeyboardTap)
     }
-
     
-    // MARK: Table View
+    
+    // MARK: - Search Bar + Results
+    /** Delegate method which fires when the Search button on the specified UISearchBar was tapped. */
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+        clearResults()
+        guard let text = searchBar.text else { return }
+        
+        // Find all usernames containing search text
+        // Order record by key (which are the usernames), then query for string bounded in range [text, text]
+        
+        
+        authManager.searchForUsers(term: text, completion: { results in
+            
+            if !results.isEmpty {
+                
+                // One by one, obtain details of each user, and insert the result into table with more info
+                self.authManager.findDetailsForUsers(results: results, completion: { user in
+                    self.insertResult(user: user)
+                })
+            }
+        })
+    }
+    
+    
+    /** Clears the table view (results) and associated data source. */
+    private func clearResults() {
+        
+        searchResults.removeAll()
+        usersTableView.reloadData()
+    }
+    
+    
+    /** Inserts a given UserProfile into the table view, done efficiently by only inserting what it needs to. 
+     - parameters:
+        user: The UserProfile object of the user requested for insertion
+     */
+    private func insertResult(user: UserProfile) {
+        
+        // Update data source, then insert row
+        searchResults.append(user)
+        usersTableView.insertRows(at: [IndexPath(row: searchResults.count - 1, section: 0)], with: .none)
+    }
+    
+    
+    // MARK: Additional Functions
+    /** Dismiss the keyboard from screen if currently displayed. */
+    func dismissKeyboard() {
+        self.view.endEditing(true)
+    }
+}
+
+
+// MARK: - Table View
+extension NewConvoViewController: UITableViewDataSource, UITableViewDelegate {
+    
     /** Sets the number of sections to display in the table view. */
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -116,63 +170,12 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
                 // If successful, exit. If unsuccessful, present alert so user is informed of preexisting conversation
                 if (success) {
                     self.navigationController?.popViewController(animated: true)
-                
+                    
                 } else {
                     self.presentSimpleAlert(title: "Conversation already exists", message: Constants.Errors.conversationAlreadyExists, completion: nil)
                 }
             })
             
         } else { presentSimpleAlert(title: "Error creating conversation", message: Constants.Errors.createConversationError, completion: nil) }
-    }
-    
-    
-    // MARK: Search Bar + Results
-    /** Delegate method which fires when the Search button on the specified UISearchBar was tapped. */
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        
-        clearResults()
-        guard let text = searchBar.text else { return }
-        
-        // Find all usernames containing search text
-        // Order record by key (which are the usernames), then query for string bounded in range [text, text]
-        
-        
-        authManager.searchForUsers(term: text, completion: { results in
-            
-            if !results.isEmpty {
-                
-                // One by one, obtain details of each user, and insert the result into table with more info
-                self.authManager.findDetailsForUsers(results: results, completion: { user in
-                    self.insertResult(user: user)
-                })
-            }
-        })
-    }
-    
-    
-    /** Clears the table view (results) and associated data source. */
-    private func clearResults() {
-        
-        searchResults.removeAll()
-        usersTableView.reloadData()
-    }
-    
-    
-    /** Inserts a given UserProfile into the table view, done efficiently by only inserting what it needs to. 
-     - parameters:
-        user: The UserProfile object of the user requested for insertion
-     */
-    private func insertResult(user: UserProfile) {
-        
-        // Update data source, then insert row
-        searchResults.append(user)
-        usersTableView.insertRows(at: [IndexPath(row: searchResults.count - 1, section: 0)], with: .none)
-    }
-    
-    
-    // MARK: Additional Functions
-    /** Dismiss the keyboard from screen if currently displayed. */
-    func dismissKeyboard() {
-        self.view.endEditing(true)
     }
 }

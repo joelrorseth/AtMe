@@ -231,8 +231,9 @@ class AuthController {
      */
     public func searchForUsers(term: String, completion: @escaping ([String : String]) -> ()) {
         
-        registeredUsernamesRef.queryOrderedByKey().queryStarting(atValue: term).queryEnding(atValue: "\(term)\u{f8ff}")
-            .queryLimited(toFirst: Constants.Limits.resultsCount).observeSingleEvent(of: DataEventType.value, with: { snapshot in
+        var handle: UInt = 0
+        handle = registeredUsernamesRef.queryOrderedByKey().queryStarting(atValue: term).queryEnding(atValue: "\(term)\u{f8ff}")
+            .queryLimited(toFirst: Constants.Limits.resultsCount).observe(DataEventType.value, with: { snapshot in
             
                 // Parse results as dictionary of (username, uid) pairs
                 if var results = snapshot.value as? [String : String] {
@@ -243,6 +244,8 @@ class AuthController {
                     // If and when found, pass results back to caller
                     completion(results)
                 }
+                
+                self.registeredUsernamesRef.removeObserver(withHandle: handle)
         })
     }
  
