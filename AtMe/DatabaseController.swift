@@ -11,12 +11,13 @@ import Kingfisher
 
 class DatabaseController {
     
+    lazy var authManager = AuthController()
     
     // MARK: - Static Properties
-    static var userConversationListRef: DatabaseReference = Database.database().reference().child("userConversationList")
-    static var userInactiveConversationsRef: DatabaseReference = Database.database().reference().child("userInactiveConversations")
-    static var conversationsRef: DatabaseReference = Database.database().reference().child("conversations")
-    static var userInformationRef: DatabaseReference = Database.database().reference().child("userInformation")
+    var userConversationListRef: DatabaseReference = Database.database().reference().child("userConversationList")
+    var userInactiveConversationsRef: DatabaseReference = Database.database().reference().child("userInactiveConversations")
+    var conversationsRef: DatabaseReference = Database.database().reference().child("conversations")
+    var userInformationRef: DatabaseReference = Database.database().reference().child("userInformation")
     
     
     // MARK: - Image Management
@@ -27,7 +28,7 @@ class DatabaseController {
      - completion: Function called when finished, passing back an optional Error object if unsuccessful
      - error: An Error object created and returned if unsuccesful for any reason
      */
-    public static func downloadImage(into destination: UIImageView, from location: String, completion: @escaping (Error?)->()){
+    public func downloadImage(into destination: UIImageView, from location: String, completion: @escaping (Error?)->()){
         let store = Storage.storage().reference(withPath: location)
         
         // Check for image saved in cache, load image from disk if possible
@@ -66,7 +67,7 @@ class DatabaseController {
      - completion: Function called when finished, passing back an optional Error object when unsuccessful
      - error: An Error object created and returned if unsuccesful for any reason
      */
-    public static func uploadImage(data: Data, to location: String, completion: @escaping (Error?)->()) {
+    public func uploadImage(data: Data, to location: String, completion: @escaping (Error?)->()) {
         var localError: Error?
         let store = Storage.storage().reference(withPath: location)
         
@@ -88,7 +89,7 @@ class DatabaseController {
      - parameters:
      - error: An Error object created and returned if unsuccesful for any reason
      */
-    public static func reloadImage(into destination: UIImageView, from location: String, completion: @escaping (Error?)->()) {
+    public func reloadImage(into destination: UIImageView, from location: String, completion: @escaping (Error?)->()) {
         
         // Convert location to Firebase storage path, remove from cache
         //let store = Storage.storage().reference(withPath: location)
@@ -102,7 +103,7 @@ class DatabaseController {
     
     
     /** Clear all images currently cached by the database on disk or memory. */
-    public static func clearCachedImages() {
+    public func clearCachedImages() {
         
         // Clear memory cache right away.
         ImageCache.default.clearMemoryCache()
@@ -128,14 +129,14 @@ class DatabaseController {
         - completion: A completion callback called when the function successfully or unsuccessfully terminates.
             - success: A boolean which is true if conversation was rejoined
      */
-    public static func attemptRejoinIntoConversation(convoID: String, uid: String, username: String, completion: @escaping (Bool) -> ()) {
+    public func attemptRejoinIntoConversation(convoID: String, uid: String, username: String, completion: @escaping (Bool) -> ()) {
         
-        AuthController.userOrCurrentUserHasBlocked(uid: uid, username: username, completion: { blocked in
-            
+        authManager.userOrCurrentUserHasBlocked(uid: uid, username: username, completion: { blocked in
+            print("Attempting to rejoin, convo blocked? <\(blocked)>")
             // TODO: Possibly return custom error to discern if user was blocked?
-            if blocked { completion(false) }
+            if blocked { completion(false); return }
             
-            reactivateConversationFor(user: uid, username: username, with: UserState.currentUser.username, convoID: convoID, completion: { completed in
+            self.reactivateConversationFor(user: uid, username: username, with: UserState.currentUser.username, convoID: convoID, completion: { completed in
                 completion(completed)
             })
         })
@@ -154,22 +155,25 @@ class DatabaseController {
         - completion: A callback invoked if and when the operation was completed.
             - completed: A boolean which is true if the move was successful.
      */
-    private static func reactivateConversationFor(user uid: String, username: String, with otherUsername: String, convoID: String, completion: @escaping (Bool) -> ()) {
+    private func reactivateConversationFor(user uid: String, username: String, with otherUsername: String, convoID: String, completion: @escaping (Bool) -> ()) {
         
+        userInactiveConversationsRef.child(uid).keepSynced(true)    // temporary fix, permanent observer preferrable
         userInactiveConversationsRef.child(uid).observeSingleEvent(of: DataEventType.value, with: { snapshot in
             
             // Extract specified user's inactive conversations as (username: convoID) pairs
             if let inactiveConvos = (snapshot.value as? [String : String]) {
+                print(inactiveConvos)
+                print("CHECK 2:  inactiveConvos[\(otherUsername)]=\(inactiveConvos[otherUsername] ?? "nil")  , convoID=\(convoID)")
                 if inactiveConvos[otherUsername] == convoID {
-                    
+        
                     // Move the record of conversation from inactive to active convo list
                     self.userInactiveConversationsRef.child(uid).child(otherUsername).removeValue()
                     self.userConversationListRef.child(uid).child(otherUsername).setValue(convoID)
-                    
+   
                     // Re-establish current user as an active member
                     self.conversationsRef.child("\(convoID)/inactiveMembers/\(uid)").removeValue()
                     self.conversationsRef.child("\(convoID)/activeMembers/\(uid)").setValue(username)
-                    
+       
                     completion(true)
                 }
             }
@@ -183,7 +187,7 @@ class DatabaseController {
      - completion: Callback called when search has concluded
      - exists: A boolean which is true if current user is in an active conversation with the user
      */
-    public static func doesActiveConversationExistWith(username: String, completion: @escaping (Bool) -> Void) {
+    public func doesActiveConversationExistWith(username: String, completion: @escaping (Bool) -> Void) {
         
         // Query the user's active conversation record for the current user('s uid)
         // If query returns non-nil, the query found a conversation record with other user
@@ -205,7 +209,7 @@ class DatabaseController {
      - completion: Callback called at search end, passing back an optional string with convoID
      - convoID: An optional String holding the conversation ID of the found conversation, if it exists
      */
-    public static func findInactiveConversationWith(username: String, completion: @escaping (String?) -> Void) {
+    public func findInactiveConversationWith(username: String, completion: @escaping (String?) -> Void) {
         
         // Check inactive conversations record, see if conversation with username ever existed
         userInactiveConversationsRef.child(UserState.currentUser.uid).observeSingleEvent(of: DataEventType.value, with: { snapshot in
@@ -233,14 +237,14 @@ class DatabaseController {
      - completion: A blank callback called when conversation has been created
      - success: A boolean which is false if the conversation could not be created
      */
-    public static func createConversationWith(user username: String, withID uid: String, completion: @escaping (Bool)->()) {
+    public func createConversationWith(user username: String, withID uid: String, completion: @escaping (Bool)->()) {
         
         
         // IMPORTANT NOTE: The app logic assumes that one (and only one) conersation will ever exist between two
         // users. We maintain a record of active and inactive conversations, observe only the active
         // ones, and transfer a conversation record back and forth when deleted or (re)created by user.
         
-        AuthController.userOrCurrentUserHasBlocked(uid: uid, username: username, completion: { blocked in
+        authManager.userOrCurrentUserHasBlocked(uid: uid, username: username, completion: { blocked in
             
             // Prevent
             if blocked { completion(false); return }
@@ -249,7 +253,7 @@ class DatabaseController {
             // In regards to note above, we only allow one convo record between users
             // The actual convo stays in place, but userConversationList tracks active members
             
-            doesActiveConversationExistWith(username: username, completion: { exists in
+            self.doesActiveConversationExistWith(username: username, completion: { exists in
                 
                 // If conversation exists, just exit gracefully and do absolutely nothing
                 if (exists) { print("Error: Active conversation already exists"); completion(false); return }
@@ -317,7 +321,7 @@ class DatabaseController {
      - completion:Callback that fires when function has finished
      - configured: A boolean representing if the current user object could be configured (required)
      */
-    public static func notificationIDForUser(with uid: String, completion: @escaping (String?) -> ()) {
+    public func notificationIDForUser(with uid: String, completion: @escaping (String?) -> ()) {
         
         userInformationRef.child("\(uid)/notificationID").observeSingleEvent(of: DataEventType.value, with: { snapshot in
             
@@ -328,7 +332,7 @@ class DatabaseController {
     
     
     /** Unsubscribe the specified user from push notifications by removing their notification ID from the database. */
-    public static func unsubscribeUserFromNotifications(uid: String) {
+    public func unsubscribeUserFromNotifications(uid: String) {
         
         // Remove the user's notification ID from the database (stop receiving push notifications)
         // This is the only location that a user's notification ID is stored
@@ -343,7 +347,7 @@ class DatabaseController {
      - username: The username of the user to with whom the conversation was with
      - completion: A blank callback called when current user has been removed from conversation
      */
-    public static func leaveConversation(convoID: String, with username: String, completion: @escaping ()->()) {
+    public func leaveConversation(convoID: String, with username: String, completion: @escaping ()->()) {
         
         let currentUid = UserState.currentUser.uid
         let currentUsername = UserState.currentUser.username
@@ -368,7 +372,7 @@ class DatabaseController {
      - username: The username of the user to with whom the conversation was with
      - completion: A blank callback called when current user has been removed from conversation
      */
-    public static func blockConversation(convoID: String, with username: String, completion: @escaping ()->()) {
+    public func blockConversation(convoID: String, with username: String, completion: @escaping ()->()) {
         
     }
 }

@@ -11,6 +11,9 @@ import Firebase
 
 class UserSetupViewController: UIViewController, AlertController {
     
+    lazy var databaseManager = DatabaseController()
+    lazy var authManager = AuthController()
+    
     @IBOutlet var usernameTextField: UITextField!
     @IBOutlet var displayPictureImageView: UIImageView!
     @IBOutlet var createAccountButton: UIButton!
@@ -42,7 +45,7 @@ class UserSetupViewController: UIViewController, AlertController {
             
             
             // Let the Auth Controller attempt to create the account
-            AuthController.createAccount(email: self.email, firstName: self.firstName, lastName: self.lastName, password: self.password, completion: { (error, uid) in
+            authManager.createAccount(email: self.email, firstName: self.firstName, lastName: self.lastName, password: self.password, completion: { (error, uid) in
                 
                 if let error = error {
                     self.presentSimpleAlert(title: "Authorization Error", message: error.localizedDescription, completion: nil)
@@ -58,25 +61,25 @@ class UserSetupViewController: UIViewController, AlertController {
                     
                     // Let the Database Controller take care of upoading using this general display picture URL
                     let path = "displayPictures/\(uid)/\(uid).JPG"
-                    DatabaseController.uploadImage(data: data, to: path, completion: { error in
+                    self.databaseManager.uploadImage(data: data, to: path, completion: { error in
                         if let error = error {
                             print("AtMe:: Error uploading display picture to Firebase. \(error.localizedDescription)")
                             return
                         }
                         
                         // Important: Auth Controller will associate the picture with the user profile
-                        AuthController.setDisplayPicture(path: path)
+                        self.authManager.setDisplayPicture(path: path)
                     })
                 }
                 
                 
                 // If the username does not exist, proceed with account creation
-                AuthController.usernameExists(username: username, completion: { exists in
+                self.authManager.usernameExists(username: username, completion: { exists in
                     if (!exists) {
                         
                         // Once username is set, sign in for the first time
-                        AuthController.setUsername(username: username, completion: {
-                            AuthController.signIn(email: self.email, password: self.password, completion: { (error, configured) in
+                        self.authManager.setUsername(username: username, completion: {
+                            self.authManager.signIn(email: self.email, password: self.password, completion: { (error, configured) in
                                 
                                 if let error = error {
                                     self.presentSimpleAlert(title: "Could Not Sign In", message: error.localizedDescription, completion: nil)

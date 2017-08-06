@@ -12,6 +12,8 @@ import Firebase
 
 class ConvoViewController: UITableViewController, AlertController {
     
+    lazy var databaseManager = DatabaseController()
+    lazy var authManager = AuthController()
     
     // MARK: - Properties
     // Firebase references
@@ -237,7 +239,7 @@ class ConvoViewController: UITableViewController, AlertController {
         // Otherwise you would manually have to rejoin to be added again
         
         for (uid, username) in inactiveMembers {
-            DatabaseController.attemptRejoinIntoConversation(convoID: convoId, uid: uid, username: username, completion: {_ in})
+            databaseManager.attemptRejoinIntoConversation(convoID: convoId, uid: uid, username: username, completion: {_ in})
         }
         
 
@@ -382,7 +384,7 @@ class ConvoViewController: UITableViewController, AlertController {
                 self.activeMembers[uid] = username
                 
                 // Ask database manager for user's notification id and adds it to local dictionary
-                DatabaseController.notificationIDForUser(with: uid, completion: { notificationID in
+                self.databaseManager.notificationIDForUser(with: uid, completion: { notificationID in
                     if let id = notificationID { self.notificationIDs[username] = id }
                 })
             }
@@ -411,19 +413,19 @@ class ConvoViewController: UITableViewController, AlertController {
             
             // Maintain dictionary of inactive and active members eg. (uid, username) pairs
             if let username = snapshot.value as? String {
-                print("New inactive member: \(username)")
+                
                 self.activeMembers.removeValue(forKey: uid)
                 self.inactiveMembers[uid] = username
-                
+                print("New inactive member: \(username). There are \(self.inactiveMembers.count) inactive members now")
                 // If current user or this observered user haven't blocked eachother, we can add 
                 // them to notificationIDs so they can be notified that an old convo became active again
-                AuthController.userOrCurrentUserHasBlocked(uid: uid, username: username, completion: { blocked in
+                self.authManager.userOrCurrentUserHasBlocked(uid: uid, username: username, completion: { blocked in
                     
                     if blocked { self.notificationIDs.removeValue(forKey: username) }
                     
                     else {
                         // Ask database manager for user's notification id and adds it to local dictionary
-                        DatabaseController.notificationIDForUser(with: uid, completion: { notificationID in
+                        self.databaseManager.notificationIDForUser(with: uid, completion: { notificationID in
                             if let id = notificationID { self.notificationIDs[username] = id }
                         })
                     }
@@ -533,7 +535,7 @@ extension ConvoViewController: UIImagePickerControllerDelegate, UINavigationCont
         if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
             if let data = convertImageToData(image: image) {
                 
-                DatabaseController.uploadImage(data: data, to: path, completion: { (error) in
+                databaseManager.uploadImage(data: data, to: path, completion: { (error) in
                     if let error = error {
                         print("AtMe:: Error uploading picture message to Firebase. \(error.localizedDescription)")
                         return
@@ -677,7 +679,7 @@ extension ConvoViewController {
             
             // To fix weird bug where images would not remove from reused cells, we manually add and remove image view from cells
             cell.addImageView()
-            DatabaseController.downloadImage(into: cell.messageImageView, from: imageURL, completion: { (error) in
+            databaseManager.downloadImage(into: cell.messageImageView, from: imageURL, completion: { (error) in
                 
                 if let localError = error { print("AtMe Error:: Did not recieve downloaded UIImage. \(localError)"); return }
                 print("AtMe:: Loaded an image for a message cell")

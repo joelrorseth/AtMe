@@ -18,16 +18,15 @@ protocol AuthenticationDelegate {
 
 class AuthController {
     
+    lazy var databaseManager = DatabaseController()
     
     // MARK: - Properties
-    static var authenticationDelegate: AuthenticationDelegate?
+    var authenticationDelegate: AuthenticationDelegate?
     
     // Firebase References
-    static var userInformationRef: DatabaseReference = Database.database().reference().child("userInformation")
-    static var registeredUsernamesRef: DatabaseReference = Database.database().reference().child("registeredUsernames")
-    static var reportedUsersRecordRef: DatabaseReference = Database.database().reference().child("reportedUsersRecord")
-    
-    private lazy var databaseManager = DatabaseController()
+    var userInformationRef: DatabaseReference = Database.database().reference().child("userInformation")
+    var registeredUsernamesRef: DatabaseReference = Database.database().reference().child("registeredUsernames")
+    var reportedUsersRecordRef: DatabaseReference = Database.database().reference().child("reportedUsersRecord")
     
     
     // MARK: - Account Management
@@ -44,7 +43,7 @@ class AuthController {
             - error: An Error object returned from the Auth Controller
             - uid: The UID assigned to the user upon successful account creation
      */
-    public static func createAccount(email: String, firstName: String, lastName: String,
+    public func createAccount(email: String, firstName: String, lastName: String,
                               password: String, completion: @escaping ((Error?, String?) -> ()) ) {
     
         // If the username already exists, avoid creating user
@@ -81,7 +80,7 @@ class AuthController {
             - error: An Error object returned from the Auth Controller
             - configured: A boolean representing if the current user object could be configured (required)
      */
-    public static func signIn(email: String, password: String, completion: @escaping ((Error?, Bool) -> ()) ) {
+    public func signIn(email: String, password: String, completion: @escaping ((Error?, Bool) -> ()) ) {
         
         // Let the auth object sign in the user with given credentials
         Auth.auth().signIn(withEmail: email, password: password) { (user, error) in
@@ -100,11 +99,11 @@ class AuthController {
     
     
     /** Take the appropriate steps to sign the user out of the application. */
-    public static func signOut() {
+    public func signOut() {
         
-        AuthController.authenticationDelegate?.userDidSignOut()
-        DatabaseController.clearCachedImages()
-        DatabaseController.unsubscribeUserFromNotifications(uid: UserState.currentUser.uid)
+        authenticationDelegate?.userDidSignOut()
+        databaseManager.clearCachedImages()
+        databaseManager.unsubscribeUserFromNotifications(uid: UserState.currentUser.uid)
         UserState.resetCurrentUser()
     }
     
@@ -117,7 +116,7 @@ class AuthController {
         - uid: The uid of the user whom the current user is blocking.
         - username: The username of the user whom the current user is blocking.
     */
-    public static func blockUser(uid: String, username: String) {
+    public func blockUser(uid: String, username: String) {
         userInformationRef.child(UserState.currentUser.uid).child("blockedUsernames/\(username)").setValue(uid)
     }
     
@@ -128,7 +127,7 @@ class AuthController {
         - uid: The uid of the user whom the current user is unblocking.
         - username: The username of the user whom the current user is unblocking.
      */
-    public static func unblockUser(uid: String, username: String) {
+    public func unblockUser(uid: String, username: String) {
         userInformationRef.child(UserState.currentUser.uid).child("blockedUsernames/\(username)").removeValue()
     }
     
@@ -139,7 +138,7 @@ class AuthController {
         - completion: A callback function *invoked once for every UserProfile found*.
             - profile: The UserProfile object returned for a single given user.
     */
-    public static func findCurrentUserBlockedUsers(completion: @escaping (UserProfile) -> Void) {
+    public func findCurrentUserBlockedUsers(completion: @escaping (UserProfile) -> Void) {
         
         userInformationRef.child(UserState.currentUser.uid).child("blockedUsernames").observeSingleEvent(of: DataEventType.value, with: { snapshot in
             
@@ -163,21 +162,29 @@ class AuthController {
         - completion: A completion callback called when a conclusion has been reached.
             - blocked: A variable passed through callback, which will be true if either user has blocked the other.
      */
-    public static func userOrCurrentUserHasBlocked(uid: String, username: String, completion: @escaping (Bool) -> ()) {
+    public func userOrCurrentUserHasBlocked(uid: String, username: String, completion: @escaping (Bool) -> ()) {
         
-        userInformationRef.child(UserState.currentUser.uid).child("blockedUsernames/\(username)").observeSingleEvent(of: DataEventType.value, with: { snapshot in
-            userInformationRef.child(uid).child("blockedUsernames/\(UserState.currentUser.username)").observeSingleEvent(of: DataEventType.value, with: { otherSnap in
-              
-                if let _ = snapshot.value as? String { completion(true) }
-                else if let _ = otherSnap.value as? Bool { completion(true) }
-                else { completion(false) }
+        userInformationRef.keepSynced(true)
+        userInformationRef.child(UserState.currentUser.uid).child("blockedUsernames").observeSingleEvent(of: DataEventType.value, with: { snapshot in
+            self.userInformationRef.child(uid).child("blockedUsernames").observeSingleEvent(of: DataEventType.value, with: { otherSnap in
+                print("current: <\(snapshot)>   other: <\(otherSnap)>")
+                
+                if let blockedList = snapshot.value as? [String : String] {
+                    if blockedList[username] == uid { completion(true); return }
+                }
+                    
+                if let blockedList = otherSnap.value as? [String : String] {
+                    if blockedList[UserState.currentUser.username] == UserState.currentUser.uid { completion(true); return }
+                }
+                
+                completion(false)
             })
         })
     }
     
     
     
-    public static func reportUser(uid: String, username: String, violation: String, convoID: String) {
+    public func reportUser(uid: String, username: String, violation: String, convoID: String) {
         
         let record = ["uidReported": uid, "usernameReported": username, "violation": violation,
                       "relevantConvoID": convoID, "reportedBy": UserState.currentUser.username,
@@ -195,7 +202,7 @@ class AuthController {
         - completion: A completion callback invoked each time details are found for a user
             - profile: The UserProfile object representing and holding the details found for a specific user
      */
-    public static func findDetailsForUsers(results: [String : String], completion: @escaping (UserProfile) -> Void) {
+    public func findDetailsForUsers(results: [String : String], completion: @escaping (UserProfile) -> Void) {
         
         // For each result found, observe the user's full name and pass back as a UserProfile object
         // Using this UserProfile, the table view can be updated with info by the caller!
@@ -222,7 +229,7 @@ class AuthController {
         - completion: A completion callback that fires when it has found all the results it can
             - results: An dictionary of (username, uid) pairs found in the search. Please note this may be empty if no results found!
      */
-    public static func searchForUsers(term: String, completion: @escaping ([String : String]) -> ()) {
+    public func searchForUsers(term: String, completion: @escaping ([String : String]) -> ()) {
         
         registeredUsernamesRef.queryOrderedByKey().queryStarting(atValue: term).queryEnding(atValue: "\(term)\u{f8ff}")
             .queryLimited(toFirst: Constants.Limits.resultsCount).observeSingleEvent(of: DataEventType.value, with: { snapshot in
@@ -247,7 +254,7 @@ class AuthController {
         - completion: Callback that fires when function has finished
             - found: True if username was found in database, false otherwise
      */
-    public static func usernameExists(username: String, completion: @escaping (Bool) -> ()) {
+    public func usernameExists(username: String, completion: @escaping (Bool) -> ()) {
         
         registeredUsernamesRef.observeSingleEvent(of: DataEventType.value, with: { snapshot in
             
@@ -263,7 +270,7 @@ class AuthController {
         - completion: Completion handler called when search has finished
             - name: The name of user found, but nil if not found
      */
-    public static func findNameFor(uid: String, completion: @escaping (String?) -> Void) {
+    public func findNameFor(uid: String, completion: @escaping (String?) -> Void) {
         
         userInformationRef.observeSingleEvent(of: DataEventType.value, with: { snapshot in
             
@@ -284,7 +291,7 @@ class AuthController {
         - completion:Callback that fires when function has finished
             - configured: A boolean representing if the current user object could be configured (required)
      */
-    public static func establishCurrentUser(user: User, completion: @escaping (Bool) -> ()) {
+    public func establishCurrentUser(user: User, completion: @escaping (Bool) -> ()) {
         
         // TODO: Change to take snapshot of only this user's info, use child(uid)
         // Look up information about the User, set the UserState.currentUser object properties
@@ -325,7 +332,7 @@ class AuthController {
         - username: Username chosen by the current user
         - completion: Callback that is called upon successful completion
      */
-    public static func setUsername(username: String, completion: (() -> ())) {
+    public func setUsername(username: String, completion: (() -> ())) {
         
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
@@ -342,7 +349,7 @@ class AuthController {
      - parameters:
         - path: The path where the display picture has been successfully uploaded to
      */
-    public static func setDisplayPicture(path: String) {
+    public func setDisplayPicture(path: String) {
         
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
@@ -358,7 +365,7 @@ class AuthController {
         - completion: A callback function that fires when email has been set, or discovers it cannot be done
             - error: An optional error that will be set only if an error occured and email was not changed
      */
-    public static func changeEmailAddress(to email: String, completion: @escaping (Error?) -> Void) {
+    public func changeEmailAddress(to email: String, completion: @escaping (Error?) -> Void) {
         
         // Use the Firebase Auth function to allow changes to internal auth records
         Auth.auth().currentUser?.updateEmail(to: email, completion: { error in
@@ -384,7 +391,7 @@ class AuthController {
         - callback: Callback function that is called when Auth confirms it can or cannot perform change
             - error: An optional Error object that will hold information if and when request fails
      */
-    public static func changePassword(password: String, callback: @escaping (Error?) -> Void) {
+    public func changePassword(password: String, callback: @escaping (Error?) -> Void) {
         
         // Use the Firebase Auth function to allow changes to internal auth records
         Auth.auth().currentUser?.updatePassword(to: password, completion: { error in
@@ -404,7 +411,7 @@ class AuthController {
         - attribute: Attribute to change
         - value: Value to set the attribute equal to
      */
-    public static func changeCurrentUser(attribute: String, value: String) {
+    public func changeCurrentUser(attribute: String, value: String) {
         userInformationRef.child(UserState.currentUser.uid).child("\(attribute)").setValue(value)
     }
 }

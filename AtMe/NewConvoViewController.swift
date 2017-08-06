@@ -10,11 +10,13 @@ import UIKit
 import Firebase
 
 class NewConvoViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, AlertController {
-        
+    
+    lazy var authManager = AuthController()
+    lazy var databaseManager = DatabaseController()
+    
     @IBOutlet weak var usersSearchBar: UISearchBar!
     @IBOutlet weak var usersTableView: UITableView!
     
-    internal let databaseManager = DatabaseController()
     var searchResults: [UserProfile] = []
     
     
@@ -80,7 +82,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         
         // Download image into cell using DatabaseController (this facilitates automatic caching)
         let path = "displayPictures/\(uid)/\(uid).JPG"
-        DatabaseController.downloadImage(into: cell.displayImage, from: path, completion: { error in
+        databaseManager.downloadImage(into: cell.displayImage, from: path, completion: { error in
             
             if let error = error {
                 print("AtMe:: An error has occurred, but image data was detected. \(error)")
@@ -109,7 +111,7 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         if let selectedUserUid = cell.uid, let selectedUserUsername = cell.username {
             
             // Create the conversation (or even reuse old existing one), then exit this view
-            DatabaseController.createConversationWith(user: selectedUserUsername, withID: selectedUserUid, completion: { success in
+            databaseManager.createConversationWith(user: selectedUserUsername, withID: selectedUserUid, completion: { success in
                 
                 // If successful, exit. If unsuccessful, present alert so user is informed of preexisting conversation
                 if (success) {
@@ -135,12 +137,12 @@ class NewConvoViewController: UIViewController, UITableViewDataSource, UITableVi
         // Order record by key (which are the usernames), then query for string bounded in range [text, text]
         
         
-        AuthController.searchForUsers(term: text, completion: { results in
+        authManager.searchForUsers(term: text, completion: { results in
             
             if !results.isEmpty {
                 
                 // One by one, obtain details of each user, and insert the result into table with more info
-                AuthController.findDetailsForUsers(results: results, completion: { user in
+                self.authManager.findDetailsForUsers(results: results, completion: { user in
                     self.insertResult(user: user)
                 })
             }

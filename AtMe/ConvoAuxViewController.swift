@@ -9,7 +9,10 @@
 import UIKit
 
 class ConvoAuxViewController: UIViewController, AlertController {
-
+    
+    lazy var databaseManager = DatabaseController()
+    lazy var authManager = AuthController()
+    
     var username: String?
     var convoID: String?
     var uid: String?
@@ -28,8 +31,8 @@ class ConvoAuxViewController: UIViewController, AlertController {
         presentConfirmationAlert(title: "Confirm Block", message: Constants.Messages.confirmBlockMessage, completion: { _ in
             
             // Add user to current user's blocked list, leave conversation
-            AuthController.blockUser(uid: uid, username: username)
-            DatabaseController.leaveConversation(convoID: convoID, with: username, completion: {
+            self.authManager.blockUser(uid: uid, username: username)
+            self.databaseManager.leaveConversation(convoID: convoID, with: username, completion: {
                 self.performSegue(withIdentifier: "UnwindToChatListSegue", sender: nil)
             })
         })
@@ -62,19 +65,19 @@ class ConvoAuxViewController: UIViewController, AlertController {
         
         
         // Download display picture into large central image view
-        DatabaseController.downloadImage(into: displayPictureImageView, from: "displayPictures/\(uid)/\(uid).JPG", completion: { _ in
+        databaseManager.downloadImage(into: displayPictureImageView, from: "displayPictures/\(uid)/\(uid).JPG", completion: { _ in
             self.displayPictureImageView.layer.masksToBounds = true
             self.displayPictureImageView.layer.cornerRadius = self.displayPictureImageView.frame.size.width / 2
         })
         
         // Set the name of user
-        AuthController.findNameFor(uid: uid, completion: { name in
+        authManager.findNameFor(uid: uid, completion: { name in
             if let name = name { self.nameLabel.text = name }
         })
         
         
         // In case user has already blocked this user, disable
-        AuthController.userOrCurrentUserHasBlocked(uid: uid, username: username, completion: { blocked in
+        authManager.userOrCurrentUserHasBlocked(uid: uid, username: username, completion: { blocked in
             
             if blocked {
                 self.blockUserButton.isEnabled = false

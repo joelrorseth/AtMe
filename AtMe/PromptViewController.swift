@@ -10,7 +10,9 @@ import UIKit
 import Firebase
 
 class PromptViewController: UIViewController, AlertController {
-        
+    
+    lazy var authManager = AuthController()
+    
     var promptDelegate: PromptViewDelegate?
     var changingAttribute: Constants.UserAttribute = .none
     var changingAttributeName: String = ""
@@ -47,7 +49,7 @@ extension PromptViewController: PromptViewDelegate {
         
         if (changingAttribute == .email) {
             
-            AuthController.changeEmailAddress(to: value, completion: { error in
+            authManager.changeEmailAddress(to: value, completion: { error in
                 
                 if let error = error {
                     self.presentSimpleAlert(title: "Error changing email", message: error.localizedDescription, completion: { _ in
@@ -65,7 +67,7 @@ extension PromptViewController: PromptViewDelegate {
             
         } else if (changingAttribute == .password) {
             
-            AuthController.changePassword(password: value, callback: { error in
+            authManager.changePassword(password: value, callback: { error in
                 
                 if let error = error {
                     self.presentSimpleAlert(title: "Error changing password", message: error.localizedDescription, completion: { _ in
@@ -86,7 +88,7 @@ extension PromptViewController: PromptViewDelegate {
             // Change the attribute directly if not a password or email
             // This is easy because Auth (Firebase) only internally maintains email and password
             
-            AuthController.changeCurrentUser(attribute: "\(changingAttribute)", value: value)
+            authManager.changeCurrentUser(attribute: "\(changingAttribute)", value: value)
             self.presentSimpleAlert(title: "Success", message: "Your \(changingAttributeName) has been updated", completion: { _ in
                 self.dismiss(animated: true, completion: nil)
             })

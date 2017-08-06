@@ -11,6 +11,9 @@ import Firebase
 
 class ChatListViewController: UITableViewController {
     
+    lazy var databaseManager = DatabaseController()
+    lazy var authManager = AuthController()
+    
     // Firebase references are used for read/write at referenced location
     lazy var userConversationListRef: DatabaseReference = Database.database().reference().child("userConversationList")
     lazy var userInactiveConversationsRef: DatabaseReference = Database.database().reference().child("userInactiveConversations")
@@ -36,7 +39,7 @@ class ChatListViewController: UITableViewController {
         super.viewDidLoad()
         
         setupView()
-        AuthController.authenticationDelegate = self
+        authManager.authenticationDelegate = self
         
         // Start the observers
         observeUserConversations()
@@ -512,7 +515,7 @@ extension ChatListViewController {
         if let cell = tableView.cellForRow(at: indexPath) as? ConversationCell {
             let path = "displayPictures/\(uid)/\(uid).JPG"
             
-            DatabaseController.downloadImage(into: cell.userDisplayImageView, from: path , completion: { error in
+            databaseManager.downloadImage(into: cell.userDisplayImageView, from: path , completion: { error in
                 
                 if let downloadError = error {
                     print("AtMe:: An error has occurred, but image data was detected. \(downloadError)")
@@ -648,7 +651,7 @@ extension ChatListViewController {
             // Delete conversation record from current conversations, add it to inactive conversations
             // These must be separate in database because an observer will detect all entries in active list
             
-            DatabaseController.leaveConversation(convoID: convoID, with: username, completion: {
+            databaseManager.leaveConversation(convoID: convoID, with: username, completion: {
                 // At this point, childRemoved observer will take care of table view removal and
                 // data source. This allows the database to keep in sync at its own pace.
             })

@@ -11,6 +11,9 @@ import Firebase
 
 class SettingsViewController: UITableViewController, AlertController {
     
+    lazy var databaseManager = DatabaseController()
+    lazy var authManager = AuthController()
+    
     var currentAttributeChanging: Constants.UserAttribute = Constants.UserAttribute.none
     var attributePrompt: String = ""
 
@@ -51,7 +54,7 @@ class SettingsViewController: UITableViewController, AlertController {
         
         // Redownload into image into image view
         // Although user may not even have profile picture yet, this method is safe and will clear if cached
-        DatabaseController.reloadImage(into: userPictureImageView, from: url, completion: { error in
+        databaseManager.reloadImage(into: userPictureImageView, from: url, completion: { error in
             if let error = error { print("Error: \(error.localizedDescription)") }
             else { print("Good") }
         })
@@ -59,7 +62,7 @@ class SettingsViewController: UITableViewController, AlertController {
         
         // TODO: Refactor to remove assumption that path in userInfo signifies a valid profile picture
         // Really we can just query database for this directly and let it fail if not found
-        AuthController.setDisplayPicture(path: "\(uid)/\(uid).JPG")
+        authManager.setDisplayPicture(path: "\(uid)/\(uid).JPG")
         
         // Update current user stored display picture, reload image view
         // loadCurrentUserInformation()
@@ -84,7 +87,7 @@ class SettingsViewController: UITableViewController, AlertController {
         // Display picture may very well be nil if not set or loaded yet
         // This is because display pictures are loaded asynchronously at launch
         
-        DatabaseController.downloadImage(into: userPictureImageView,
+        databaseManager.downloadImage(into: userPictureImageView,
             from: "displayPictures/\(picture)", completion: { error in
                                             
             if error != nil { return }
@@ -136,7 +139,7 @@ class SettingsViewController: UITableViewController, AlertController {
                 // At this point, signOut() succeeded by not throwing any errors
                 // Let AuthController perform account sign out maintenance
                 
-                AuthController.signOut()
+                self.authManager.signOut()
                 self.performSegue(withIdentifier: Constants.Segues.unwindToSignInSegue, sender: self)
                 
             } catch let error as NSError {
@@ -193,7 +196,7 @@ extension SettingsViewController: UIImagePickerControllerDelegate, UINavigationC
         if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
             if let data = convertImageToData(image: image) {
                 
-                DatabaseController.uploadImage(data: data, to: path, completion: { (error) in
+                databaseManager.uploadImage(data: data, to: path, completion: { (error) in
                     if let error = error {
                         print("AtMe:: Error uploading display picture to Firebase. \(error.localizedDescription)")
                         return
@@ -235,7 +238,7 @@ extension SettingsViewController {
             }
             
             if (indexPath.row == 1) {
-                DatabaseController.clearCachedImages()
+                databaseManager.clearCachedImages()
                 presentSimpleAlert(title: "Cache Cleared", message: Constants.Messages.cacheClearedSuccess, completion: nil)
             }
         }

@@ -10,6 +10,9 @@ import UIKit
 
 class BlockedUsersViewController: UITableViewController {
 
+    lazy var databaseManager = DatabaseController()
+    lazy var authManager = AuthController()
+    
     var blockedUsers: [UserProfile] = []
     
     
@@ -22,7 +25,7 @@ class BlockedUsersViewController: UITableViewController {
         // Immediately ask AuthController for blocked users to populate
         // Insert these into table view directly since it will return asynchronously
         
-        AuthController.findCurrentUserBlockedUsers(completion: { user in
+        authManager.findCurrentUserBlockedUsers(completion: { user in
             self.blockedUsers.append(user)
             self.tableView.insertRows(at: [IndexPath(row: self.blockedUsers.count - 1, section: 0)], with: .automatic)
         })
@@ -95,7 +98,7 @@ class BlockedUsersViewController: UITableViewController {
         
         
         // Download the image into the display picture image view
-        DatabaseController.downloadImage(into: cell.displayPictureImageView, from: path, completion: { _ in
+        databaseManager.downloadImage(into: cell.displayPictureImageView, from: path, completion: { _ in
             cell.displayPictureImageView.layer.masksToBounds = true
             cell.displayPictureImageView.layer.cornerRadius = cell.displayPictureImageView.frame.size.width / 2
         })
@@ -122,7 +125,7 @@ extension BlockedUsersViewController: BlockedUserCellDelegate {
         }, completion: { _ in
 
             // Unblock the user and remove that row from table and data source
-            AuthController.unblockUser(uid: uid, username: username)
+            self.authManager.unblockUser(uid: uid, username: username)
             
             for (index, user) in self.blockedUsers.enumerated() {
                 if (uid == user.uid) {
