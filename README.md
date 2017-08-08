@@ -2,7 +2,7 @@
 <img src="https://github.com/joelrorseth/at.me/raw/master/Images/github_banner.png" alt="@Me" title="@Me" />
 
 @Me is a simple and lightweight messaging application for iOS, written entirely in the Swift programming language. 
-We aim to provide a reliable and ad-free open source communication platform to better connect the world. 
+We aim to provide a reliable and ad-free open source communication platform to better connect the world. [Now available](https://itunes.apple.com/us/app/me/id1262831924?ls=1&mt=8) on the App Store!
 
 
 ## Features
