@@ -95,7 +95,7 @@ class EmptyChatListView: UIView {
     
     
     /** A convenience method that will attempt to call the delegate implementation of didTapChatSomebody() */
-    func chatSomebodyTapped() {
+    @objc func chatSomebodyTapped() {
         emptyChatDelegate?.didTapChatSomebody()
     }
 }

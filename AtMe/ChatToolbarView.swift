@@ -109,8 +109,8 @@ class ChatToolbarView: UIInputView {
         
         // Library Button setup
         libraryButton.translatesAutoresizingMaskIntoConstraints = false
-        libraryButton.setContentCompressionResistancePriority(1000, for: UILayoutConstraintAxis.horizontal)
-        libraryButton.setContentHuggingPriority(250, for: UILayoutConstraintAxis.horizontal)
+        libraryButton.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 1000), for: UILayoutConstraintAxis.horizontal)
+        libraryButton.setContentHuggingPriority(UILayoutPriority(rawValue: 250), for: UILayoutConstraintAxis.horizontal)
         //libraryButton.bottomAnchor.constraint(equalTo: expandingTextView.bottomAnchor).isActive = true
         libraryButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: -10.0).isActive = true
         libraryButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
@@ -118,8 +118,8 @@ class ChatToolbarView: UIInputView {
         
         // Camera Button setup
         cameraButton.translatesAutoresizingMaskIntoConstraints = false
-        cameraButton.setContentCompressionResistancePriority(1000, for: UILayoutConstraintAxis.horizontal)
-        cameraButton.setContentHuggingPriority(250, for: UILayoutConstraintAxis.horizontal)
+        cameraButton.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 1000), for: UILayoutConstraintAxis.horizontal)
+        cameraButton.setContentHuggingPriority(UILayoutPriority(rawValue: 250), for: UILayoutConstraintAxis.horizontal)
         //cameraButton.bottomAnchor.constraint(equalTo: expandingTextView.bottomAnchor).isActive = true
         cameraButton.leadingAnchor.constraint(equalTo: libraryButton.trailingAnchor, constant: 10.0).isActive = true
         cameraButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
@@ -136,19 +136,19 @@ class ChatToolbarView: UIInputView {
         expandingTextView.translatesAutoresizingMaskIntoConstraints = false
         expandingTextView.textContainer.heightTracksTextView = true
         expandingTextView.isScrollEnabled = false
-        expandingTextView.setContentHuggingPriority(249, for: UILayoutConstraintAxis.horizontal)
+        expandingTextView.setContentHuggingPriority(UILayoutPriority(rawValue: 249), for: UILayoutConstraintAxis.horizontal)
         expandingTextView.leadingAnchor.constraint(equalTo: cameraButton.trailingAnchor, constant: 10.0).isActive = true
         expandingTextView.trailingAnchor.constraint(equalTo: sendButton.leadingAnchor, constant: -10.0).isActive = true
         expandingTextView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 10.0).isActive = true
         expandingTextView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -10.0).isActive = true
-        expandingTextView.backgroundColor = UIColor(colorLiteralRed: 1.0, green: 1.0, blue: 0.0, alpha: 0.0)
-        expandingTextView.setContentHuggingPriority(UILayoutPriorityDefaultHigh, for: UILayoutConstraintAxis.vertical)
+        expandingTextView.backgroundColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.0)
+        expandingTextView.setContentHuggingPriority(UILayoutPriority.defaultHigh, for: UILayoutConstraintAxis.vertical)
         expandingTextView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
         
         // Send Button setup
         sendButton.translatesAutoresizingMaskIntoConstraints = false
-        sendButton.setContentCompressionResistancePriority(1000, for: UILayoutConstraintAxis.horizontal)
-        sendButton.setContentHuggingPriority(250, for: UILayoutConstraintAxis.horizontal)
+        sendButton.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 1000), for: UILayoutConstraintAxis.horizontal)
+        sendButton.setContentHuggingPriority(UILayoutPriority(rawValue: 250), for: UILayoutConstraintAxis.horizontal)
         //sendButton.bottomAnchor.constraint(equalTo: expandingTextView.bottomAnchor).isActive = true
         sendButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: 10.0).isActive = true
         sendButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
@@ -157,7 +157,7 @@ class ChatToolbarView: UIInputView {
         
         // Give a low priority leading constraint for text for when buttons are gone
         let constraint = expandingTextView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: -10)
-        constraint.priority = UILayoutPriorityDefaultLow
+        constraint.priority = UILayoutPriority.defaultLow
         constraint.isActive = true
     }
     
@@ -171,8 +171,8 @@ class ChatToolbarView: UIInputView {
         
         // Library Button setup
         libraryButton.translatesAutoresizingMaskIntoConstraints = false
-        libraryButton.setContentCompressionResistancePriority(1000, for: UILayoutConstraintAxis.horizontal)
-        libraryButton.setContentHuggingPriority(250, for: UILayoutConstraintAxis.horizontal)
+        libraryButton.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 1000), for: UILayoutConstraintAxis.horizontal)
+        libraryButton.setContentHuggingPriority(UILayoutPriority(rawValue: 250), for: UILayoutConstraintAxis.horizontal)
         //libraryButton.bottomAnchor.constraint(equalTo: expandingTextView.bottomAnchor).isActive = true
         libraryButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: -10.0).isActive = true
         libraryButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
@@ -180,8 +180,8 @@ class ChatToolbarView: UIInputView {
         
         // Camera Button setup
         cameraButton.translatesAutoresizingMaskIntoConstraints = false
-        cameraButton.setContentCompressionResistancePriority(1000, for: UILayoutConstraintAxis.horizontal)
-        cameraButton.setContentHuggingPriority(250, for: UILayoutConstraintAxis.horizontal)
+        cameraButton.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 1000), for: UILayoutConstraintAxis.horizontal)
+        cameraButton.setContentHuggingPriority(UILayoutPriority(rawValue: 250), for: UILayoutConstraintAxis.horizontal)
         //cameraButton.bottomAnchor.constraint(equalTo: expandingTextView.bottomAnchor).isActive = true
         cameraButton.leadingAnchor.constraint(equalTo: libraryButton.trailingAnchor, constant: 10.0).isActive = true
         cameraButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true

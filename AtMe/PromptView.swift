@@ -100,7 +100,7 @@ class PromptView: UIView {
     
     // MARK: PromptViewDelegate
     /** Handles pressing the button to confirm changes in the PromptView */
-    func changeCommitted() {
+    @objc func changeCommitted() {
         dismissKeyboard()
         
         if let change = textField.text {
@@ -110,7 +110,7 @@ class PromptView: UIView {
     
     
     /** Dismisses the keyboard and tells the PromptViewDelegate that the change was cancelled */
-    func dismissPopup() {
+    @objc func dismissPopup() {
         dismissKeyboard()
         promptDelegate?.didCancelChange()
     }
@@ -122,7 +122,7 @@ class PromptView: UIView {
     
     
     /** Dismisses the keyboard presented to type into the PromptView text field */
-    func dismissKeyboard() {
+    @objc func dismissKeyboard() {
         self.viewWithTag(4000)?.resignFirstResponder()
     }
 }

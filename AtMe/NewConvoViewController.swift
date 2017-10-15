@@ -96,7 +96,7 @@ class NewConvoViewController: UIViewController, UISearchBarDelegate, AlertContro
     
     // MARK: Additional Functions
     /** Dismiss the keyboard from screen if currently displayed. */
-    func dismissKeyboard() {
+    @objc func dismissKeyboard() {
         self.view.endEditing(true)
     }
 }

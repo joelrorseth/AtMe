@@ -151,7 +151,7 @@ class UserSetupViewController: UIViewController, AlertController {
     
     
     /** Dismiss the keyboard from screen if currently displayed. */
-    func dismissKeyboard() {
+    @objc func dismissKeyboard() {
         usernameTextField.resignFirstResponder()
     }
     
@@ -186,7 +186,7 @@ class UserSetupViewController: UIViewController, AlertController {
     
     // TODO: In future update, this can maybe be refactored into custom UIImageView
     /** Selector method which triggers a prompt for a UIImagePickerController. */
-    func promptImageSelection() {
+    @objc func promptImageSelection() {
         
         // Create picker, and set this controller as delegate
         let picker = UIImagePickerController()

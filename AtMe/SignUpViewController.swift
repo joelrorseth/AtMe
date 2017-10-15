@@ -57,7 +57,7 @@ class SignUpViewController: UIViewController, AlertController {
     
     
     /** Dismiss the keyboard */
-    func dismissKeyboard() {
+    @objc func dismissKeyboard() {
         firstNameTextField.resignFirstResponder()
         lastNameTextField.resignFirstResponder()
         passwordTextField.resignFirstResponder()

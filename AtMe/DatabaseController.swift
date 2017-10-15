@@ -51,7 +51,7 @@ class DatabaseController {
                 guard let url = url else { print("Error: Image download url was nil"); return }
                 
                 print("Image was not found in cache, downloading and caching now...")
-                destination.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: { _ in
+                destination.kf.setImage(with: url, placeholder: nil, options: nil, progressBlock: nil, completionHandler: { (image, error, cacheType, imageUrl) in
                     ImageCache.default.store(destination.image!, forKey: store.fullPath)
                 })
                 

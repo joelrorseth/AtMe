@@ -107,7 +107,7 @@ class SignInViewController: UIViewController, AlertController {
     
     
     /** Dismiss the keyboard from screen if currently displayed. */
-    func dismissKeyboard() {
+    @objc func dismissKeyboard() {
         emailField.resignFirstResponder()
         passwordField.resignFirstResponder()
     }

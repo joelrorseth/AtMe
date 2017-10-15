@@ -88,7 +88,7 @@ class ConvoViewController: UITableViewController, AlertController {
     
     
     /** Convenience method to dismiss the input accessory (toolbar). */
-    func dismissKeyboard() {
+    @objc func dismissKeyboard() {
         
         // Dismiss toolbar and keyboard only if required
         if chatToolbarView.expandingTextView.isFirstResponder {
@@ -199,7 +199,7 @@ class ConvoViewController: UITableViewController, AlertController {
     
     
     /** Handle selection of auxiliary menu icon to bring up conversation options */
-    func didTapAuxMenuIcon() {
+    @objc func didTapAuxMenuIcon() {
         performSegue(withIdentifier: Constants.Segues.showAuxSegue, sender: nil)
     }
     
@@ -739,7 +739,7 @@ extension ConvoViewController {
         manager.addTextContainer(container)
         storage.addLayoutManager(manager)
         
-        storage.addAttribute(NSFontAttributeName, value: font, range: NSMakeRange(0, storage.length))
+        storage.addAttribute(NSAttributedStringKey.font, value: font, range: NSMakeRange(0, storage.length))
         container.lineFragmentPadding = 0.0
         
         manager.glyphRange(for: container)

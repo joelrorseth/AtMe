@@ -67,7 +67,7 @@ class ChatListViewController: UITableViewController {
         self.navigationController?.navigationBar.barTintColor = Constants.Colors.primaryDark
         self.navigationController?.navigationBar.isTranslucent = false
         self.navigationController?.navigationBar.titleTextAttributes =
-            [NSForegroundColorAttributeName : UIColor.white, NSFontAttributeName: UIFont(name: "AvenirNext-Medium", size: 20)!]
+            [NSAttributedStringKey.foregroundColor : UIColor.white, NSAttributedStringKey.font: UIFont(name: "AvenirNext-Medium", size: 20)!]
         
         // Set background color appearing behind the cells
         self.tableView.backgroundColor = Constants.Colors.tableViewBackground
