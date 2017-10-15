@@ -10,7 +10,7 @@ target 'AtMe' do
   pod 'Firebase/Auth'
   pod 'Firebase/Database'
   pod 'Firebase/Storage'
-  pod 'Kingfisher', '~> 3.0'
+  pod 'Kingfisher', '~> 4.0'
   pod 'OneSignal', '>= 2.5.2', '< 3.0'
 end
 
