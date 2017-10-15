@@ -29,6 +29,18 @@ class AuthController {
     var reportedUsersRecordRef: DatabaseReference = Database.database().reference().child("reportedUsersRecord")
     
     
+    init() {
+        
+        print("+ Initializing an AuthController")
+        print("userInformation, registeredUsernames and reportedUsers have set keepSynced=true")
+        
+        // Must keep these Firebase locations in sync to prevent stale offline data
+        userInformationRef.keepSynced(true)
+        registeredUsernamesRef.keepSynced(true)
+        reportedUsersRecordRef.keepSynced(true)
+    }
+    
+    
     // MARK: - Account Management
     /**
      Asynchronously attempts to create an @Me account
@@ -164,7 +176,6 @@ class AuthController {
      */
     public func userOrCurrentUserHasBlocked(uid: String, username: String, completion: @escaping (Bool) -> ()) {
         
-        userInformationRef.keepSynced(true)
         userInformationRef.child(UserState.currentUser.uid).child("blockedUsernames").observeSingleEvent(of: DataEventType.value, with: { snapshot in
             self.userInformationRef.child(uid).child("blockedUsernames").observeSingleEvent(of: DataEventType.value, with: { otherSnap in
                 print("current: <\(snapshot)>   other: <\(otherSnap)>")

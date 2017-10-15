@@ -34,7 +34,7 @@ class DatabaseController {
         
         // Check for image saved in cache, load image from disk if possible
         // If it is, proceed with extracting it from cache instead
-        if (ImageCache.default.isImageCached(forKey: store.fullPath).cached) {
+        if (ImageCache.default.imageCachedType(forKey: store.fullPath).cached) {
             
             ImageCache.default.retrieveImage(forKey: store.fullPath, options: nil) { (image, cacheType) in
                 if let image = image {
