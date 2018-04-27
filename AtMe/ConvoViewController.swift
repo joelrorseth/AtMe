@@ -668,21 +668,22 @@ extension ConvoViewController {
         cell.messageTextView.text = ""
         
         var messageSize = CGSize(width: 0, height: 0)
-        var messageContentReference: UIView? = nil
+        
+        let isOutgoing = (message.sender == UserState.currentUser.username)
         
         // Normal Text Message
         if let text = message.text {
-            messageSize = sizeForString(text, maxWidth: tableView.bounds.width * 0.7, font: Constants.Fonts.regularText)
-            messageContentReference = cell.messageTextView
             
+            messageSize = sizeForString(text, maxWidth: tableView.bounds.width * 0.7, font: Constants.Fonts.regularText)
             cell.messageTextView.text = message.text
+            
+            cell.setupTextMessage(outgoing: isOutgoing, size: messageSize, containerWidth: tableView.bounds.width)
         }
         
         // Picture Message
         if let imageURL = message.imageURL {
             
             messageSize = CGSize(width: Constants.Sizes.pictureMessageDefaultWidth, height: Constants.Sizes.pictureMessageDefaultHeight)
-            messageContentReference = cell.messageImageView
             
             // To fix weird bug where images would not remove from reused cells, we manually add and remove image view from cells
             cell.addImageView()
@@ -690,39 +691,9 @@ extension ConvoViewController {
                 
                 if let localError = error { print("AtMe Error:: Did not recieve downloaded UIImage. \(localError)"); return }
                 print("AtMe:: Loaded an image for a message cell")
+                
+                cell.setupPictureMessage(outgoing: isOutgoing, size: messageSize, containerWidth: tableView.bounds.width)
             })
-        }
-        
-        
-        if (message.sender == UserState.currentUser.username && messageContentReference != nil) { // Outgoing
-            
-            cell.bubbleView.backgroundColor = UIColor.white
-            cell.messageTextView.textColor = UIColor.black
-            
-            messageContentReference?.frame = CGRect(x: tableView.bounds.width - messageSize.width - (MessageCell.horizontalInsetPadding + MessageCell.horizontalBubbleSpacing),
-                                                    y: MessageCell.verticalInsetPadding + MessageCell.verticalBubbleSpacing,
-                                                    width: messageSize.width,
-                                                    height: messageSize.height)
-            
-            cell.bubbleView.frame = CGRect(x: tableView.bounds.width - messageSize.width - (MessageCell.horizontalInsetPadding + (2 * MessageCell.horizontalBubbleSpacing)),
-                                           y: MessageCell.verticalInsetPadding,
-                                           width: messageSize.width + (2 * MessageCell.horizontalBubbleSpacing),
-                                           height: messageSize.height + (2 * MessageCell.verticalBubbleSpacing))
-            
-        } else { // Incoming
-            
-            cell.bubbleView.backgroundColor = Constants.Colors.primaryDark
-            cell.messageTextView.textColor = UIColor.white
-            
-            messageContentReference?.frame = CGRect(x: MessageCell.horizontalInsetPadding + MessageCell.horizontalBubbleSpacing,
-                                                    y: MessageCell.verticalInsetPadding + MessageCell.verticalBubbleSpacing,
-                                                    width: messageSize.width,
-                                                    height: messageSize.height)
-            
-            cell.bubbleView.frame = CGRect(x: MessageCell.horizontalInsetPadding,
-                                           y: MessageCell.verticalInsetPadding,
-                                           width: messageSize.width + (2 * MessageCell.horizontalBubbleSpacing),
-                                           height: messageSize.height + (2 * MessageCell.verticalBubbleSpacing))
         }
         
         return cell

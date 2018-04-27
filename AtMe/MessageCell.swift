@@ -45,7 +45,7 @@ class MessageCell: UITableViewCell {
     // Image view for picture messages
     let messageImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = UIViewContentMode.scaleAspectFit
+        imageView.contentMode = UIViewContentMode.scaleAspectFill
         imageView.layer.cornerRadius = 12
         imageView.layer.masksToBounds = true
         imageView.image = nil
@@ -85,6 +85,73 @@ class MessageCell: UITableViewCell {
     /** Add the message image view into the cell (self) */
     func addImageView() {
         self.addSubview(messageImageView)
+    }
+    
+    
+    /** Setup self for text message */
+    func setupTextMessage(outgoing: Bool, size: CGSize, containerWidth: CGFloat) {
+        setupEntireMessage(isText: true, isOutgoing: outgoing,
+                           messageSize: size, containerWidth: containerWidth)
+    }
+    
+    
+    /** Setup self for picture message */
+    func setupPictureMessage(outgoing: Bool, size: CGSize, containerWidth: CGFloat) {
+        setupEntireMessage(isText: false, isOutgoing: outgoing,
+                           messageSize: size, containerWidth: containerWidth)
+    }
+    
+    
+    /** Setup the message content view and bubble */
+    private func setupEntireMessage(isText: Bool, isOutgoing: Bool, messageSize: CGSize, containerWidth: CGFloat) {
+        
+        
+        // Determine correct margins, insets and sizes for message bubble depending on type of message
+        // Picture messages will eclipse the bubble entirely, text messages have padding
+        
+        let bubbleWidth = messageSize.width + (2 * MessageCell.horizontalBubbleSpacing)
+        let bubbleHeight = messageSize.height + (2 * MessageCell.verticalBubbleSpacing)
+        let messageView = isText ? messageTextView : messageImageView
+        
+        if (isOutgoing) {
+            
+            bubbleView.backgroundColor = UIColor.white
+            messageTextView.textColor = UIColor.black
+            
+            // Outgoing messages appear on the right, so offset starting x,y using padding and message width
+            bubbleView.frame = CGRect(x: containerWidth - messageSize.width -
+                (MessageCell.horizontalInsetPadding + (2 * MessageCell.horizontalBubbleSpacing)),
+                                      y: MessageCell.verticalInsetPadding,
+                                      width: bubbleWidth,
+                                      height: bubbleHeight)
+            
+            // Picture messages need to take up the entire bubble
+            if !isText { messageView.frame = bubbleView.frame; return }
+            
+            messageView.frame = CGRect(x: containerWidth - messageSize.width -
+                (MessageCell.horizontalInsetPadding + MessageCell.horizontalBubbleSpacing),
+                                    y: MessageCell.verticalInsetPadding + MessageCell.verticalBubbleSpacing,
+                                    width: messageSize.width,
+                                    height: messageSize.height)
+            
+            
+        } else {
+            
+            bubbleView.backgroundColor = Constants.Colors.primaryDark
+            messageTextView.textColor = UIColor.white
+            
+            // Incoming messages appear on the left, so starting x,y should be near the padding cutoff
+            bubbleView.frame = CGRect(x: MessageCell.horizontalInsetPadding, y: MessageCell.verticalInsetPadding,
+                                      width: bubbleWidth, height: bubbleHeight)
+            
+            // Picture messages need to take up the entire bubble
+            if !isText { messageView.frame = bubbleView.frame; return }
+            
+            messageView.frame = CGRect(x: MessageCell.horizontalInsetPadding + MessageCell.horizontalBubbleSpacing,
+                                    y: MessageCell.verticalInsetPadding + MessageCell.verticalBubbleSpacing,
+                                    width: messageSize.width,
+                                    height: messageSize.height)
+        }
     }
     
     
