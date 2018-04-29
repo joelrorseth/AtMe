@@ -39,6 +39,8 @@ class ConvoViewController: UITableViewController, AlertController {
     var notificationIDs: [String : String] = [:]
     var currentMessageCountLimit = Constants.Limits.messageCountStandardLimit
     
+    let transitionDelegate = MediaTransitionDelegate()
+    
     // FIXME: This needs to be refactored, along with prepareForSegue in ChatList
     var convoId: String = "" {
         didSet {
@@ -167,7 +169,7 @@ class ConvoViewController: UITableViewController, AlertController {
         // Set table view properties
         tableView.backgroundColor = UIColor.groupTableViewBackground
         tableView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
-        tableView.allowsSelection = false
+        tableView.allowsSelection = true
         tableView.keyboardDismissMode = .interactive
         
         
@@ -623,16 +625,21 @@ extension ConvoViewController {
     /** Scroll to current bottom row of the table view. */
     func scrollToNewestMessage() {
         if messages.count > 0 {
-                tableView.scrollToRow(at: IndexPath.init(row: messages.count - 1, section: 0) , at: .bottom, animated: true)
+            tableView.scrollToRow(at: IndexPath.init(row: messages.count - 1, section: 0) , at: .bottom, animated: true)
         }
     }
     
+    
     /** Sets the number of sections to display in the table view. */
-    override func numberOfSections(in tableView: UITableView) -> Int { return 1 }
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
     
     
     /** Sets the number of rows to render for a given section in the table view. */
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { return messages.count }
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return messages.count
+    }
     
     
     /** Determines the height of the table view cell at specified index path. */
@@ -697,6 +704,35 @@ extension ConvoViewController {
         }
         
         return cell
+    }
+    
+    
+    /** Handle the scenario when a message is tapped */
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        print("TAPPED")
+        if let cell = tableView.cellForRow(at: indexPath) as? MessageCell {
+            if let image = cell.messageImageView.image {
+
+                //        let attributes = collectionView.layoutAttributesForItemAtIndexPath(indexPath)
+                //        let attributesFrame = attributes?.frame
+                //        let frameToOpenFrom = collectionView.convertRect(attributesFrame!, toView: collectionView.superview)
+                //        transitionDelegate.openingFrame = frameToOpenFrom
+                
+                
+                let startingFrame = tableView.convert(cell.frame, to: tableView.superview)
+                transitionDelegate.openingFrame = startingFrame
+    
+                let destination = MediaViewerController()
+                destination.transitioningDelegate = transitionDelegate
+                destination.modalPresentationStyle = UIModalPresentationStyle.custom
+                destination.image = image
+                
+                DispatchQueue.main.async {
+                    self.present(destination, animated: true, completion: nil)
+                }
+            }
+        }
     }
     
     

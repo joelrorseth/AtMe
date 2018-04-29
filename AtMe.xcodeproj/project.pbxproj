@@ -35,6 +35,10 @@
 		5D9027231EB2A3E60021AEE9 /* Conversation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D9027221EB2A3E60021AEE9 /* Conversation.swift */; };
 		5D9617381F316C6100222C79 /* ConvoAuxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D9617371F316C6100222C79 /* ConvoAuxViewController.swift */; };
 		5D9D443A1EAEE81500CF25F7 /* UserState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D9D44391EAEE81500CF25F7 /* UserState.swift */; };
+		5D9DD030209513D000237CDD /* MediaTransitionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D9DD02F209513D000237CDD /* MediaTransitionDelegate.swift */; };
+		5D9DD0322095143E00237CDD /* PresentationAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D9DD0312095143E00237CDD /* PresentationAnimator.swift */; };
+		5D9DD0342095146900237CDD /* DismissalAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D9DD0332095146900237CDD /* DismissalAnimator.swift */; };
+		5D9DD0362095173D00237CDD /* MediaViewerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D9DD0352095173D00237CDD /* MediaViewerController.swift */; };
 		5DA1C37C1F33FCA8002E2773 /* ReportUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA1C37B1F33FCA8002E2773 /* ReportUserViewController.swift */; };
 		5DA1D56D1EF78B57001A6ED5 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA1D56C1EF78B57001A6ED5 /* NotificationService.swift */; };
 		5DA1D5711EF78B57001A6ED5 /* OneSignalNotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 5DA1D56A1EF78B57001A6ED5 /* OneSignalNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -104,6 +108,10 @@
 		5D9027221EB2A3E60021AEE9 /* Conversation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Conversation.swift; sourceTree = "<group>"; };
 		5D9617371F316C6100222C79 /* ConvoAuxViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ConvoAuxViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		5D9D44391EAEE81500CF25F7 /* UserState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserState.swift; sourceTree = "<group>"; };
+		5D9DD02F209513D000237CDD /* MediaTransitionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaTransitionDelegate.swift; sourceTree = "<group>"; };
+		5D9DD0312095143E00237CDD /* PresentationAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentationAnimator.swift; sourceTree = "<group>"; };
+		5D9DD0332095146900237CDD /* DismissalAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DismissalAnimator.swift; sourceTree = "<group>"; };
+		5D9DD0352095173D00237CDD /* MediaViewerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaViewerController.swift; sourceTree = "<group>"; };
 		5DA1C37B1F33FCA8002E2773 /* ReportUserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportUserViewController.swift; sourceTree = "<group>"; };
 		5DA1D56A1EF78B57001A6ED5 /* OneSignalNotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OneSignalNotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		5DA1D56C1EF78B57001A6ED5 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
@@ -223,6 +231,7 @@
 				5D6394F01F314F800095C1C5 /* LegalViewController.swift */,
 				5D00D1031F339B9900130C59 /* BlockedUsersViewController.swift */,
 				5DA1C37B1F33FCA8002E2773 /* ReportUserViewController.swift */,
+				5D9DD0352095173D00237CDD /* MediaViewerController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -244,6 +253,9 @@
 				5D323B711F107C3E00853EDE /* EmptyChatListView.swift */,
 				5D2B62611EC909CC00B8363E /* PromptView.swift */,
 				5DD231831F2B65BE0058DD54 /* ChatToolbarView.swift */,
+				5D9DD02F209513D000237CDD /* MediaTransitionDelegate.swift */,
+				5D9DD0312095143E00237CDD /* PresentationAnimator.swift */,
+				5D9DD0332095146900237CDD /* DismissalAnimator.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -487,12 +499,16 @@
 				5D3DDA3A1E6248DA00B6FBB7 /* NewConvoViewController.swift in Sources */,
 				5D5D67761ED1E90200FF8F2A /* DatabaseController.swift in Sources */,
 				5D1C703C1E58C64A00FEDEC3 /* AppDelegate.swift in Sources */,
+				5D9DD0362095173D00237CDD /* MediaViewerController.swift in Sources */,
 				5DFC7F3D1E7A27CF003C6594 /* ConversationCell.swift in Sources */,
+				5D9DD0322095143E00237CDD /* PresentationAnimator.swift in Sources */,
 				5DD231841F2B65BE0058DD54 /* ChatToolbarView.swift in Sources */,
 				5DAF28B71E5BBCBC00288F31 /* Constants.swift in Sources */,
 				5D00D1041F339B9900130C59 /* BlockedUsersViewController.swift in Sources */,
+				5D9DD030209513D000237CDD /* MediaTransitionDelegate.swift in Sources */,
 				5D323B721F107C3E00853EDE /* EmptyChatListView.swift in Sources */,
 				5D5EDF851EC3D14C00F7FC44 /* Extensions.swift in Sources */,
+				5D9DD0342095146900237CDD /* DismissalAnimator.swift in Sources */,
 				5D0B5AB81E668EFB0077BE46 /* SettingsViewController.swift in Sources */,
 				5DF36ED91EB3D35400346868 /* Message.swift in Sources */,
 				5D07CAB21E752C0100316D75 /* UserProfile.swift in Sources */,

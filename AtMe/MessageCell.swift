@@ -16,11 +16,15 @@ class MessageCell: UITableViewCell {
     public static let horizontalBubbleSpacing: CGFloat = 8
     public static let verticalBubbleSpacing: CGFloat = 8
     
+    public var isOutgoing: Bool = true
+    public var isText: Bool = true
+    
     // MARK: Lazy properties for UI message elements
     // UIView for outside chat bubble
     let bubbleView: UIView = {
         let view = UIView()
         view.clipsToBounds = true
+        view.isUserInteractionEnabled = true
         view.layer.shadowOffset = CGSize(width: 0, height: 1.4)
         view.layer.shadowColor = UIColor.lightGray.cgColor
         view.layer.shadowOpacity = 0.5
@@ -45,6 +49,7 @@ class MessageCell: UITableViewCell {
     // Image view for picture messages
     let messageImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.isUserInteractionEnabled = true
         imageView.contentMode = UIViewContentMode.scaleAspectFill
         imageView.layer.cornerRadius = 12
         imageView.layer.masksToBounds = true
@@ -73,6 +78,7 @@ class MessageCell: UITableViewCell {
     /** Set up the look and feel of this cell and related views. */
     func setupViews() {
         
+        self.isUserInteractionEnabled = true
         messageImageView.tag = 1000
         
         // The message and bubble view are subviews of cell
@@ -105,6 +111,8 @@ class MessageCell: UITableViewCell {
     /** Setup the message content view and bubble */
     private func setupEntireMessage(isText: Bool, isOutgoing: Bool, messageSize: CGSize, containerWidth: CGFloat) {
         
+        self.isOutgoing = isOutgoing
+        self.isText = isText
         
         // Determine correct margins, insets and sizes for message bubble depending on type of message
         // Picture messages will eclipse the bubble entirely, text messages have padding
@@ -165,3 +173,4 @@ class MessageCell: UITableViewCell {
         viewWithTag(1000)?.removeFromSuperview()
     }
 }
+
