@@ -79,6 +79,7 @@ class MessageCell: UITableViewCell {
     func setupViews() {
         
         self.isUserInteractionEnabled = true
+        self.selectionStyle = UITableViewCellSelectionStyle.none
         messageImageView.tag = 1000
         
         // The message and bubble view are subviews of cell

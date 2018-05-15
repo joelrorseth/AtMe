@@ -514,6 +514,7 @@ class ConvoViewController: UITableViewController, AlertController {
         
         // Add gesture recognizer to handle tapping outside of keyboard
         let dismissKeyboardTap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        dismissKeyboardTap.cancelsTouchesInView = false
         self.tableView.addGestureRecognizer(dismissKeyboardTap)
     }
     
@@ -713,6 +714,8 @@ extension ConvoViewController {
         print("TAPPED")
         if let cell = tableView.cellForRow(at: indexPath) as? MessageCell {
             if let image = cell.messageImageView.image {
+                
+                print("ITS AN IMAGE")
 
                 //        let attributes = collectionView.layoutAttributesForItemAtIndexPath(indexPath)
                 //        let attributesFrame = attributes?.frame
