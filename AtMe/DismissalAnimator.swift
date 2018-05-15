@@ -13,7 +13,7 @@ class DismissalAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     var openingFrame: CGRect?
     
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return 0.5
+        return 0.3
     }
     
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {

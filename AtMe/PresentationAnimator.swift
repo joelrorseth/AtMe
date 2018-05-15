@@ -13,7 +13,7 @@ class PresentationAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     var openingFrame: CGRect?
     
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return 0.5
+        return 0.4
     }
     
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
@@ -50,15 +50,5 @@ class PresentationAnimator: NSObject, UIViewControllerAnimatedTransitioning {
             
             transitionContext.completeTransition(finished)
         }
-        
-//        UIView.animateWithDuration(animationDuration, delay: 0.0, usingSpringWithDamping: 0.8, initialSpringVelocity: 20.0, options: nil,
-//                                   animations: { () -> Void in
-//                                    snapshotView.frame = fromViewController.view.frame
-//        }, completion: { (finished) -> Void in
-//            snapshotView.removeFromSuperview()
-//            toViewController.view.alpha = 1.0
-//
-//            transitionContext.completeTransition(finished)
-//        })
     }
 }

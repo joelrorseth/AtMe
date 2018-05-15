@@ -711,11 +711,9 @@ extension ConvoViewController {
     /** Handle the scenario when a message is tapped */
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        print("TAPPED")
         if let cell = tableView.cellForRow(at: indexPath) as? MessageCell {
             if let image = cell.messageImageView.image {
                 
-                print("ITS AN IMAGE")
 
                 //        let attributes = collectionView.layoutAttributesForItemAtIndexPath(indexPath)
                 //        let attributesFrame = attributes?.frame
