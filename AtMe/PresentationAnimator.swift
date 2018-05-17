@@ -28,7 +28,8 @@ class PresentationAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         
         UIGraphicsBeginImageContext(fromViewFrame.size)
         fromViewController.view.drawHierarchy(in: fromViewFrame, afterScreenUpdates: true)
-        let snapshotImage = UIGraphicsGetImageFromCurrentImageContext()
+      
+        //let snapshotImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
         guard let snapshotView = toViewController.view.resizableSnapshotView(from: toViewController.view.frame,

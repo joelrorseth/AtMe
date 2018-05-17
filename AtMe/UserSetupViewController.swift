@@ -162,7 +162,7 @@ class UserSetupViewController: UIViewController, AlertController {
     private func validateInput() -> Bool {
         
         if let username = usernameTextField.text {
-            if (username.characters.count < 4) {
+            if (username.count < 4) {
                 
                 presentSimpleAlert(title: "Username is Invalid", message: Constants.Errors.usernameLength,
                                    completion: { _ in self.usernameTextField.becomeFirstResponder() })
@@ -172,7 +172,7 @@ class UserSetupViewController: UIViewController, AlertController {
             if (username.contains(".") || username.contains("$") || username.contains("#") ||
                 username.contains("[") || username.contains("]") || username.contains("/") ||
                 username.contains(" ") || username.contains(" ") || username == "" ||
-                username.characters.count < 3 ) {
+                username.count < 3 ) {
                 
                 presentSimpleAlert(title: "Invalid Characters", message: Constants.Errors.invalidCharacters, completion: nil)
                 return false
