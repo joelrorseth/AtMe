@@ -55,11 +55,12 @@ class NewConvoViewController: UIViewController, UISearchBarDelegate, AlertContro
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
         clearResults()
+        dismissKeyboard()
+      
         guard let text = searchBar.text else { return }
         
         // Find all usernames containing search text
         // Order record by key (which are the usernames), then query for string bounded in range [text, text]
-        
         
         authManager.searchForUsers(term: text, completion: { results in
             
