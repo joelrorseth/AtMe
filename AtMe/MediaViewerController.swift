@@ -12,6 +12,8 @@ class MediaViewerController: UIViewController {
   
   var scrollView: UIScrollView!
   var contentImageView: UIImageView!
+  var popupNavigationBar: MediaViewerNavigationBar!
+  
   var image: UIImage?
   
   
@@ -32,18 +34,22 @@ class MediaViewerController: UIViewController {
     view.addSubview(scrollView)
     scrollView.addSubview(contentImageView)
     
+    // Place a navigation bar at the top under the status bar
+    popupNavigationBar = MediaViewerNavigationBar(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 100))
+    popupNavigationBar.viewerDelegate = self
+    view.addSubview(popupNavigationBar)
+    
+    popupNavigationBar.translatesAutoresizingMaskIntoConstraints = false
+    popupNavigationBar.topAnchor.constraint(equalTo: self.topLayoutGuide.bottomAnchor).isActive = true
+    popupNavigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+    popupNavigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+    popupNavigationBar.heightAnchor.constraint(equalToConstant: 200).isActive = true
+    
+    
     // Provide the UIImage to the UIImageView
     if let image = image {
       contentImageView.image = image
     } else { print("Error: No image provided to MediaViewerController") }
-    
-    let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(MediaViewerController.viewTapped))
-    view.addGestureRecognizer(tapRecognizer)
-  }
-
-  // Handler for tap gesture on the view
-  @objc func viewTapped() {
-    dismiss(animated: true, completion: nil)
   }
 }
 
@@ -54,5 +60,19 @@ extension MediaViewerController: UIScrollViewDelegate {
   // Provide the view to be scaled when zooming in the UIScrollView
   func viewForZooming(in scrollView: UIScrollView) -> UIView? {
     return contentImageView
+  }
+}
+
+
+// MARK: MediaViewerBarDelegate
+extension MediaViewerController: MediaViewerBarDelegate {
+  
+  // Handle the Done and Save buttons being pressed in the navigation bar
+  func didPressDone() {
+    dismiss(animated: true, completion: nil)
+  }
+  
+  func didPressSave() {
+    dismiss(animated: true, completion: nil)
   }
 }

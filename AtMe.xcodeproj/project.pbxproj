@@ -24,6 +24,7 @@
 		5D323B721F107C3E00853EDE /* EmptyChatListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D323B711F107C3E00853EDE /* EmptyChatListView.swift */; };
 		5D3DDA381E62469000B6FBB7 /* UserInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3DDA371E62469000B6FBB7 /* UserInfoCell.swift */; };
 		5D3DDA3A1E6248DA00B6FBB7 /* NewConvoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3DDA391E6248DA00B6FBB7 /* NewConvoViewController.swift */; };
+		5D55868E20B34D7C00139C67 /* MediaViewerNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D55868D20B34D7C00139C67 /* MediaViewerNavigationBar.swift */; };
 		5D5A13021F2177C400D54109 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5D5A13011F2177C400D54109 /* GoogleService-Info.plist */; };
 		5D5A13031F2177C400D54109 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5D5A13011F2177C400D54109 /* GoogleService-Info.plist */; };
 		5D5D67761ED1E90200FF8F2A /* DatabaseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D5D67751ED1E90200FF8F2A /* DatabaseController.swift */; };
@@ -98,6 +99,7 @@
 		5D3DDA371E62469000B6FBB7 /* UserInfoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoCell.swift; sourceTree = "<group>"; };
 		5D3DDA391E6248DA00B6FBB7 /* NewConvoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = NewConvoViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		5D43855F1EEC4D8F0005D7CD /* AtMe.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AtMe.entitlements; sourceTree = "<group>"; };
+		5D55868D20B34D7C00139C67 /* MediaViewerNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaViewerNavigationBar.swift; sourceTree = "<group>"; };
 		5D5A13011F2177C400D54109 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5D5D67751ED1E90200FF8F2A /* DatabaseController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DatabaseController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		5D5EDF841EC3D14C00F7FC44 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Extensions.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -256,6 +258,7 @@
 				5D9DD02F209513D000237CDD /* MediaTransitionDelegate.swift */,
 				5D9DD0312095143E00237CDD /* PresentationAnimator.swift */,
 				5D9DD0332095146900237CDD /* DismissalAnimator.swift */,
+				5D55868D20B34D7C00139C67 /* MediaViewerNavigationBar.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -493,6 +496,7 @@
 				5D04E98A1E58DD0C006D8CD5 /* ChatListViewController.swift in Sources */,
 				5D2B62621EC909CC00B8363E /* PromptView.swift in Sources */,
 				5D9027231EB2A3E60021AEE9 /* Conversation.swift in Sources */,
+				5D55868E20B34D7C00139C67 /* MediaViewerNavigationBar.swift in Sources */,
 				5DE764F01F00814900E483C6 /* UserSetupViewController.swift in Sources */,
 				5DAFF1621E72FD02008DE303 /* SignUpViewController.swift in Sources */,
 				5D197AA11E58CE1900C9CB52 /* SignInViewController.swift in Sources */,
