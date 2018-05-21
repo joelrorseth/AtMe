@@ -36,9 +36,6 @@ class MediaViewerNavigationBar: UINavigationBar {
   // Primary setup -- initialize views and selectors
   private func setup() {
     
-    backgroundColor = UIColor.clear
-    tintColor = UIColor.clear
-    
     // Establish the contents of the bar
     let navigationItem = UINavigationItem(title: "Photo")
     let doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.done,
@@ -62,5 +59,9 @@ class MediaViewerNavigationBar: UINavigationBar {
   
   @objc private func saveSelector() {
     viewerDelegate?.didPressSave()
+  }
+  
+  override func sizeThatFits(_ size: CGSize) -> CGSize {
+    return CGSize(width: size.width, height: 160)
   }
 }

@@ -15,7 +15,7 @@ class MediaViewerController: UIViewController {
   var popupNavigationBar: MediaViewerNavigationBar!
   
   var image: UIImage?
-  
+  var navBarIsVisible: Bool = true
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -35,21 +35,43 @@ class MediaViewerController: UIViewController {
     scrollView.addSubview(contentImageView)
     
     // Place a navigation bar at the top under the status bar
-    popupNavigationBar = MediaViewerNavigationBar(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 100))
+    popupNavigationBar = MediaViewerNavigationBar(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 160))
     popupNavigationBar.viewerDelegate = self
+    
+    // TODO
+    //UIApplication.shared.isStatusBarHidden = true
+    setNeedsStatusBarAppearanceUpdate()
+    
     view.addSubview(popupNavigationBar)
     
     popupNavigationBar.translatesAutoresizingMaskIntoConstraints = false
     popupNavigationBar.topAnchor.constraint(equalTo: self.topLayoutGuide.bottomAnchor).isActive = true
     popupNavigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
     popupNavigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-    popupNavigationBar.heightAnchor.constraint(equalToConstant: 200).isActive = true
-    
+    popupNavigationBar.isOpaque = false
     
     // Provide the UIImage to the UIImageView
     if let image = image {
       contentImageView.image = image
     } else { print("Error: No image provided to MediaViewerController") }
+    
+    let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(MediaViewerController.viewTapped))
+    view.addGestureRecognizer(tapRecognizer)
+  }
+  
+  override var prefersStatusBarHidden: Bool {
+    return true
+  }
+  
+  // Handler for tap gesture on the view
+  @objc func viewTapped() {
+    
+    navBarIsVisible = !navBarIsVisible
+    
+    // Show/hide the navigation bar when the picture is tapped normally (single tap)
+    UIView.animate(withDuration: 0.24, animations: {
+      self.popupNavigationBar.alpha = self.navBarIsVisible ? 1.0 : 0.0
+    })
   }
 }
 
