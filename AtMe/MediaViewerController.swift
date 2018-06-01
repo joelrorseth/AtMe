@@ -99,6 +99,21 @@ extension MediaViewerController: MediaViewerBarDelegate {
   }
   
   func didPressSave() {
-    dismiss(animated: true, completion: nil)
+
+    guard let image = image else { print("Error: Cannot save photo since it is nil") ; return }
+    UIImageWriteToSavedPhotosAlbum(image, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
+  }
+  
+  @objc func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
+    if let error = error {
+
+      let ac = UIAlertController(title: "Save Error", message: error.localizedDescription, preferredStyle: .alert)
+      ac.addAction(UIAlertAction(title: "OK", style: .default))
+      present(ac, animated: true)
+    } else {
+      let ac = UIAlertController(title: "Saved!", message: "Your image has been saved to your photos.", preferredStyle: .alert)
+      ac.addAction(UIAlertAction(title: "OK", style: .default))
+      present(ac, animated: true)
+    }
   }
 }
