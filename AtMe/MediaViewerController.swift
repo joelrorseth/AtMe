@@ -8,11 +8,17 @@
 
 import UIKit
 
+protocol MediaViewerDelegate {
+  func didFinishViewing()
+}
+
 class MediaViewerController: UIViewController {
   
   var scrollView: UIScrollView!
   var contentImageView: UIImageView!
   var popupNavigationBar: MediaViewerNavigationBar!
+  
+  var viewerDelegate: MediaViewerDelegate?
   
   var image: UIImage?
   var navBarIsVisible: Bool = true
@@ -35,13 +41,10 @@ class MediaViewerController: UIViewController {
     scrollView.addSubview(contentImageView)
     
     // Place a navigation bar at the top under the status bar
-    popupNavigationBar = MediaViewerNavigationBar(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 160))
+    popupNavigationBar = MediaViewerNavigationBar()
     popupNavigationBar.viewerDelegate = self
     
     // TODO
-    //UIApplication.shared.isStatusBarHidden = true
-    setNeedsStatusBarAppearanceUpdate()
-    
     view.addSubview(popupNavigationBar)
     
     popupNavigationBar.translatesAutoresizingMaskIntoConstraints = false
@@ -91,6 +94,7 @@ extension MediaViewerController: MediaViewerBarDelegate {
   
   // Handle the Done and Save buttons being pressed in the navigation bar
   func didPressDone() {
+    viewerDelegate?.didFinishViewing()
     dismiss(animated: true, completion: nil)
   }
   
