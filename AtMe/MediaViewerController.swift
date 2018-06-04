@@ -44,14 +44,12 @@ class MediaViewerController: UIViewController {
     popupNavigationBar = MediaViewerNavigationBar()
     popupNavigationBar.viewerDelegate = self
     
-    // TODO
     view.addSubview(popupNavigationBar)
     
-    popupNavigationBar.translatesAutoresizingMaskIntoConstraints = false
     popupNavigationBar.topAnchor.constraint(equalTo: self.topLayoutGuide.bottomAnchor).isActive = true
     popupNavigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
     popupNavigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-    popupNavigationBar.isOpaque = false
+    
     
     // Provide the UIImage to the UIImageView
     if let image = image {
