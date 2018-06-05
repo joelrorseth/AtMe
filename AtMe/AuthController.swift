@@ -66,19 +66,19 @@ class AuthController {
             
             // Present backend errors to user when @Me does not catch them
             if let error = error {
-                completion(error, user?.uid)
+                completion(error, user?.user.uid)
                 return
             }
             
             // Add entry to usernames index and user info record
-            self.userInformationRef.child((user?.uid)!).setValue(
+            self.userInformationRef.child((user?.user.uid)!).setValue(
                 ["email" : email,
                  "firstName" : firstName,
                  "lastName" : lastName,
                  "notificationID": NotificationsController.currentDeviceNotificationID() ?? nil]
             )
             
-            completion(error, user?.uid)
+            completion(error, user?.user.uid)
         })
     }
     
@@ -103,7 +103,7 @@ class AuthController {
             
             // Call database function to retrieve information about current user, and set the static current user object
             // The completion callback returns a bool indicating success, so return that value in this completion callback too!
-            self.establishCurrentUser(user: user, completion: { configured in
+            self.establishCurrentUser(user: user.user, completion: { configured in
                 completion(error, configured)
             })
         }
