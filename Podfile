@@ -12,6 +12,11 @@ target 'AtMe' do
   pod 'Firebase/Storage'
   pod 'Kingfisher', '~> 4.0'
   pod 'OneSignal', '>= 2.6.2', '< 3.0'
+
+  target 'AtMeTests' do
+    inherit! :search_paths
+    pod 'Firebase'
+  end
 end
 
 target 'OneSignalNotificationServiceExtension' do

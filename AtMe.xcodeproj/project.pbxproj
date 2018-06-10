@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0B829297F9B9DEA2C4115754 /* Pods_AtMeTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B8E31D65154AE797D57AF589 /* Pods_AtMeTests.framework */; };
 		5D00D1041F339B9900130C59 /* BlockedUsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D00D1031F339B9900130C59 /* BlockedUsersViewController.swift */; };
 		5D00D1061F33A72E00130C59 /* BlockedUserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D00D1051F33A72E00130C59 /* BlockedUserCell.swift */; };
 		5D04E98A1E58DD0C006D8CD5 /* ChatListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D04E9891E58DD0C006D8CD5 /* ChatListViewController.swift */; };
@@ -32,6 +33,7 @@
 		5D6394F31F31598E0095C1C5 /* terms.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5D6394F21F31598E0095C1C5 /* terms.txt */; };
 		5D6394F51F315E3C0095C1C5 /* privacy.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5D6394F41F315E3C0095C1C5 /* privacy.txt */; };
 		5D65EBF61EFA1798009F512E /* NotificationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D65EBF51EFA1798009F512E /* NotificationsController.swift */; };
+		5D7549C820CB24B9000683D9 /* AuthControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D22766420C9B658002E6958 /* AuthControllerTests.swift */; };
 		5D9027231EB2A3E60021AEE9 /* Conversation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D9027221EB2A3E60021AEE9 /* Conversation.swift */; };
 		5D9617381F316C6100222C79 /* ConvoAuxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D9617371F316C6100222C79 /* ConvoAuxViewController.swift */; };
 		5D9D443A1EAEE81500CF25F7 /* UserState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D9D44391EAEE81500CF25F7 /* UserState.swift */; };
@@ -55,6 +57,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		5D22767420C9B6C8002E6958 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5D1C70301E58C64A00FEDEC3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5D1C70371E58C64A00FEDEC3;
+			remoteInfo = AtMe;
+		};
 		5DA1D56F1EF78B57001A6ED5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5D1C70301E58C64A00FEDEC3 /* Project object */;
@@ -80,6 +89,7 @@
 
 /* Begin PBXFileReference section */
 		3EA6B6C2F24651C2E0E50A37 /* Pods-AtMe.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AtMe.release.xcconfig"; path = "Pods/Target Support Files/Pods-AtMe/Pods-AtMe.release.xcconfig"; sourceTree = "<group>"; };
+		4E680CAB8B2C3DC09C5B77F4 /* Pods-AtMeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AtMeTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-AtMeTests/Pods-AtMeTests.release.xcconfig"; sourceTree = "<group>"; };
 		5D00D1031F339B9900130C59 /* BlockedUsersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = BlockedUsersViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		5D00D1051F33A72E00130C59 /* BlockedUserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockedUserCell.swift; sourceTree = "<group>"; };
 		5D04E9891E58DD0C006D8CD5 /* ChatListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ChatListViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -93,6 +103,9 @@
 		5D1C70421E58C64A00FEDEC3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5D1C70451E58C64A00FEDEC3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5D1C70471E58C64A00FEDEC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5D22766420C9B658002E6958 /* AuthControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthControllerTests.swift; sourceTree = "<group>"; };
+		5D22766F20C9B6C8002E6958 /* AtMeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AtMeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5D22767320C9B6C8002E6958 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5D2B625F1EC909A300B8363E /* PromptViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromptViewController.swift; sourceTree = "<group>"; };
 		5D2B62611EC909CC00B8363E /* PromptView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromptView.swift; sourceTree = "<group>"; };
 		5D323B711F107C3E00853EDE /* EmptyChatListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyChatListView.swift; sourceTree = "<group>"; };
@@ -128,6 +141,8 @@
 		5DFC7F3C1E7A27CF003C6594 /* ConversationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationCell.swift; sourceTree = "<group>"; };
 		6091D7237A3A486130F73C61 /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		7F3DB2773FD585250B1CABFB /* Pods-AtMe.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AtMe.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AtMe/Pods-AtMe.debug.xcconfig"; sourceTree = "<group>"; };
+		ACDEBA52D79956F81B9FB3C5 /* Pods-AtMeTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AtMeTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AtMeTests/Pods-AtMeTests.debug.xcconfig"; sourceTree = "<group>"; };
+		B8E31D65154AE797D57AF589 /* Pods_AtMeTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AtMeTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6EFA11791A5A217839F7019 /* Pods_AtMe.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AtMe.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE37082F7DC013473599AD31 /* Pods_OneSignalNotificationServiceExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OneSignalNotificationServiceExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E73653AE2B0ED77BD80E3B72 /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.release.xcconfig"; sourceTree = "<group>"; };
@@ -139,6 +154,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				F5952E533BFD28E9911F1F03 /* Pods_AtMe.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5D22766C20C9B6C8002E6958 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0B829297F9B9DEA2C4115754 /* Pods_AtMeTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -158,6 +181,7 @@
 			children = (
 				D6EFA11791A5A217839F7019 /* Pods_AtMe.framework */,
 				DE37082F7DC013473599AD31 /* Pods_OneSignalNotificationServiceExtension.framework */,
+				B8E31D65154AE797D57AF589 /* Pods_AtMeTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -167,6 +191,7 @@
 			children = (
 				5D1C703A1E58C64A00FEDEC3 /* AtMe */,
 				5DA1D56B1EF78B57001A6ED5 /* OneSignalNotificationServiceExtension */,
+				5D22767020C9B6C8002E6958 /* AtMeTests */,
 				5D1C70391E58C64A00FEDEC3 /* Products */,
 				7EC3AB56F47CED54B7D74FC2 /* Pods */,
 				2217BD1937AA2D80A8F3708C /* Frameworks */,
@@ -178,6 +203,7 @@
 			children = (
 				5D1C70381E58C64A00FEDEC3 /* AtMe.app */,
 				5DA1D56A1EF78B57001A6ED5 /* OneSignalNotificationServiceExtension.appex */,
+				5D22766F20C9B6C8002E6958 /* AtMeTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -189,7 +215,7 @@
 				5D5EDF831EC3D01900F7FC44 /* Views */,
 				5D1C704F1E58C69C00FEDEC3 /* Cells */,
 				5D1C704E1E58C68A00FEDEC3 /* Controllers */,
-				5D1C704D1E58C67800FEDEC3 /* Model */,
+				5D1C704D1E58C67800FEDEC3 /* Models */,
 				5D1C70421E58C64A00FEDEC3 /* Assets.xcassets */,
 				5D6394F21F31598E0095C1C5 /* terms.txt */,
 				5D6394F41F315E3C0095C1C5 /* privacy.txt */,
@@ -201,7 +227,7 @@
 			path = AtMe;
 			sourceTree = "<group>";
 		};
-		5D1C704D1E58C67800FEDEC3 /* Model */ = {
+		5D1C704D1E58C67800FEDEC3 /* Models */ = {
 			isa = PBXGroup;
 			children = (
 				5D5EDF841EC3D14C00F7FC44 /* Extensions.swift */,
@@ -215,7 +241,7 @@
 				5D65EBF51EFA1798009F512E /* NotificationsController.swift */,
 				5DE764ED1F0046E700E483C6 /* AuthController.swift */,
 			);
-			name = Model;
+			name = Models;
 			sourceTree = "<group>";
 		};
 		5D1C704E1E58C68A00FEDEC3 /* Controllers */ = {
@@ -249,6 +275,47 @@
 			name = Cells;
 			sourceTree = "<group>";
 		};
+		5D22766720C9B66A002E6958 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		5D22766820C9B672002E6958 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		5D22766920C9B682002E6958 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		5D22766A20C9B68B002E6958 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				5D22766420C9B658002E6958 /* AuthControllerTests.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		5D22767020C9B6C8002E6958 /* AtMeTests */ = {
+			isa = PBXGroup;
+			children = (
+				5D22766A20C9B68B002E6958 /* Models */,
+				5D22766920C9B682002E6958 /* Controllers */,
+				5D22766820C9B672002E6958 /* Cells */,
+				5D22766720C9B66A002E6958 /* Views */,
+				5D22767320C9B6C8002E6958 /* Info.plist */,
+			);
+			path = AtMeTests;
+			sourceTree = "<group>";
+		};
 		5D5EDF831EC3D01900F7FC44 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -279,6 +346,8 @@
 				3EA6B6C2F24651C2E0E50A37 /* Pods-AtMe.release.xcconfig */,
 				6091D7237A3A486130F73C61 /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */,
 				E73653AE2B0ED77BD80E3B72 /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */,
+				ACDEBA52D79956F81B9FB3C5 /* Pods-AtMeTests.debug.xcconfig */,
+				4E680CAB8B2C3DC09C5B77F4 /* Pods-AtMeTests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -307,6 +376,26 @@
 			productReference = 5D1C70381E58C64A00FEDEC3 /* AtMe.app */;
 			productType = "com.apple.product-type.application";
 		};
+		5D22766E20C9B6C8002E6958 /* AtMeTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5D22767620C9B6C8002E6958 /* Build configuration list for PBXNativeTarget "AtMeTests" */;
+			buildPhases = (
+				F7EE4D14A49C4B6A1D44231E /* [CP] Check Pods Manifest.lock */,
+				5D22766B20C9B6C8002E6958 /* Sources */,
+				5D22766C20C9B6C8002E6958 /* Frameworks */,
+				5D22766D20C9B6C8002E6958 /* Resources */,
+				8F8F71D9E9E00E611F69B892 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5D22767520C9B6C8002E6958 /* PBXTargetDependency */,
+			);
+			name = AtMeTests;
+			productName = AtMeTests;
+			productReference = 5D22766F20C9B6C8002E6958 /* AtMeTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		5DA1D5691EF78B57001A6ED5 /* OneSignalNotificationServiceExtension */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5DA1D5741EF78B57001A6ED5 /* Build configuration list for PBXNativeTarget "OneSignalNotificationServiceExtension" */;
@@ -331,7 +420,7 @@
 		5D1C70301E58C64A00FEDEC3 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0830;
+				LastSwiftUpdateCheck = 1000;
 				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = "Joel Rorseth";
 				TargetAttributes = {
@@ -351,6 +440,12 @@
 								enabled = 1;
 							};
 						};
+					};
+					5D22766E20C9B6C8002E6958 = {
+						CreatedOnToolsVersion = 10.0;
+						DevelopmentTeam = TGHSJ2W3HB;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 5D1C70371E58C64A00FEDEC3;
 					};
 					5DA1D5691EF78B57001A6ED5 = {
 						CreatedOnToolsVersion = 8.3.3;
@@ -375,6 +470,7 @@
 			targets = (
 				5D1C70371E58C64A00FEDEC3 /* AtMe */,
 				5DA1D5691EF78B57001A6ED5 /* OneSignalNotificationServiceExtension */,
+				5D22766E20C9B6C8002E6958 /* AtMeTests */,
 			);
 		};
 /* End PBXProject section */
@@ -390,6 +486,13 @@
 				5D1C70431E58C64A00FEDEC3 /* Assets.xcassets in Resources */,
 				5D6394F31F31598E0095C1C5 /* terms.txt in Resources */,
 				5D1C70411E58C64A00FEDEC3 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5D22766D20C9B6C8002E6958 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -448,6 +551,26 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		8F8F71D9E9E00E611F69B892 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-AtMeTests/Pods-AtMeTests-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AtMeTests/Pods-AtMeTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		D85C2076939C3121506AED54 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -460,6 +583,24 @@
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-OneSignalNotificationServiceExtension-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F7EE4D14A49C4B6A1D44231E /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-AtMeTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -510,6 +651,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5D22766B20C9B6C8002E6958 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5D7549C820CB24B9000683D9 /* AuthControllerTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		5DA1D5661EF78B57001A6ED5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -521,6 +670,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		5D22767520C9B6C8002E6958 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5D1C70371E58C64A00FEDEC3 /* AtMe */;
+			targetProxy = 5D22767420C9B6C8002E6958 /* PBXContainerItemProxy */;
+		};
 		5DA1D5701EF78B57001A6ED5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 5DA1D5691EF78B57001A6ED5 /* OneSignalNotificationServiceExtension */;
@@ -699,6 +853,55 @@
 			};
 			name = Release;
 		};
+		5D22767720C9B6C8002E6958 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = ACDEBA52D79956F81B9FB3C5 /* Pods-AtMeTests.debug.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = TGHSJ2W3HB;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = AtMeTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				PRODUCT_BUNDLE_IDENTIFIER = com.JoelRorseth.AtMeTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AtMe.app/AtMe";
+			};
+			name = Debug;
+		};
+		5D22767820C9B6C8002E6958 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4E680CAB8B2C3DC09C5B77F4 /* Pods-AtMeTests.release.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = TGHSJ2W3HB;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = AtMeTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.JoelRorseth.AtMeTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AtMe.app/AtMe";
+			};
+			name = Release;
+		};
 		5DA1D5721EF78B57001A6ED5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 6091D7237A3A486130F73C61 /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */;
@@ -754,6 +957,15 @@
 			buildConfigurations = (
 				5D1C704B1E58C64A00FEDEC3 /* Debug */,
 				5D1C704C1E58C64A00FEDEC3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5D22767620C9B6C8002E6958 /* Build configuration list for PBXNativeTarget "AtMeTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5D22767720C9B6C8002E6958 /* Debug */,
+				5D22767820C9B6C8002E6958 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
