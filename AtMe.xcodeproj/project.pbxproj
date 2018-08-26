@@ -22,6 +22,8 @@
 		5D28129C2132401200BD616E /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D28129B2132401200BD616E /* AuthManager.swift */; };
 		5D28129F21324DE500BD616E /* MockAuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D28129E21324DE500BD616E /* MockAuthManager.swift */; };
 		5D2812A021324E2F00BD616E /* MockAuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D28129E21324DE500BD616E /* MockAuthManager.swift */; };
+		5D2812A221325CB300BD616E /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2812A121325CB300BD616E /* UserManager.swift */; };
+		5D2812A421325D1600BD616E /* FirebaseUserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2812A321325D1600BD616E /* FirebaseUserManager.swift */; };
 		5D2B62601EC909A300B8363E /* PromptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2B625F1EC909A300B8363E /* PromptViewController.swift */; };
 		5D2B62621EC909CC00B8363E /* PromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2B62611EC909CC00B8363E /* PromptView.swift */; };
 		5D323B721F107C3E00853EDE /* EmptyChatListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D323B711F107C3E00853EDE /* EmptyChatListView.swift */; };
@@ -111,6 +113,8 @@
 		5D22767320C9B6C8002E6958 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5D28129B2132401200BD616E /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		5D28129E21324DE500BD616E /* MockAuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAuthManager.swift; sourceTree = "<group>"; };
+		5D2812A121325CB300BD616E /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
+		5D2812A321325D1600BD616E /* FirebaseUserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseUserManager.swift; sourceTree = "<group>"; };
 		5D2B625F1EC909A300B8363E /* PromptViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromptViewController.swift; sourceTree = "<group>"; };
 		5D2B62611EC909CC00B8363E /* PromptView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromptView.swift; sourceTree = "<group>"; };
 		5D323B711F107C3E00853EDE /* EmptyChatListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyChatListView.swift; sourceTree = "<group>"; };
@@ -246,6 +250,7 @@
 				5D5D67751ED1E90200FF8F2A /* DatabaseController.swift */,
 				5D65EBF51EFA1798009F512E /* NotificationsController.swift */,
 				5DE764ED1F0046E700E483C6 /* FirebaseAuthManager.swift */,
+				5D2812A321325D1600BD616E /* FirebaseUserManager.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -327,6 +332,7 @@
 			isa = PBXGroup;
 			children = (
 				5D28129B2132401200BD616E /* AuthManager.swift */,
+				5D2812A121325CB300BD616E /* UserManager.swift */,
 			);
 			name = Protocols;
 			sourceTree = "<group>";
@@ -644,6 +650,7 @@
 				5DA1C37C1F33FCA8002E2773 /* ReportUserViewController.swift in Sources */,
 				5DA9E0DD1E5B6E0900F38C96 /* MessageCell.swift in Sources */,
 				5D04E98A1E58DD0C006D8CD5 /* ChatListViewController.swift in Sources */,
+				5D2812A421325D1600BD616E /* FirebaseUserManager.swift in Sources */,
 				5D2B62621EC909CC00B8363E /* PromptView.swift in Sources */,
 				5D9027231EB2A3E60021AEE9 /* Conversation.swift in Sources */,
 				5D55868E20B34D7C00139C67 /* MediaViewerNavigationBar.swift in Sources */,
@@ -655,6 +662,7 @@
 				5D1C703C1E58C64A00FEDEC3 /* AppDelegate.swift in Sources */,
 				5D9DD0362095173D00237CDD /* MediaViewerController.swift in Sources */,
 				5DFC7F3D1E7A27CF003C6594 /* ConversationCell.swift in Sources */,
+				5D2812A221325CB300BD616E /* UserManager.swift in Sources */,
 				5D9DD0322095143E00237CDD /* PresentationAnimator.swift in Sources */,
 				5DD231841F2B65BE0058DD54 /* ChatToolbarView.swift in Sources */,
 				5DAF28B71E5BBCBC00288F31 /* Constants.swift in Sources */,

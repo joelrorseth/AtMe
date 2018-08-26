@@ -14,7 +14,8 @@ class ConvoViewController: UITableViewController, AlertController {
   
   // MARK: - Properties
   lazy var databaseManager = DatabaseController()
-  var authManager: AuthManager = FirebaseAuthManager()
+  var authManager: AuthManager = FirebaseAuthManager.shared
+  var userManager: UserManager = FirebaseUserManager.shared
   
   // Firebase references
   var conversationRef: DatabaseReference?
@@ -434,7 +435,7 @@ class ConvoViewController: UITableViewController, AlertController {
         
         // If current user or this observered user haven't blocked eachother, we can add
         // them to notificationIDs so they can be notified that an old convo became active again
-        self.authManager.userOrCurrentUserHasBlocked(uid: uid, username: username, completion: { blocked in
+        self.userManager.userOrCurrentUserHasBlocked(uid: uid, username: username, completion: { blocked in
           
           if blocked { self.notificationIDs.removeValue(forKey: username) }
             

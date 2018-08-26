@@ -11,7 +11,7 @@ import Kingfisher
 
 class DatabaseController {
   
-  var authManager: AuthManager = FirebaseAuthManager()
+  var userManager: UserManager = FirebaseUserManager.shared
   
   // MARK: - Properties
   var userConversationListRef: DatabaseReference = Database.database().reference().child("userConversationList")
@@ -133,7 +133,7 @@ class DatabaseController {
    */
   public func attemptRejoinIntoConversation(convoID: String, uid: String, username: String, completion: @escaping (Bool) -> ()) {
     
-    authManager.userOrCurrentUserHasBlocked(uid: uid, username: username, completion: { blocked in
+    self.userManager.userOrCurrentUserHasBlocked(uid: uid, username: username, completion: { blocked in
       print("Attempting to rejoin, convo blocked? <\(blocked)>")
       // TODO: Possibly return custom error to discern if user was blocked?
       if blocked { completion(false); return }
@@ -250,7 +250,7 @@ class DatabaseController {
     // users. We maintain a record of active and inactive conversations, observe only the active
     // ones, and transfer a conversation record back and forth when deleted or (re)created by user.
     
-    authManager.userOrCurrentUserHasBlocked(uid: uid, username: username, completion: { blocked in
+    userManager.userOrCurrentUserHasBlocked(uid: uid, username: username, completion: { blocked in
       
       // Prevent
       if blocked { completion(false); return }

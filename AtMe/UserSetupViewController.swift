@@ -12,7 +12,8 @@ import Firebase
 class UserSetupViewController: UIViewController, AlertController {
   
   lazy var databaseManager = DatabaseController()
-  var authManager: AuthManager = FirebaseAuthManager()
+  var authManager: AuthManager = FirebaseAuthManager.shared
+  var userManager: UserManager = FirebaseUserManager.shared
   
   @IBOutlet var usernameTextField: UITextField!
   @IBOutlet var displayPictureImageView: UIImageView!
@@ -45,7 +46,8 @@ class UserSetupViewController: UIViewController, AlertController {
       
       
       // Let the Auth Controller attempt to create the account
-      authManager.createAccount(email: self.email, firstName: self.firstName, lastName: self.lastName, password: self.password, completion: { (error, uid) in
+      authManager.createAccount(email: self.email, firstName: self.firstName, lastName: self.lastName,
+                                password: self.password, completion: { (error, uid) in
         
         if let error = error {
           self.presentSimpleAlert(title: "Authorization Error", message: error.localizedDescription, completion: nil)
@@ -68,17 +70,17 @@ class UserSetupViewController: UIViewController, AlertController {
             }
             
             // Important: Auth Controller will associate the picture with the user profile
-            self.authManager.setDisplayPicture(path: path)
+            self.userManager.setDisplayPicture(path: path)
           })
         }
         
         
         // If the username does not exist, proceed with account creation
-        self.authManager.usernameExists(username: username, completion: { exists in
+        self.userManager.usernameExists(username: username, completion: { exists in
           if (!exists) {
             
             // Once username is set, sign in for the first time
-            self.authManager.setUsername(username: username, completion: {
+            self.userManager.setUsername(username: username, completion: {
               self.authManager.signIn(email: self.email, password: self.password, completion: { (error, configured) in
                 
                 if let error = error {

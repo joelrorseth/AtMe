@@ -11,7 +11,7 @@ import UIKit
 class BlockedUsersViewController: UITableViewController {
   
   lazy var databaseManager = DatabaseController()
-  var authManager: AuthManager = FirebaseAuthManager()
+  var userManager: UserManager = FirebaseUserManager.shared
   
   var blockedUsers: [UserProfile] = []
   
@@ -25,7 +25,7 @@ class BlockedUsersViewController: UITableViewController {
     // Immediately ask AuthController for blocked users to populate
     // Insert these into table view directly since it will return asynchronously
     
-    authManager.findCurrentUserBlockedUsers(completion: { user in
+    userManager.findCurrentUserBlockedUsers(completion: { user in
       self.blockedUsers.append(user)
       self.tableView.insertRows(at: [IndexPath(row: self.blockedUsers.count - 1, section: 0)], with: .automatic)
     })
@@ -125,7 +125,7 @@ extension BlockedUsersViewController: BlockedUserCellDelegate {
     }, completion: { _ in
       
       // Unblock the user and remove that row from table and data source
-      self.authManager.unblockUser(uid: uid, username: username)
+      self.userManager.unblockUser(uid: uid, username: username)
       
       for (index, user) in self.blockedUsers.enumerated() {
         if (uid == user.uid) {

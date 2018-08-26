@@ -12,7 +12,7 @@ import Firebase
 class ChatListViewController: UITableViewController {
   
   lazy var databaseManager = DatabaseController()
-  var authManager: AuthManager = FirebaseAuthManager()
+  var authManager: AuthManager = FirebaseAuthManager.shared
   
   // Firebase references are used for read/write at referenced location
   lazy var userConversationListRef: DatabaseReference = Database.database().reference().child("userConversationList")

@@ -12,7 +12,8 @@ import Firebase
 class SettingsViewController: UITableViewController, AlertController {
   
   lazy var databaseManager = DatabaseController()
-  var authManager: AuthManager = FirebaseAuthManager()
+  var authManager: AuthManager = FirebaseAuthManager.shared
+  var userManager: UserManager = FirebaseUserManager.shared
   
   var currentAttributeChanging: Constants.UserAttribute = Constants.UserAttribute.none
   var attributePrompt: String = ""
@@ -62,7 +63,7 @@ class SettingsViewController: UITableViewController, AlertController {
     
     // TODO: Refactor to remove assumption that path in userInfo signifies a valid profile picture
     // Really we can just query database for this directly and let it fail if not found
-    authManager.setDisplayPicture(path: "\(uid)/\(uid).JPG")
+    self.userManager.setDisplayPicture(path: "\(uid)/\(uid).JPG")
     
     // Update current user stored display picture, reload image view
     // loadCurrentUserInformation()

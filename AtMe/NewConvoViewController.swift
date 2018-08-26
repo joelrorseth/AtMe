@@ -16,7 +16,8 @@ class NewConvoViewController: UIViewController, UISearchBarDelegate, AlertContro
   @IBOutlet weak var usersSearchBar: UISearchBar!
   @IBOutlet weak var usersTableView: UITableView!
   
-  var authManager: AuthManager = FirebaseAuthManager()
+  var authManager: AuthManager = FirebaseAuthManager.shared
+  var userManager: UserManager = FirebaseUserManager.shared
   var searchResults: [UserProfile] = []
   
   
@@ -62,12 +63,12 @@ class NewConvoViewController: UIViewController, UISearchBarDelegate, AlertContro
     // Find all usernames containing search text
     // Order record by key (which are the usernames), then query for string bounded in range [text, text]
     
-    authManager.searchForUsers(term: text, completion: { results in
+    self.userManager.searchForUsers(term: text, completion: { results in
       
       if !results.isEmpty {
         
         // One by one, obtain details of each user, and insert the result into table with more info
-        self.authManager.findDetailsForUsers(results: results, completion: { user in
+        self.userManager.findDetailsForUsers(results: results, completion: { user in
           self.insertResult(user: user)
         })
       }
