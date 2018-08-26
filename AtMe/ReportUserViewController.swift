@@ -9,49 +9,48 @@
 import UIKit
 
 class ReportUserViewController: UIViewController, AlertController {
-    
-    lazy var authManager = AuthController()
-    
-    var violatorUid: String = ""
-    var violatorUsername: String = ""
-    var convoID: String = ""
-
-    @IBAction func didPressSpamButton(_ sender: UIButton) {
-        authManager.reportUser(uid: violatorUid, username: violatorUsername, violation: "Spam", convoID: convoID)
-        presentSimpleAlert(title: "Report Submitted", message: Constants.Messages.didReportUser, completion: { _ in
-            self.navigationController?.popViewController(animated: true)
-        })
-    }
-    
-    @IBAction func didPressNudityButton(_ sender: Any) {
-        authManager.reportUser(uid: violatorUid, username: violatorUsername, violation: "Nudity", convoID: convoID)
-        presentSimpleAlert(title: "Report Submitted", message: Constants.Messages.didReportUser, completion: { _ in
-            self.navigationController?.popViewController(animated: true)
-        })
-    }
-    
-    @IBAction func didPressHarassmentButton(_ sender: Any) {
-        authManager.reportUser(uid: violatorUid, username: violatorUsername, violation: "Harassment", convoID: convoID)
-        presentSimpleAlert(title: "Report Submitted", message: Constants.Messages.didReportUser, completion: { _ in
-            self.navigationController?.popViewController(animated: true)
-        })
-    }
-    
-    @IBAction func didPressAbuseButton(_ sender: Any) {
-        authManager.reportUser(uid: violatorUid, username: violatorUsername, violation: "Abuse", convoID: convoID)
-        presentSimpleAlert(title: "Report Submitted", message: Constants.Messages.didReportUser, completion: { _ in
-            self.navigationController?.popViewController(animated: true)
-        })
-    }
-    
-    @IBAction func didObjectionableContentButton(_ sender: Any) {
-        authManager.reportUser(uid: violatorUid, username: violatorUsername, violation: "Content", convoID: convoID)
-        presentSimpleAlert(title: "Report Submitted", message: Constants.Messages.didReportUser, completion: { _ in
-            self.navigationController?.popViewController(animated: true)
-        })
-    }
-    
-    override func viewDidLoad() {
-        self.title = "Report User"
-    }
+  
+  var authManager: AuthManager = FirebaseAuthManager()
+  var violatorUid: String = ""
+  var violatorUsername: String = ""
+  var convoID: String = ""
+  
+  @IBAction func didPressSpamButton(_ sender: UIButton) {
+    authManager.reportUser(uid: violatorUid, username: violatorUsername, violation: "Spam", convoID: convoID)
+    presentSimpleAlert(title: "Report Submitted", message: Constants.Messages.didReportUser, completion: { _ in
+      self.navigationController?.popViewController(animated: true)
+    })
+  }
+  
+  @IBAction func didPressNudityButton(_ sender: Any) {
+    authManager.reportUser(uid: violatorUid, username: violatorUsername, violation: "Nudity", convoID: convoID)
+    presentSimpleAlert(title: "Report Submitted", message: Constants.Messages.didReportUser, completion: { _ in
+      self.navigationController?.popViewController(animated: true)
+    })
+  }
+  
+  @IBAction func didPressHarassmentButton(_ sender: Any) {
+    authManager.reportUser(uid: violatorUid, username: violatorUsername, violation: "Harassment", convoID: convoID)
+    presentSimpleAlert(title: "Report Submitted", message: Constants.Messages.didReportUser, completion: { _ in
+      self.navigationController?.popViewController(animated: true)
+    })
+  }
+  
+  @IBAction func didPressAbuseButton(_ sender: Any) {
+    authManager.reportUser(uid: violatorUid, username: violatorUsername, violation: "Abuse", convoID: convoID)
+    presentSimpleAlert(title: "Report Submitted", message: Constants.Messages.didReportUser, completion: { _ in
+      self.navigationController?.popViewController(animated: true)
+    })
+  }
+  
+  @IBAction func didObjectionableContentButton(_ sender: Any) {
+    authManager.reportUser(uid: violatorUid, username: violatorUsername, violation: "Content", convoID: convoID)
+    presentSimpleAlert(title: "Report Submitted", message: Constants.Messages.didReportUser, completion: { _ in
+      self.navigationController?.popViewController(animated: true)
+    })
+  }
+  
+  override func viewDidLoad() {
+    self.title = "Report User"
+  }
 }

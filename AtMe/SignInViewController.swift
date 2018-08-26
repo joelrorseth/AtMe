@@ -11,7 +11,7 @@ import Firebase
 
 class SignInViewController: UIViewController, AlertController {
     
-    lazy var authManager = AuthController()
+  var authManager: AuthManager = FirebaseAuthManager()
     
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var passwordField: UITextField!

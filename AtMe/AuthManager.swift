@@ -6,9 +6,9 @@
 //  Copyright © 2018 Joel Rorseth. All rights reserved.
 //
 
-import Foundation
-
 protocol AuthManager {
+  
+  var authenticationDelegate: AuthenticationDelegate? { get set }
   
   func createAccount(email: String, firstName: String, lastName: String, password: String,
                      completion: @escaping ((Error?, String?) -> ()))

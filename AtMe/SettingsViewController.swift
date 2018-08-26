@@ -12,7 +12,7 @@ import Firebase
 class SettingsViewController: UITableViewController, AlertController {
   
   lazy var databaseManager = DatabaseController()
-  lazy var authManager = AuthController()
+  var authManager: AuthManager = FirebaseAuthManager()
   
   var currentAttributeChanging: Constants.UserAttribute = Constants.UserAttribute.none
   var attributePrompt: String = ""

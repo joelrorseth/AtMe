@@ -16,12 +16,12 @@ protocol AuthenticationDelegate {
 }
 
 
-class AuthController: AuthManager {
+class FirebaseAuthManager: AuthManager {
   
   lazy var databaseManager = DatabaseController()
   
   // MARK: - Properties
-  var authenticationDelegate: AuthenticationDelegate?
+  // var authenticationDelegate: AuthenticationDelegate?
   
   // Firebase References
   var userInformationRef: DatabaseReference = Database.database().reference().child("userInformation")

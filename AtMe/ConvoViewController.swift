@@ -12,10 +12,10 @@ import Firebase
 
 class ConvoViewController: UITableViewController, AlertController {
   
-  lazy var databaseManager = DatabaseController()
-  lazy var authManager = AuthController()
-  
   // MARK: - Properties
+  lazy var databaseManager = DatabaseController()
+  var authManager: AuthManager = FirebaseAuthManager()
+  
   // Firebase references
   var conversationRef: DatabaseReference?
   var messagesRef: DatabaseReference?
