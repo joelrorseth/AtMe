@@ -19,6 +19,7 @@
 		5D1C70411E58C64A00FEDEC3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5D1C703F1E58C64A00FEDEC3 /* Main.storyboard */; };
 		5D1C70431E58C64A00FEDEC3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D1C70421E58C64A00FEDEC3 /* Assets.xcassets */; };
 		5D1C70461E58C64A00FEDEC3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5D1C70441E58C64A00FEDEC3 /* LaunchScreen.storyboard */; };
+		5D28129C2132401200BD616E /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D28129B2132401200BD616E /* AuthManager.swift */; };
 		5D2B62601EC909A300B8363E /* PromptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2B625F1EC909A300B8363E /* PromptViewController.swift */; };
 		5D2B62621EC909CC00B8363E /* PromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2B62611EC909CC00B8363E /* PromptView.swift */; };
 		5D323B721F107C3E00853EDE /* EmptyChatListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D323B711F107C3E00853EDE /* EmptyChatListView.swift */; };
@@ -106,6 +107,7 @@
 		5D22766420C9B658002E6958 /* AuthControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthControllerTests.swift; sourceTree = "<group>"; };
 		5D22766F20C9B6C8002E6958 /* AtMeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AtMeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D22767320C9B6C8002E6958 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5D28129B2132401200BD616E /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		5D2B625F1EC909A300B8363E /* PromptViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromptViewController.swift; sourceTree = "<group>"; };
 		5D2B62611EC909CC00B8363E /* PromptView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromptView.swift; sourceTree = "<group>"; };
 		5D323B711F107C3E00853EDE /* EmptyChatListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyChatListView.swift; sourceTree = "<group>"; };
@@ -212,6 +214,7 @@
 			isa = PBXGroup;
 			children = (
 				5D43855F1EEC4D8F0005D7CD /* AtMe.entitlements */,
+				5D28129A21323F6900BD616E /* Protocols */,
 				5D5EDF831EC3D01900F7FC44 /* Views */,
 				5D1C704F1E58C69C00FEDEC3 /* Cells */,
 				5D1C704E1E58C68A00FEDEC3 /* Controllers */,
@@ -314,6 +317,14 @@
 				5D22767320C9B6C8002E6958 /* Info.plist */,
 			);
 			path = AtMeTests;
+			sourceTree = "<group>";
+		};
+		5D28129A21323F6900BD616E /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				5D28129B2132401200BD616E /* AuthManager.swift */,
+			);
+			name = Protocols;
 			sourceTree = "<group>";
 		};
 		5D5EDF831EC3D01900F7FC44 /* Views */ = {
@@ -643,6 +654,7 @@
 				5DF36ED91EB3D35400346868 /* Message.swift in Sources */,
 				5D07CAB21E752C0100316D75 /* UserProfile.swift in Sources */,
 				5D9617381F316C6100222C79 /* ConvoAuxViewController.swift in Sources */,
+				5D28129C2132401200BD616E /* AuthManager.swift in Sources */,
 				5D00D1061F33A72E00130C59 /* BlockedUserCell.swift in Sources */,
 				5D2B62601EC909A300B8363E /* PromptViewController.swift in Sources */,
 				5D6394F11F314F800095C1C5 /* LegalViewController.swift in Sources */,
